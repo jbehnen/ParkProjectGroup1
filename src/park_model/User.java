@@ -7,8 +7,16 @@ public abstract class User {
 	
 	protected User(String theEmail) {
 		myEmail = theEmail;
+	}
+	
+	public void logIn() {
 		myVolunteerList = new VolunteerList();
 		myJobSchedule = new JobSchedule();
+	}
+	
+	public void logOut() {
+		myVolunteerList.saveList();
+		myJobSchedule.saveList();
 	}
 	
 	public String getEmail() {
