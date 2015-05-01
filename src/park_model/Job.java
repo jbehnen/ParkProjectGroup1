@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Job {
 	
-	public Job(/*...whatever parameters you need...*/) {
+	public Job(String thePark, List<Date> theDates, int theLightNum, int theMediumNum, int theHeavyNum) {
 		
 	}
 	
