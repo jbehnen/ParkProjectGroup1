@@ -6,6 +6,11 @@ public class shewanTest {
 		
 	}
 	
+	public String name(){
+		
+		
+		return null;
+	}
 	
 	
 }
