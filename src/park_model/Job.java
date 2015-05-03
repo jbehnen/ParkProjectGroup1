@@ -45,6 +45,7 @@ public class Job {
 	 */
 	
 	public Job(Job theJob) {
+		
 		//Copy of Dates	
 		List<Date> thisDate = new ArrayList<Date>();
 		for(Date d : theJob.myDates){
@@ -105,7 +106,7 @@ public class Job {
 		
 		boolean signUp = true;
 		signUp = !isSignedUp(theVolunteer);
-		
+
 		//Checks to see if their work category is available.
 		if(signUp){
 			switch (theCategory){
@@ -148,7 +149,7 @@ public class Job {
 	public boolean isSignedUp(Volunteer theVolunteer) {
 		boolean isSignedUp = false;
 		int count = 0;
-		
+
 		while(!(isSignedUp) && (count < myVolunteers.size())){
 			User v = (Volunteer) myVolunteers.get(count);
 			if(v.getEmail().equals(theVolunteer.getEmail())){
@@ -198,6 +199,5 @@ public class Job {
 	 */
 	public int getNumHeavy(){
 		return numHeavyJobs;
-		
 	}
 }
