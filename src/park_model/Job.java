@@ -105,7 +105,7 @@ public class Job {
 	public boolean signUp(Volunteer theVolunteer, WorkCategory theCategory) {
 		
 		boolean signUp = true;
-		signUp = !isSignedUp(theVolunteer);
+		signUp = !isSignedUp(theVolunteer); //This has to be reversed as if they are not signed up (false) then they can be signed up (true). 
 
 		//Checks to see if their work category is available.
 		if(signUp){
@@ -133,7 +133,7 @@ public class Job {
 				break;
 			}
 		}
-		//Add volunteer to Job list if signedUp is still true
+		//Add volunteer to Job list if volunteer meets the constraints.
 		if(signUp){
 			myVolunteers.add(theVolunteer);
 		}
@@ -150,6 +150,7 @@ public class Job {
 		boolean isSignedUp = false;
 		int count = 0;
 
+		//Searches the Volunteer List for the volunteer attempting to sign up for this job.
 		while(!(isSignedUp) && (count < myVolunteers.size())){
 			User v = (Volunteer) myVolunteers.get(count);
 			if(v.getEmail().equals(theVolunteer.getEmail())){
@@ -159,6 +160,9 @@ public class Job {
 			}
 			count++;
 		}
+
+		//If in the list, returns true.
+		//If not in the list, returns false.
 		return isSignedUp;
 	}
 	
@@ -179,6 +183,9 @@ public class Job {
 		return myPark;
 	}
 	
+	
+	//These are methods added for testing, but since all three return int values, 
+	//they are safe and may be helpful to other classes.
 	/**
 	 * getNumLight
 	 * Returns the number of light jobs available
