@@ -29,6 +29,7 @@ public class Job {
 		numLightJobs = theLightNum;
 		numMediumJobs = theMediumNum;
 		numHeavyJobs = theHeavyNum;
+		myVolunteers = new ArrayList();
 
 		myDates = new ArrayList<Date>();
 		
@@ -46,12 +47,13 @@ public class Job {
 	public Job(Job theJob) {
 		//Copy of Dates	
 		List<Date> thisDate = new ArrayList<Date>();
-		for(Date d : myDates){
+		System.out.println("Here");
+		for(Date d : theJob.myDates){
 			thisDate.add(d);
 		}
 		
 		//Calls class constructor.
-		Job thisJob = new Job(myPark, thisDate, numLightJobs, numMediumJobs, numHeavyJobs);
+		Job thisJob = new Job(theJob.getParkName(), thisDate, theJob.getNumLight(), theJob.getNumMedium(), theJob.getNumHeavy());
 	}
 	
 	/**
@@ -139,8 +141,8 @@ public class Job {
 	}
 	
 	/**
+	 * isSignedUp
 	 * Returns true if theVolunteer is signed up for the job, false otherwise.
-	 * 
 	 * @param theVolunteer
 	 * @return boolean 
 	 */
@@ -158,5 +160,45 @@ public class Job {
 			count++;
 		}
 		return isSignedUp;
+	}
+	
+	/**
+	 * getNumOpenJobs
+	 * Returns the number of open jobs
+	 * 
+	 */
+	public int getNumOpenJobs(){
+		return (numLightJobs + numMediumJobs + numHeavyJobs);
+	}
+	
+	/**
+	 * getParkName
+	 * Returns the name of the Park
+	 */
+	public String getParkName(){
+		return myPark;
+	}
+	
+	/**
+	 * getNumLight
+	 * Returns the number of light jobs available
+	 */
+	public int getNumLight(){
+		return numLightJobs;
+	}
+	/**
+	 * getNumMedium
+	 * Returns the number of medium jobs available
+	 */
+	public int getNumMedium(){
+		return numMediumJobs;
+	}
+	/**
+	 * getNumHeavy
+	 * Returns the number of heavy jobs available
+	 */
+	public int getNumHeavy(){
+		return numHeavyJobs;
+		
 	}
 }
