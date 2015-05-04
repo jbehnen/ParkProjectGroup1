@@ -10,7 +10,6 @@ import java.util.Scanner;
 public class VolunteerList {
 	
 	private List<Volunteer> list;
-	private String myLastName;
 	
 	/**
 	 * Constructs a list of all volunteers in the system from the back-end data.
@@ -31,8 +30,14 @@ public class VolunteerList {
 	 * 
 	 */
 	public List<Volunteer> getVolunteersByLastName(String theLastName) {   
-		myLastName = theLastName;
 		
+		for(Volunteer myVolunteer : list)
+		{
+			if (myVolunteer.equals(theLastName))
+			{
+				list.add(myVolunteer);
+			}
+		}
 		return Collections.unmodifiableList(list);	
 	}
 	
