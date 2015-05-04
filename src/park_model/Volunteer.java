@@ -2,8 +2,17 @@ package park_model;
 
 public class Volunteer extends User {
 
+	/**
+	 * The volunteer's last name.
+	 */
 	private String myLastName;
 	
+	/**
+	 * Constructs a Volunteer.
+	 * 
+	 * @param theEmail The volunteer's email.
+	 * @param theLastName The volunteer's last name.
+	 */
 	public Volunteer(String theEmail, String theLastName) {
 		super(theEmail);
 		myLastName = theLastName;
@@ -12,13 +21,18 @@ public class Volunteer extends User {
 	/**
 	 * Copy constructor for Volunteer.
 	 * 
-	 * @param theVolunteer
+	 * @param theVolunteer The Volunteer object to be copied.
 	 */
 	public Volunteer(Volunteer theVolunteer) {
 		super(theVolunteer.getEmail());
 		myLastName = theVolunteer.getLastName();
 	}
 	
+	/**
+	 * Returns the volunteer's last name.
+	 * 
+	 * @return The volunteer's last name.
+	 */
 	public String getLastName() {
 		return myLastName;
 	}

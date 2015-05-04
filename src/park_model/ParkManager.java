@@ -8,7 +8,7 @@ public class ParkManager extends User {
 
 	private List<String> myParks;
 	
-	protected ParkManager(String theEmail, List<String> theParks) {
+	public ParkManager(String theEmail, List<String> theParks) {
 		super(theEmail);
 		myParks = new ArrayList<String>(theParks);
 	}
