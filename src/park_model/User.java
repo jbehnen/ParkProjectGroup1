@@ -1,5 +1,11 @@
 package park_model;
 
+/**
+ * A system user.
+ * 
+ * @author Julia Behnen
+ * @version 5/3/2015
+ */
 public abstract class User {
 	
 	/**

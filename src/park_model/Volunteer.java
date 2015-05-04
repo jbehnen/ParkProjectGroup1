@@ -1,5 +1,11 @@
 package park_model;
 
+/**
+ * A volunteer who is registered in the system.
+ * 
+ * @author Julia Behnen
+ * @version 5/3/2015
+ */
 public class Volunteer extends User {
 
 	/**
