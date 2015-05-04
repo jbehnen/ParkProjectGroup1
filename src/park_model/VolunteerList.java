@@ -10,13 +10,15 @@ import java.util.Scanner;
 public class VolunteerList {
 	
 	private List<Volunteer> list;
+	private List<Volunteer> newList;
 	
 	/**
 	 * Constructs a list of all volunteers in the system from the back-end data.
 	 */
 	public VolunteerList() {
 		
-		List<Volunteer> list = new ArrayList<Volunteer>();
+		list = new ArrayList<Volunteer>();
+		newList = new ArrayList<Volunteer>();
 		Volunteer theLastName = null;
 		list.add(theLastName);
 		
@@ -35,10 +37,11 @@ public class VolunteerList {
 		{
 			if (myVolunteer.equals(theLastName))
 			{
-				list.add(myVolunteer);
+				newList.add(myVolunteer);
 			}
 		}
-		return Collections.unmodifiableList(list);	
+		
+		return Collections.unmodifiableList(newList);	
 	}
 	
 	/**
