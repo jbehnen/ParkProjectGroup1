@@ -14,6 +14,7 @@ public class VolunteerListTest {
 	@Before
 	public void setUp() throws Exception {
 		myVolunteerList = new VolunteerList();
+		myVolunteerList.getVolunteersByLastName("Smith");
 	}
 
 	@Test
