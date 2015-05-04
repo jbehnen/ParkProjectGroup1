@@ -18,10 +18,17 @@ public class VolunteerList {
 	public VolunteerList() {
 		
 		list = new ArrayList<Volunteer>();
-		newList = new ArrayList<Volunteer>();
-		Volunteer theLastName = null;
-		list.add(theLastName);
-		
+//		Volunteer theLastName = null;
+//		list.add(theLastName);
+	}
+	
+	/**
+	 * A constructor that makes an empty list. Testing purposes only.
+	 * 
+	 * @param test A boolean indicating that this is a test.
+	 */
+	public VolunteerList(boolean test) {
+		list = new ArrayList<Volunteer>();
 	}
 	
 	/**
@@ -33,15 +40,24 @@ public class VolunteerList {
 	 */
 	public List<Volunteer> getVolunteersByLastName(String theLastName) {   
 		
+		newList = new ArrayList<Volunteer>();
+		
 		for(Volunteer myVolunteer : list)
 		{
-			if (myVolunteer.equals(theLastName))
+			if (myVolunteer.getLastName().equals(theLastName))
 			{
 				newList.add(myVolunteer);
 			}
 		}
 		
 		return Collections.unmodifiableList(newList);	
+	}
+	
+	/**
+	 * Adds volunteer to list. Testing purposes only.
+	 */
+	public void addVolunteer(Volunteer theVolunteer) {
+		list.add(theVolunteer);
 	}
 	
 	/**

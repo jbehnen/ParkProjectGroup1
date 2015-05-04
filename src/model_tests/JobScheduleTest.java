@@ -218,7 +218,7 @@ public class JobScheduleTest {
 
 		job2.signUp(v1, WorkCategory.HEAVY);
 
-		assertEquals("Volunteer didn't register for futuer jobs", 0,
+		assertEquals("Volunteer didn't register for future jobs", 0,
 				myJobSchedule.getJobsForSignUp(v1).size());
 
 	}
@@ -234,9 +234,9 @@ public class JobScheduleTest {
 		Job job2 = new Job("Park2", jobDates, 1, 1, 1);
 		myJobSchedule.addJob(job2);
 
-		assertEquals("Volunteer didn't register for futuer jobs", 1,
+		assertEquals("Volunteer didn't register for future jobs", 1,
 				myJobSchedule.getJobsByPark("Park").size());
-		assertTrue("Volunteer didn't register for futuer jobs", myJobSchedule
+		assertTrue("Volunteer didn't register for future jobs", myJobSchedule
 				.getJobsByPark("Park2").get(0).getParkName().equals("Park2"));
 
 	}
