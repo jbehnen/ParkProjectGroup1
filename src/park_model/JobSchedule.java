@@ -30,30 +30,11 @@ public class JobSchedule {
 	private List<Job> myJobList;
 	
 	/**
-	 * The list of all jobs scheduled in the future for a specific volunteer.
-	 */
-	private List<Job> myJobListByVolunteer;
-	
-	/**
-	 * The list of all jobs scheduled in the future for a specific volunteer.
-	 */
-	private List<Job> myJobListByPark;
-	
-	/**
-	 * The list of all jobs scheduled in the future for a specific volunteer.
-	 */
-	private List<Job> myJobListForSignup;
-	
-	/**
 	 * Constructs a list of all jobs in the system from the back-end data.
 	 */
 	public JobSchedule() {
 		// This constructor should also get rid of any jobs that are in the past.
-		myJobList = new ArrayList<>(); // Gets input from file
-		myJobListByVolunteer = new ArrayList<Job>();
-		myJobListByPark = new ArrayList<Job>();
-		myJobListForSignup= new ArrayList<Job>();
-	    
+		myJobList = new ArrayList<>(); // Will eventually get input from file
 	}
 	
 	/**
@@ -63,7 +44,7 @@ public class JobSchedule {
 	 * test JobSchedule should be constructed.
 	 */
 	public JobSchedule(boolean test) {
-		//myJobList = new ArrayList<>();
+		myJobList = new ArrayList<>();
 	}
 	
 	/**
@@ -75,7 +56,7 @@ public class JobSchedule {
 	 */
 	public boolean addJob(Job theJob) {  // need to use the copy constructor or something
 		// check if too many jobs already scheduled
-		if (jobListSize() > MAX_JOBS) { 
+		if (myJobList.size() >= MAX_JOBS) { 
 			return false;
 		}
 		
@@ -91,12 +72,6 @@ public class JobSchedule {
 		firstDate.setTime(dates.get(0));
 		firstDate = roundDown(firstDate);
 		
-		// check if job is out of acceptable time range
-		if (!isInTimeRange(firstDate)) {
-			return false;
-		}
-		
-		// check if too many jobs within the week
 		lastDate = new GregorianCalendar();
 		
 		if (numDates > 1) {
@@ -106,9 +81,16 @@ public class JobSchedule {
 			lastDate = (GregorianCalendar) firstDate.clone();
 		}
 		
-		firstDate.add(Calendar.DATE, 3);
-		lastDate.add(Calendar.DATE, 4); // adds 4 days worth of millis: 3 to move forward 3
+		// check if job is out of acceptable time range
+		if (!isInTimeRange(firstDate) || !isInTimeRange(lastDate)) {
+			return false;
+		}
+		
+		// check if too many jobs within the week
+		firstDate.add(Calendar.DATE, -3);
+		lastDate.add(Calendar.DATE, 4); // adds 4 days: 3 to move forward 3
 											// days, 1 to move time to very end of the last day
+		
 		int sameWeekJobs = 0;
 		for (Job j: myJobList) {
 			if (isJobInRange(j, firstDate, lastDate)) {
@@ -122,11 +104,18 @@ public class JobSchedule {
 		return true;
 	}
 	
+	/**
+	 * Rounds down a date to the midnight that starts the day.
+	 * 
+	 * @param theDate The date to be rounded down.
+	 * @return a date set to the midnight that starts the theDate.
+	 */
 	private GregorianCalendar roundDown(GregorianCalendar theDate) {
 		theDate.set(Calendar.HOUR, 0);
 		theDate.set(Calendar.MINUTE, 0);
 		theDate.set(Calendar.SECOND, 0);
 		theDate.set(Calendar.MILLISECOND, 0);
+		theDate.get(Calendar.MILLISECOND); //reset milliseconds
 		return theDate;
 	}
 	
@@ -169,7 +158,16 @@ public class JobSchedule {
 				return true;
 			}
 		}
-		return true;
+		return false;
+	}
+	
+	/**
+	 * Returns the number of scheduled jobs.
+	 * 
+	 * @return The number of scheduled jobs. 
+	 */
+	public int numberOfJobs() {
+		return myJobList.size();
 	}
 
 	/**
@@ -208,6 +206,8 @@ public class JobSchedule {
 	 * 	
 	 */
 	public List<Job> getUpcomingJobsByVolunteer(Volunteer theVolunteer) {
+		
+		List<Job> jobList = new ArrayList<Job>();
 
 		// check if my job list is empty
 		if (jobListSize() == 0) {
@@ -218,14 +218,14 @@ public class JobSchedule {
 			if (myJob.isSignedUp(theVolunteer)) {
 				// if true for that job check if job's start day is in the future				
 				if (isJobInFuture(myJob.getDates().get(0))) {
-					myJobListByVolunteer.add(myJob);
+					jobList.add(myJob);
 
 				}
 
 			}
 
 		}	
-		return Collections.unmodifiableList(myJobListByVolunteer);
+		return Collections.unmodifiableList(jobList);
 	}
 	
 	/**
@@ -238,6 +238,9 @@ public class JobSchedule {
 		// A volunteer may not sign up for a work catagory on a job if the max
 		// number of volunteers for that
 		// work catagoey has aleady been reached
+		
+		List<Job> jobList = new ArrayList<Job>();
+		
 		for (Job myJob : myJobList) {
 			// Get jobs that are open
 			if (myJob.getNumOpenJobs() > 0) {
@@ -249,7 +252,7 @@ public class JobSchedule {
 						if (nextJob.getDates().get(0)
 								.compareTo(myJob.getDates().get(0)) != 0) {
 
-							myJobListForSignup.add(myJob);
+							jobList.add(myJob);
 
 						}
 						// System.out.print("You hava a job on this date");
@@ -265,7 +268,7 @@ public class JobSchedule {
 		}
 
 		// volunteer can't sign up for two jobs on the same day
-		return Collections.unmodifiableList(myJobListForSignup);
+		return Collections.unmodifiableList(jobList);
 
 	}
 	
@@ -276,6 +279,8 @@ public class JobSchedule {
 	 * @return
 	 */
 	public List<Job> getJobsByPark(String thePark) {
+		
+		List<Job> jobList = new ArrayList<Job>();
 		// check if my job list is empty
 		if (jobListSize() == 0) {
 			System.out.print("Your job list is empty. ");
@@ -287,13 +292,13 @@ public class JobSchedule {
 		for (Job myJob : myJobList) {
 			if (myJob.getParkName().equals(thePark)) {
 
-				myJobListByPark.add(myJob);
+				jobList.add(myJob);
 
 			}
 
 		}
 
-		return Collections.unmodifiableList(myJobListByPark);
+		return Collections.unmodifiableList(jobList);
 
 	}
 	

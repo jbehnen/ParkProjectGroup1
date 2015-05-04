@@ -45,15 +45,7 @@ public class Job {
 	 */
 	
 	public Job(Job theJob) {
-		
-		//Copy of Dates	
-		List<Date> thisDate = new ArrayList<Date>();
-		for(Date d : theJob.myDates){
-			thisDate.add(d);
-		}
-		
-		//Calls class constructor.
-		Job thisJob = new Job(theJob.getParkName(), thisDate, theJob.getNumLight(), theJob.getNumMedium(), theJob.getNumHeavy());
+		this(theJob.getParkName(), theJob.getDates(), theJob.getNumLight(), theJob.getNumMedium(), theJob.getNumHeavy());
 	}
 	
 	/**
