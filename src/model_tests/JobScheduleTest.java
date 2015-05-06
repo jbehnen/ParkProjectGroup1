@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.junit.Before;
@@ -21,15 +22,15 @@ import park_model.WorkCategory;
 public class JobScheduleTest {
 
 	private JobSchedule myJobSchedule;
-	private Date legalDate;
-	private List<Date> myOneDateList;
+	private GregorianCalendar legalDate;
+	private List<GregorianCalendar> myOneDateList;
 
 	@Before
 	public void setUp() throws Exception {
 		myJobSchedule = new JobSchedule(true);
-		myOneDateList = new ArrayList<Date>();
-		legalDate = new Date();
-		legalDate.setDate(legalDate.getDate() + 1);
+		myOneDateList = new ArrayList<DateAndTime>();
+		legalDate = new GregorianCalendar();
+		legalDate.add(Calendar.DATE, 1);
 		myOneDateList.add(legalDate);
 	}
 
@@ -48,7 +49,7 @@ public class JobScheduleTest {
 	public void testAddJobShouldNotWorkIfMaxJobsScheduled() {
 		boolean check;
 		for (int i = 1; i <= 30; i++) {
-			List<Date> jobDates = new ArrayList<>();
+			List<GregorianCalendar> jobDates = new ArrayList<>();
 			jobDates.add((Date) legalDate.clone());
 			Job job = new Job("Park", jobDates, 1, 1, 1);
 			check = myJobSchedule.addJob(job);

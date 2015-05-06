@@ -3,13 +3,14 @@ package park_model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class Job {
 	
 	//Class Variables
 	private String myPark;
-	private List<Date> myDates;
+	private List<DateAndTime> myDateAndTimes;
 	private List<Volunteer> myVolunteers;
 	private int numLightJobs;
 	private int numMediumJobs;
@@ -19,23 +20,25 @@ public class Job {
 	 * Class Constructor
 	 * Creates an instance of a Job.
 	 * @param thePark		the location of a job as a park
-	 * @param theDates		the date(s) of a job
+	 * @param theDateAndTimes		the date(s) of a job
 	 * @param theLightNum	the number of jobs in the work category Light that is available.
 	 * @param theMediumNum	the number of jobs in the work category Medium that is available.
 	 * @param theHeavyNum	the number of jobs in the work category Heavy that is available. 
 	 */
-	public Job(String thePark, List<Date> theDates, int theLightNum, int theMediumNum, int theHeavyNum) {
+	public Job(String thePark, List<DateAndTime> theDateAndTimes, int theLightNum, int theMediumNum, int theHeavyNum) {
 		myPark = thePark;
 		numLightJobs = theLightNum;
 		numMediumJobs = theMediumNum;
 		numHeavyJobs = theHeavyNum;
 		myVolunteers = new ArrayList();
 
-		myDates = new ArrayList<Date>();
+		theDateAndTimes = new ArrayList<DateAndTime>();
 		
-		for(int i= 0; i< theDates.size(); i++){
-			myDates.add(theDates.get(i));
+		for(int i= 0; i< theDateAndTimes.size(); i++){
+			theDateAndTimes.add(theDateAndTimes.get(i));
 		}
+		
+		Collections.sort(theDateAndTimes);
 	}
 	
 	/**
@@ -45,15 +48,30 @@ public class Job {
 	 */
 	
 	public Job(Job theJob) {
-		this(theJob.getParkName(), theJob.getDates(), theJob.getNumLight(), theJob.getNumMedium(), theJob.getNumHeavy());
+		this(theJob.getParkName(), theJob.getDateAndTimes(), theJob.getNumLight(), theJob.getNumMedium(), theJob.getNumHeavy());
 	}
 	
 	/**
-	 * Returns an unmodifiable list of the date(s) during which this job takes place.
+	 * Returns an unmodifiable list of the date(s) during which this job takes place, sorted by date.
 	 * @return unmodifiable list of dates for a job.
 	 */
-	public List<Date> getDates() {
-		return Collections.unmodifiableList(myDates);
+	public List<GregorianCalendar> getDates() {
+		List<GregorianCalendar> list = new ArrayList<>();
+		for (DateAndTime date: myDateAndTimes) {
+			list.add(date.getDate());
+		}
+		return list; // doesn't even need to be unmodifiable 
+	}
+	
+	/**
+	 * Returns an unmodifiable list of the dates and times during which this job takes place,
+	 * sorted by date.
+	 * 
+	 * @return An unmodifiable unmodifiable list of the dates and times during which
+	 * this job takes place, sorted by date.
+	 */
+	public List<DateAndTime> getDateAndTimes() {
+		return Collections.unmodifiableList(myDateAndTimes);
 	}
 	
 	/**

@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import config_files.Config;
+
 public class JobSchedule {
 	
 	/**
@@ -56,27 +58,21 @@ public class JobSchedule {
 	 */
 	public boolean addJob(Job theJob) {  // need to use the copy constructor or something
 		// check if too many jobs already scheduled
-		if (myJobList.size() >= MAX_JOBS) { 
+		if (myJobList.size() >= Config.MAX_TOTAL_JOBS) { 
 			return false;
 		}
 		
 		//check if job is more than the max number of days
-		List<Date> dates = theJob.getDates();
+		List<GregorianCalendar> dates = theJob.getDates();
 		int numDates = dates.size();
-		if (numDates > MAX_JOB_DAYS) {
+		if (numDates > Config.MAX_JOB_DAYS) {
 			return false;
 		}
 		
-		GregorianCalendar firstDate, lastDate;
-		firstDate = new GregorianCalendar();
-		firstDate.setTime(dates.get(0));
-		firstDate = roundDown(firstDate);
-		
-		lastDate = new GregorianCalendar();
-		
+		GregorianCalendar firstDate, lastDate, todayDate;
+		firstDate = (GregorianCalendar) dates.get(0).clone();
 		if (numDates > 1) {
-			lastDate.setTime(dates.get(numDates - 1));
-			lastDate = roundDown(lastDate);
+			lastDate = (GregorianCalendar) dates.get(numDates - 1).clone();
 		} else {
 			lastDate = (GregorianCalendar) firstDate.clone();
 		}
@@ -97,7 +93,7 @@ public class JobSchedule {
 				sameWeekJobs += 1;
 			}
 		}
-		if (sameWeekJobs >= MAX_JOBS_PER_WEEK) {
+		if (sameWeekJobs >= Config.MAX_JOBS_PER_WEEK) {
 			return false;
 		}
 		myJobList.add(new Job(theJob));
@@ -110,13 +106,14 @@ public class JobSchedule {
 	 * @param theDate The date to be rounded down.
 	 * @return a date set to the midnight that starts the theDate.
 	 */
-	private GregorianCalendar roundDown(GregorianCalendar theDate) {
-		theDate.set(Calendar.HOUR, 0);
-		theDate.set(Calendar.MINUTE, 0);
-		theDate.set(Calendar.SECOND, 0);
-		theDate.set(Calendar.MILLISECOND, 0);
-		theDate.get(Calendar.MILLISECOND); //reset milliseconds
-		return theDate;
+	private GregorianCalendar getTodaysDate() {
+		GregorianCalendar date = new GregorianCalendar();
+		date.set(Calendar.HOUR, 0);
+		date.set(Calendar.MINUTE, 0);
+		date.set(Calendar.SECOND, 0);
+		date.set(Calendar.MILLISECOND, 0);
+		date.get(Calendar.MILLISECOND); //reset milliseconds
+		return date;
 	}
 	
 	/**
@@ -128,8 +125,7 @@ public class JobSchedule {
 	 * future, false otherwise.
 	 */
 	private boolean isInTimeRange(GregorianCalendar theDate) {
-		GregorianCalendar comparisonDate = new GregorianCalendar();
-		comparisonDate = roundDown(comparisonDate);
+		GregorianCalendar comparisonDate = getTodaysDate();
 		if (theDate.compareTo(comparisonDate) < 0) {
 			return false;
 		}
@@ -151,9 +147,7 @@ public class JobSchedule {
 	 * time range from theFirstDate to theEndDate, false otherwise.
 	 */
 	private boolean isJobInRange(Job theJob, GregorianCalendar theFirstDate, GregorianCalendar theEndDate) {
-		for (Date date: theJob.getDates()) {
-			GregorianCalendar thisDate = new GregorianCalendar();
-			thisDate.setTime(date);
+		for (GregorianCalendar thisDate: theJob.getDates()) {
 			if (thisDate.compareTo(theFirstDate) > 0 && thisDate.compareTo(theEndDate) < 0) {
 				return true;
 			}
@@ -177,9 +171,9 @@ public class JobSchedule {
 	 *            - job start date
 	 * @return -true in the future
 	 */
-	private boolean isJobInFuture(Date theStartDate) {
+	private boolean isJobInFuture(GregorianCalendar theStartDate) {
 		// get current date time with Date()
-		Date currentDate = new Date();
+		GregorianCalendar currentDate = getTodaysDate();
         //Start date is after the current date
 		if (theStartDate.compareTo(currentDate) > 0) {
 
