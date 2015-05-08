@@ -1,10 +1,13 @@
 package config_files;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 public class Config {
 	
-	public static final String USER_FILE = "users.txt";
+	public static final String USER_FILE = "src/config_files/users.txt";
 	
-	public static final String JOB_SCHEDULE_FILE = "jobSchedule.txt";
+	public static final String JOB_SCHEDULE_FILE = "src/config_files/jobSchedule.txt";
 	
 	/**
 	 * Number of total dates in the job.
@@ -22,11 +25,6 @@ public class Config {
 	public static final int MAX_TOTAL_JOBS = 30;
 	
 	/**
-	 * Minimum number of days in the future that the job may be scheduled.
-	 */
-	public static final int MIN_DAYS_IN_FUTURE = 0;
-	
-	/**
 	 * Maximum days in the future that the job may be scheduled.
 	 */
 	public static final int MAX_DAYS_IN_FUTURE = 90;
@@ -35,4 +33,20 @@ public class Config {
 	 * Maximum days in the future that the job may be scheduled.
 	 */
 	public static final int MAX_JOBS_PER_WEEK = 5;
+	
+	/**
+	 * Rounds down a date to the midnight that starts the day.
+	 * 
+	 * @param theDate The date to be rounded down.
+	 * @return a date set to the midnight that starts the theDate.
+	 */
+	public static GregorianCalendar getTodaysDate() {
+		GregorianCalendar date = new GregorianCalendar();
+		date.set(Calendar.HOUR_OF_DAY, 0);
+		date.set(Calendar.MINUTE, 0);
+		date.set(Calendar.SECOND, 0);
+		date.set(Calendar.MILLISECOND, 0);
+		date.get(Calendar.MILLISECOND); //reset milliseconds
+		return date;
+	}
 }

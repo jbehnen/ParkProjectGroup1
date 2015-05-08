@@ -5,11 +5,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A park manager who is registered in the system.
+ * An immutable park manager who is registered in the system.
  * 
  * @author Julia Behnen
  * @version 5/3/2015
  */
+
 public class ParkManager extends User {
 
 	/**
@@ -23,9 +24,9 @@ public class ParkManager extends User {
 	 * @param theEmail The email address used to identify the ParkManager.
 	 * @param theParks The parks that the ParkManager manages.
 	 */
-	public ParkManager(String theEmail, List<String> theParks) {
-		super(theEmail);
-		myParks = new ArrayList<String>(theParks);
+	public ParkManager(String myEmail, String myFirstName, String myLastName, List<String> myParks) {
+		super(myEmail, myFirstName, myLastName);
+		this.myParks = new ArrayList<String>(myParks);
 	}
 	
 	/**

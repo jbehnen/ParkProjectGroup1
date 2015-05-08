@@ -1,17 +1,20 @@
 package park_model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+
+import config_files.Config;
 
 public class Job {
 	
 	//Class Variables
 	private String myPark;
 	private List<DateAndTime> myDateAndTimes;
-	private List<Volunteer> myVolunteers;
+	private List<User> myVolunteers;
 	private int numLightJobs;
 	private int numMediumJobs;
 	private int numHeavyJobs;
@@ -30,15 +33,15 @@ public class Job {
 		numLightJobs = theLightNum;
 		numMediumJobs = theMediumNum;
 		numHeavyJobs = theHeavyNum;
-		myVolunteers = new ArrayList();
+		myVolunteers = new ArrayList<>();
 
-		theDateAndTimes = new ArrayList<DateAndTime>();
+		myDateAndTimes = new ArrayList<DateAndTime>();
 		
 		for(int i= 0; i< theDateAndTimes.size(); i++){
-			theDateAndTimes.add(theDateAndTimes.get(i));
+			myDateAndTimes.add(theDateAndTimes.get(i));
 		}
 		
-		Collections.sort(theDateAndTimes);
+		Collections.sort(myDateAndTimes);
 	}
 	
 	/**
@@ -58,7 +61,7 @@ public class Job {
 	public List<GregorianCalendar> getDates() {
 		List<GregorianCalendar> list = new ArrayList<>();
 		for (DateAndTime date: myDateAndTimes) {
-			list.add(date.getDate());
+			list.add((GregorianCalendar) date.getDate().clone());
 		}
 		return list; // doesn't even need to be unmodifiable 
 	}
@@ -101,7 +104,7 @@ public class Job {
 	 * 
 	 * @return a list of volunteers 
 	 */
-	public List<Volunteer> getVolunteers() {
+	public List<User> getVolunteers() {
 		return Collections.unmodifiableList(myVolunteers);
 	}
 	
@@ -112,7 +115,7 @@ public class Job {
 	 * @param theVolunteer
 	 * @return boolean value
 	 */
-	public boolean signUp(Volunteer theVolunteer, WorkCategory theCategory) {
+	public boolean signUp(User theVolunteer, WorkCategory theCategory) {
 		
 		boolean signUp = true;
 		signUp = !isSignedUp(theVolunteer); //This has to be reversed as if they are not signed up (false) then they can be signed up (true). 
@@ -156,13 +159,13 @@ public class Job {
 	 * @param theVolunteer
 	 * @return boolean 
 	 */
-	public boolean isSignedUp(Volunteer theVolunteer) {
+	public boolean isSignedUp(User theVolunteer) {
 		boolean isSignedUp = false;
 		int count = 0;
 
 		//Searches the Volunteer List for the volunteer attempting to sign up for this job.
 		while(!(isSignedUp) && (count < myVolunteers.size())){
-			User v = (Volunteer) myVolunteers.get(count);
+			User v = myVolunteers.get(count);
 			if(v.getEmail().equals(theVolunteer.getEmail())){
 				isSignedUp = true;
 			}else{
@@ -216,5 +219,39 @@ public class Job {
 	 */
 	public int getNumHeavy(){
 		return numHeavyJobs;
+	}
+	
+	public GregorianCalendar getFirstDate() {
+		return getDates().get(0);
+	}
+	
+	public GregorianCalendar getLastDate() {
+		return getDates().get(myDateAndTimes.size() - 1);
+	}
+	
+	public boolean isJobTooLong() {
+		List<GregorianCalendar> dates = getDates();
+		int numDates = dates.size();
+		if (numDates > Config.MAX_JOB_DAYS) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isJobInPast() {
+		GregorianCalendar today = Config.getTodaysDate();
+		if (getDates().get(0).compareTo(today) < 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isJobTooFarInFuture() {
+		GregorianCalendar futureBound = Config.getTodaysDate();
+		futureBound.add(Calendar.DATE, Config.MAX_DAYS_IN_FUTURE);
+		if (getDates().get(getDates().size() - 1).compareTo(futureBound) > 0) {
+			return true;
+		}
+		return false;
 	}
 }

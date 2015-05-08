@@ -1,53 +1,29 @@
 package park_model;
 
 /**
- * A system user.
+ * An immutable system user; used for Admin and Volunteer.
  * 
  * @author Julia Behnen
  * @version 5/3/2015
  */
-public abstract class User {
+public class User {
 	
 	/**
 	 * The user's email address.
 	 */
 	private String myEmail;
 	
-	/**
-	 * The list of all volunteers in the system.
-	 */
-	private VolunteerList myVolunteerList;
-	
-	/**
-	 * The list of all upcoming jobs in the system.
-	 */
-	private JobSchedule myJobSchedule;
+	private String myFirstName;
+
+	private String myLastName;
 	
 	/**
 	 * Constructs a User.
-	 * 
-	 * @param theEmail The user's email address.
 	 */
-	protected User(String theEmail) {
-		myEmail = theEmail;
-	}
-	
-	/**
-	 * Logs the user in and initializes the job schedule
-	 * and volunteer list data.
-	 */
-	public void logIn() {
-		myVolunteerList = new VolunteerList();
-		myJobSchedule = new JobSchedule();
-	}
-	
-	/**
-	 * Logs the user out and saves the job schedule
-	 * and volunteer list data to the system.
-	 */
-	public void logOut() {
-		myVolunteerList.saveList();
-		myJobSchedule.saveList();
+	public User(String myEmail, String myFirstName, String myLastName) {
+		this.myEmail = myEmail;
+		this.myFirstName = myFirstName;
+		this.myLastName = myLastName;
 	}
 	
 	/**
@@ -57,6 +33,14 @@ public abstract class User {
 	 */
 	public String getEmail() {
 		return myEmail;
+	}
+	
+	public String getFirstName() {
+		return myFirstName;
+	}
+	
+	public String getLastName() {
+		return myLastName;
 	}
 
 	/**
@@ -92,6 +76,12 @@ public abstract class User {
 		} else if (!myEmail.equals(other.myEmail))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "User [myEmail=" + myEmail + ", myFirstName=" + myFirstName
+				+ ", myLastName=" + myLastName + "]";
 	}
 	
 }

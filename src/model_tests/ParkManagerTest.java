@@ -13,6 +13,8 @@ import park_model.ParkManager;
 public class ParkManagerTest {
 	
 	private static final String DEFAULT_EMAIL = "smith@aol.com";
+	private static final String DEFAULT_FIRST_NAME = "Bob";
+	private static final String DEFAULT_LAST_NAME = "Smith";
 	
 	private ParkManager myPM;
 	private List<String> myParks;
@@ -21,7 +23,7 @@ public class ParkManagerTest {
 	public void setUp() throws Exception {
 		myParks = new ArrayList<String>();
 		myParks.add("Park");
-		myPM = new ParkManager(DEFAULT_EMAIL, myParks);
+		myPM = new ParkManager(DEFAULT_EMAIL, DEFAULT_FIRST_NAME, DEFAULT_LAST_NAME, myParks);
 	}
 
 	@Test

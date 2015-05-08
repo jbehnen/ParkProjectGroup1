@@ -19,8 +19,14 @@ public class DateAndTime implements Comparable<DateAndTime> {
 	
 	public DateAndTime(int theYear, int theMonth, int theDate, String myStartTime, String myEndTime) {
 		myDate = new GregorianCalendar(theYear, theMonth, theDate);
+		myDate.get(Calendar.MILLISECOND); // reset fields after assignment
 		this.myStartTime = myStartTime;
 		this.myEndTime = myEndTime;
+	}
+	
+	public DateAndTime(GregorianCalendar theDate, String myStartTime, String myEndTime) {
+		this(theDate.get(Calendar.YEAR), theDate.get(Calendar.MONTH), theDate.get(Calendar.DATE),
+				myStartTime, myEndTime);
 	}
 	
 	public DateAndTime(DateAndTime theJobDate) {
