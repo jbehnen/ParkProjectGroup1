@@ -1,13 +1,21 @@
 package park_model;
 
+import java.io.Serializable;
+
 /**
  * An immutable system user; used for Admin and Volunteer.
  * 
  * @author Julia Behnen
  * @version 5/3/2015
  */
-public class User {
+
+public class User implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4838198284922571568L;
+
 	/**
 	 * The user's email address.
 	 */

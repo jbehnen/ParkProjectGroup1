@@ -18,9 +18,10 @@ public class Job {
 	private int numLightJobs;
 	private int numMediumJobs;
 	private int numHeavyJobs;
+	private String myDescription;
 
 	/**
-	 * Class Constructor
+	 * Class Constructor (for constructing job with known volunteers)
 	 * Creates an instance of a Job.
 	 * @param thePark		the location of a job as a park
 	 * @param theDateAndTimes		the date(s) of a job
@@ -29,20 +30,38 @@ public class Job {
 	 * @param theHeavyNum	the number of jobs in the work category Heavy that is available. 
 	 */
 
-	public Job(String thePark, List<DateAndTime> theDateAndTimes, int theLightNum, int theMediumNum, int theHeavyNum) {
+	public Job(String thePark, int theLightNum, int theMediumNum, int theHeavyNum, String theDescription, List<User> theVolunteers, List<DateAndTime> theDateAndTimes) {
 		myPark = thePark;
 		numLightJobs = theLightNum;
 		numMediumJobs = theMediumNum;
 		numHeavyJobs = theHeavyNum;
-		myVolunteers = new ArrayList<User>();
-
+		myDescription = theDescription;
+		myVolunteers = theVolunteers;
 		myDateAndTimes = new ArrayList<DateAndTime>();
+		
+		for(int i= 0; i< theVolunteers.size(); i++){
+			myVolunteers.add(theVolunteers.get(i));
+		}
 		
 		for(int i= 0; i< theDateAndTimes.size(); i++){
 			myDateAndTimes.add(theDateAndTimes.get(i));
 		}
 		
 		Collections.sort(myDateAndTimes);
+	}
+	
+	
+	/**
+	 * Class Constructor (for constructing job with no volunteers)
+	 * Creates an instance of a Job.
+	 * @param thePark		the location of a job as a park
+	 * @param theDateAndTimes		the date(s) of a job
+	 * @param theLightNum	the number of jobs in the work category Light that is available.
+	 * @param theMediumNum	the number of jobs in the work category Medium that is available.
+	 * @param theHeavyNum	the number of jobs in the work category Heavy that is available. 
+	 */
+	public Job(String thePark, int theLightNum, int theMediumNum, int theHeavyNum, String theDescription, List<DateAndTime> theDateAndTimes) {
+		this(thePark, theLightNum, theMediumNum, theHeavyNum, theDescription, new ArrayList<User>(), theDateAndTimes);
 	}
 	
 	/**
@@ -52,7 +71,7 @@ public class Job {
 	 */
 	
 	public Job(Job theJob) {
-		this(theJob.getParkName(), theJob.getDateAndTimes(), theJob.getNumLight(), theJob.getNumMedium(), theJob.getNumHeavy());
+		this(theJob.getParkName(), theJob.getNumLight(), theJob.getNumMedium(), theJob.getNumHeavy(), theJob.myDescription, theJob.getDateAndTimes());
 	}
 	
 	/**

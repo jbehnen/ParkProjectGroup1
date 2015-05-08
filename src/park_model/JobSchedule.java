@@ -38,9 +38,8 @@ public class JobSchedule {
 	/**
 	 * Adds a job to the list of jobs if it doesn't violate any business rules; returns true
 	 * if the job is successfully added, false otherwise.
-	 *
-	 * @return true if the job is successfully added, false otherwise
-	 * @param theJob
+	 * 
+	 * @param theJob The job to be added.
 	 */
 	public void addJob(Job theJob) {  
 		myJobs.add(new Job(theJob));
@@ -60,6 +59,10 @@ public class JobSchedule {
 		return false;
 	}
 	
+	/**
+	 * @param theJob
+	 * @return
+	 */
 	public boolean isWeekFull(Job theJob) {
 		GregorianCalendar weekStart = theJob.getFirstDate();
 		weekStart.add(Calendar.DATE, -3);

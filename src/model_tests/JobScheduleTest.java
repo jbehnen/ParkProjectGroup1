@@ -38,12 +38,12 @@ public class JobScheduleTest {
 				today.get(Calendar.MONTH), today.get(Calendar.DATE),
 				"", "");
 		myDateList.add(myLegalDAT);
-		myDefaultJob = new Job("Park", myDateList, 1,
-				1, 1);
+		myDefaultJob = new Job("Park", 1,
+				1, 1, "description", myDateList);
 	}
 
 	@Test
-	public void testAddJob() {
+	public void testAddJobShouldAddAJob() {
 		assertEquals("Job list should start empty", 0,
 				myJobSchedule.numberOfJobs());
 		myJobSchedule.addJob(myDefaultJob);
@@ -72,13 +72,13 @@ public class JobScheduleTest {
 		comparisonDate.add(Calendar.DATE, 2);
 		List<DateAndTime> comparisonDateList = new ArrayList<>();
 		comparisonDateList.add(new DateAndTime(comparisonDate, "", ""));
-		Job comparisonJob = new Job("Park", comparisonDateList, 1, 1, 1);
+		Job comparisonJob = new Job("Park", 1, 1, 1, "", comparisonDateList);
 		for (int i = 1; i <= 5; i++) {
 			assertEquals("Week is not full", false,
 					myJobSchedule.isWeekFull(comparisonJob));
 			List<DateAndTime> jobDates = new ArrayList<>();
 			jobDates.add(new DateAndTime((GregorianCalendar) date.clone(), "", ""));
-			Job job = new Job("Park", jobDates, 1, 1, 1);
+			Job job = new Job("Park", 1, 1, 1, "", jobDates);
 			myJobSchedule.addJob(job);
 			date.add(Calendar.DATE, 1);
 			

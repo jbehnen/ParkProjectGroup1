@@ -50,8 +50,8 @@ public class JobTest {
 		jobDates.add(end1);
 		
 		//Create 2 jobs
-		firstJob = new Job("Lincoln",jobDates, 2, 1, 0);
-		secondJob = new Job("Tide", jobDates, 1, 4, 2);
+		firstJob = new Job("Lincoln", 2, 1, 0, "description", jobDates);
+		secondJob = new Job("Tide", 1, 4, 2, "description2", jobDates);
 		
 		GregorianCalendar today = Config.getTodaysDate();
 		today.add(Calendar.DATE, 1);
@@ -116,7 +116,7 @@ public class JobTest {
 		for (int i = 0; i < Config.MAX_JOB_DAYS; i++) {
 			dateList.add(myLegalDAT);
 		}
-		Job job = new Job("Park", dateList, 1, 1, 1);
+		Job job = new Job("Park", 1, 1, 1, "description", dateList);
 		boolean check = job.isJobTooLong();
 		assertEquals("Job is maximum acceptable length", false, check);
 	}
@@ -127,7 +127,7 @@ public class JobTest {
 		for (int i = 0; i <= Config.MAX_JOB_DAYS; i++) {
 			dateList.add(myLegalDAT);
 		}
-		Job job = new Job("Park", dateList, 1, 1, 1);
+		Job job = new Job("Park", 1, 1, 1, "description", dateList);
 		boolean check = job.isJobTooLong();
 		assertEquals("Job too long", true, check);
 	}
@@ -137,14 +137,14 @@ public class JobTest {
 		List<DateAndTime> dateList = new ArrayList<>();
 		DateAndTime rightNow = new DateAndTime(new GregorianCalendar(), "", "");
 		dateList.add(rightNow);
-		Job job = new Job("Rosa", dateList, 1, 1, 1);
+		Job job = new Job("Rosa", 1, 1, 1, "description", dateList);
 		boolean check = job.isJobInPast();
 		assertFalse("Job not in past", check);
 		GregorianCalendar yesterdaysDate = new GregorianCalendar();
 		yesterdaysDate.add(Calendar.DATE, -1);
 		DateAndTime yesterday = new DateAndTime(yesterdaysDate, "", "");
 		dateList.set(0, yesterday);
-		job = new Job("Rosa", dateList, 1, 1, 1); 
+		job = new Job("Rosa", 1, 1, 1, "description", dateList); 
 		check = job.isJobInPast();
 		assertTrue("Job in past", check);
 	}
