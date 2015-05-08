@@ -4,64 +4,41 @@ package park_model;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-
-import config_files.Config;
 
 public class Job {
 	
 	//Class Variables
 	private String myPark;
-	private List<DateAndTime> myDateAndTimes;
+	private List<GregorianCalendar> myDates;
 	private List<User> myVolunteers;
 	private int numLightJobs;
 	private int numMediumJobs;
 	private int numHeavyJobs;
-	private String myDescription;
 
 	/**
-	 * Class Constructor (for constructing job with known volunteers)
+	 * Class Constructor
 	 * Creates an instance of a Job.
 	 * @param thePark		the location of a job as a park
-	 * @param theDateAndTimes		the date(s) of a job
+	 * @param theDates		the date(s) of a job
 	 * @param theLightNum	the number of jobs in the work category Light that is available.
 	 * @param theMediumNum	the number of jobs in the work category Medium that is available.
 	 * @param theHeavyNum	the number of jobs in the work category Heavy that is available. 
 	 */
-
-	public Job(String thePark, int theLightNum, int theMediumNum, int theHeavyNum, String theDescription, List<User> theVolunteers, List<DateAndTime> theDateAndTimes) {
+	public Job(String thePark, List<GregorianCalendar> theDates, int theLightNum, int theMediumNum, int theHeavyNum) {
 		myPark = thePark;
 		numLightJobs = theLightNum;
 		numMediumJobs = theMediumNum;
 		numHeavyJobs = theHeavyNum;
-		myDescription = theDescription;
-		myVolunteers = theVolunteers;
-		myDateAndTimes = new ArrayList<DateAndTime>();
+		myVolunteers = new ArrayList();
+
+		myDates = new ArrayList<GregorianCalendar>();
 		
-		for(int i= 0; i< theVolunteers.size(); i++){
-			myVolunteers.add(theVolunteers.get(i));
+		for(int i= 0; i< theDates.size(); i++){
+			myDates.add(theDates.get(i));
 		}
-		
-		for(int i= 0; i< theDateAndTimes.size(); i++){
-			myDateAndTimes.add(theDateAndTimes.get(i));
-		}
-		
-		Collections.sort(myDateAndTimes);
-	}
-	
-	
-	/**
-	 * Class Constructor (for constructing job with no volunteers)
-	 * Creates an instance of a Job.
-	 * @param thePark		the location of a job as a park
-	 * @param theDateAndTimes		the date(s) of a job
-	 * @param theLightNum	the number of jobs in the work category Light that is available.
-	 * @param theMediumNum	the number of jobs in the work category Medium that is available.
-	 * @param theHeavyNum	the number of jobs in the work category Heavy that is available. 
-	 */
-	public Job(String thePark, int theLightNum, int theMediumNum, int theHeavyNum, String theDescription, List<DateAndTime> theDateAndTimes) {
-		this(thePark, theLightNum, theMediumNum, theHeavyNum, theDescription, new ArrayList<User>(), theDateAndTimes);
 	}
 	
 	/**
@@ -71,30 +48,55 @@ public class Job {
 	 */
 	
 	public Job(Job theJob) {
-		this(theJob.getParkName(), theJob.getNumLight(), theJob.getNumMedium(), theJob.getNumHeavy(), theJob.myDescription, theJob.getDateAndTimes());
+		this(theJob.getParkName(), theJob.getDates(), theJob.getNumLight(), theJob.getNumMedium(), theJob.getNumHeavy());
+	}
+	
+	
+	
+	/**
+	 * Constructs a new Job.
+	 * 
+	 * @param theNumDays The total number of consecutive days that the job spans.
+	 */
+	public Job(String thePark, int theYear, int theMonth, int theDate, int theNumDays,
+			int theLightNum, int theMediumNum, int theHeavyNum, String theDescription,
+			List<User> theVolunteers) {
+		myPark = thePark;
+		numLightJobs = theLightNum;
+		numMediumJobs = theMediumNum;
+		numHeavyJobs = theHeavyNum;
+		myVolunteers = theVolunteers; // okay because volunteer is immutable, and we
+										// actually want to modify this list
+		GregorianCalendar startDate = new GregorianCalendar(theYear, theMonth, theDate);
+		startDate.get(Calendar.MILLISECOND); // reset fields after assignment
+		myDates = new ArrayList<>();
+		for (int i = 0; i < theNumDays; i++) {
+			myDates.add((GregorianCalendar) startDate.clone());
+			startDate.add(Calendar.DATE, 1);
+		}
 	}
 	
 	/**
-	 * Returns an unmodifiable list of the date(s) during which this job takes place, sorted by date.
+	 * Constructs a new Job.
+	 * 
+	 * Primarily useful for unit testing.
+	 * 
+	 * @param theNumDays The total number of consecutive days that the job spans.
+	 */
+	public Job(String thePark, GregorianCalendar theStartDate, int theNumDays,
+			int theLightNum, int theMediumNum, int theHeavyNum, String theDescription) {
+		
+		this(thePark, theStartDate.get(Calendar.YEAR), theStartDate.get(Calendar.MONTH), 
+				theStartDate.get(Calendar.DATE), theNumDays, theLightNum, theMediumNum,
+				theHeavyNum, theDescription, new ArrayList<>());
+	}
+	
+	/**
+	 * Returns an unmodifiable list of the date(s) during which this job takes place.
 	 * @return unmodifiable list of dates for a job.
 	 */
 	public List<GregorianCalendar> getDates() {
-		List<GregorianCalendar> list = new ArrayList<>();
-		for (DateAndTime date: myDateAndTimes) {
-			list.add((GregorianCalendar) date.getDate().clone());
-		}
-		return list; // doesn't even need to be unmodifiable 
-	}
-	
-	/**
-	 * Returns an unmodifiable list of the dates and times during which this job takes place,
-	 * sorted by date.
-	 * 
-	 * @return An unmodifiable unmodifiable list of the dates and times during which
-	 * this job takes place, sorted by date.
-	 */
-	public List<DateAndTime> getDateAndTimes() {
-		return Collections.unmodifiableList(myDateAndTimes);
+		return Collections.unmodifiableList(myDates);
 	}
 	
 	/**
@@ -185,7 +187,7 @@ public class Job {
 
 		//Searches the Volunteer List for the volunteer attempting to sign up for this job.
 		while(!(isSignedUp) && (count < myVolunteers.size())){
-			User v = myVolunteers.get(count);
+			User v = (User) myVolunteers.get(count);
 			if(v.getEmail().equals(theVolunteer.getEmail())){
 				isSignedUp = true;
 			}else{
@@ -239,39 +241,5 @@ public class Job {
 	 */
 	public int getNumHeavy(){
 		return numHeavyJobs;
-	}
-	
-	public GregorianCalendar getFirstDate() {
-		return getDates().get(0);
-	}
-	
-	public GregorianCalendar getLastDate() {
-		return getDates().get(myDateAndTimes.size() - 1);
-	}
-	
-	public boolean isJobTooLong() {
-		List<GregorianCalendar> dates = getDates();
-		int numDates = dates.size();
-		if (numDates > Config.MAX_JOB_DAYS) {
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean isJobInPast() {
-		GregorianCalendar today = Config.getTodaysDate();
-		if (getDates().get(0).compareTo(today) < 0) {
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean isJobTooFarInFuture() {
-		GregorianCalendar futureBound = Config.getTodaysDate();
-		futureBound.add(Calendar.DATE, Config.MAX_DAYS_IN_FUTURE);
-		if (getDates().get(getDates().size() - 1).compareTo(futureBound) > 0) {
-			return true;
-		}
-		return false;
 	}
 }

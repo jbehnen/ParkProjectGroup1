@@ -2,27 +2,39 @@ package park_model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import config_files.Config;
-
 public class JobSchedule {
+	
+	/**
+	 * The maximum number of jobs that can be scheduled at any given time.
+	 */
+	private static final int MAX_JOBS = 30;
+	
+	/**
+	 * The maximum job length in days.
+	 */
+	private static final int MAX_JOB_DAYS = 2;
+	
+	/**
+	 * 
+	 */
+	private static final int MAX_JOBS_PER_WEEK = 5;
 	
 	/**
 	 * The list of all jobs scheduled in the future.
 	 */
-	private Collection<Job> myJobs;
+	private List<Job> myJobList;
 	
 	/**
 	 * Constructs a list of all jobs in the system from the back-end data.
 	 */
 	public JobSchedule() {
 		// This constructor should also get rid of any jobs that are in the past.
-		myJobs = new ArrayList<>(); // Will eventually get input from file
+		myJobList = new ArrayList<>(); // Will eventually get input from file
 	}
 	
 	/**
@@ -32,52 +44,100 @@ public class JobSchedule {
 	 * test JobSchedule should be constructed.
 	 */
 	public JobSchedule(boolean test) {
-		myJobs = new ArrayList<>();
+		myJobList = new ArrayList<>();
 	}
 	
 	/**
 	 * Adds a job to the list of jobs if it doesn't violate any business rules; returns true
 	 * if the job is successfully added, false otherwise.
-	 * 
-	 * @param theJob The job to be added.
-	 */
-	public void addJob(Job theJob) {  
-		myJobs.add(new Job(theJob));
-	}
-	
-	/**
-	 * Checks if the system will allow a new job
-	 * to be scheduled based on system capacity.
-	 * 
-	 * @return true if there is space in the system to
-	 * schedule a new job, false otherwise.
-	 */
-	public boolean tooManyExistingJobs() {
-		if (myJobs.size() >= Config.MAX_TOTAL_JOBS) { 
-			return true;
-		}
-		return false;
-	}
-	
-	/**
+	 *
+	 * @return true if the job is successfully added, false otherwise
 	 * @param theJob
-	 * @return
 	 */
-	public boolean isWeekFull(Job theJob) {
-		GregorianCalendar weekStart = theJob.getFirstDate();
-		weekStart.add(Calendar.DATE, -3);
-		GregorianCalendar weekEnd = theJob.getLastDate();
-		weekEnd.add(Calendar.DATE, 3);
+	public boolean addJob(Job theJob) {  // need to use the copy constructor or something
+		// check if too many jobs already scheduled
+		if (myJobList.size() >= MAX_JOBS) { 
+			return false;
+		}
+		
+		//check if job is more than the max number of days
+		List<GregorianCalendar> dates = theJob.getDates();
+		int numDates = dates.size();
+		if (numDates > MAX_JOB_DAYS) {
+			return false;
+		}
+		
+		GregorianCalendar firstDate, lastDate;
+		firstDate = new GregorianCalendar();
+//		firstDate.setTime(dates.get(0));
+		firstDate = roundDown(firstDate);
+		
+		lastDate = new GregorianCalendar();
+		
+		if (numDates > 1) {
+//			lastDate.setTime(dates.get(numDates - 1));
+			lastDate = roundDown(lastDate);
+		} else {
+			lastDate = (GregorianCalendar) firstDate.clone();
+		}
+		
+		// check if job is out of acceptable time range
+		if (!isInTimeRange(firstDate) || !isInTimeRange(lastDate)) {
+			return false;
+		}
+		
+		// check if too many jobs within the week
+		firstDate.add(Calendar.DATE, -3);
+		lastDate.add(Calendar.DATE, 4); // adds 4 days: 3 to move forward 3
+											// days, 1 to move time to very end of the last day
+		
 		int sameWeekJobs = 0;
-		for (Job j: myJobs) {
-			if (isJobInRange(j, weekStart, weekEnd)) {
+		for (Job j: myJobList) {
+			if (isJobInRange(j, firstDate, lastDate)) {
 				sameWeekJobs += 1;
 			}
 		}
-		if (sameWeekJobs >= Config.MAX_JOBS_PER_WEEK) {
-			return true;
+		if (sameWeekJobs >= MAX_JOBS_PER_WEEK) {
+			return false;
 		}
-		return false;
+		myJobList.add(new Job(theJob));
+		return true;
+	}
+	
+	/**
+	 * Rounds down a date to the midnight that starts the day.
+	 * 
+	 * @param theDate The date to be rounded down.
+	 * @return a date set to the midnight that starts the theDate.
+	 */
+	private GregorianCalendar roundDown(GregorianCalendar theDate) {
+		theDate.set(Calendar.HOUR, 0);
+		theDate.set(Calendar.MINUTE, 0);
+		theDate.set(Calendar.SECOND, 0);
+		theDate.set(Calendar.MILLISECOND, 0);
+		theDate.get(Calendar.MILLISECOND); //reset milliseconds
+		return theDate;
+	}
+	
+	/**
+	 * Returns true if the given date is neither in the past nor more than 90 days in the
+	 * future, false otherwise.
+	 * 
+	 * @param theDate The date being checked.
+	 * @return true if the given date is neither in the past nor more than 90 days in the
+	 * future, false otherwise.
+	 */
+	private boolean isInTimeRange(GregorianCalendar theDate) {
+		GregorianCalendar comparisonDate = new GregorianCalendar();
+		comparisonDate = roundDown(comparisonDate);
+		if (theDate.compareTo(comparisonDate) < 0) {
+			return false;
+		}
+		comparisonDate.add(Calendar.DATE, 90);
+		if (theDate.compareTo(comparisonDate) > 0) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -91,7 +151,9 @@ public class JobSchedule {
 	 * time range from theFirstDate to theEndDate, false otherwise.
 	 */
 	private boolean isJobInRange(Job theJob, GregorianCalendar theFirstDate, GregorianCalendar theEndDate) {
-		for (GregorianCalendar thisDate: theJob.getDates()) {
+		for (GregorianCalendar date: theJob.getDates()) {
+			GregorianCalendar thisDate = new GregorianCalendar();
+//			thisDate.setTime(date);
 			if (thisDate.compareTo(theFirstDate) > 0 && thisDate.compareTo(theEndDate) < 0) {
 				return true;
 			}
@@ -105,8 +167,27 @@ public class JobSchedule {
 	 * @return The number of scheduled jobs. 
 	 */
 	public int numberOfJobs() {
-		return myJobs.size();
+		return myJobList.size();
 	}
+
+	/**
+	 * Returns true if the first day (Job start date) is in the future.
+	 * 
+	 * @param theStartDate
+	 *            - job start date
+	 * @return -true in the future
+	 */
+	private boolean isJobInFuture(GregorianCalendar theStartDate) {
+		// get current date time with Date()
+		GregorianCalendar currentDate = new GregorianCalendar();
+        //Start date is after the current date
+		if (theStartDate.compareTo(currentDate) > 0) {
+
+			return true;
+		}
+		return false;
+
+	}	
 	
 	/**
 	 * Returns the number of scheduled jobs.
@@ -114,7 +195,7 @@ public class JobSchedule {
 	 * @return The number of scheduled jobs. 
 	 */
 	public int jobListSize() {
-		return myJobs.size();
+		return myJobList.size();
 	}
 	
 	/**
@@ -133,10 +214,10 @@ public class JobSchedule {
 			System.out.print("Your job list is empty. ");
 			return null;
 		}
-		for (Job myJob : myJobs) {
+		for (Job myJob : myJobList) {
 			if (myJob.isSignedUp(theVolunteer)) {
 				// if true for that job check if job's start day is in the future				
-				if (!myJob.isJobInPast()) {
+				if (isJobInFuture(myJob.getDates().get(0))) {
 					jobList.add(myJob);
 
 				}
@@ -160,7 +241,7 @@ public class JobSchedule {
 		
 		List<Job> jobList = new ArrayList<Job>();
 		
-		for (Job myJob : myJobs) {
+		for (Job myJob : myJobList) {
 			// Get jobs that are open
 			if (myJob.getNumOpenJobs() > 0) {
 				// Volunteer shouldn't sign up for the same job he already signed up
@@ -208,7 +289,7 @@ public class JobSchedule {
 
 		// For each job in the list, call the ask isSignedUp(Volunteer
 		// theVolunteer)
-		for (Job myJob : myJobs) {
+		for (Job myJob : myJobList) {
 			if (myJob.getParkName().equals(thePark)) {
 
 				jobList.add(myJob);
@@ -230,4 +311,3 @@ public class JobSchedule {
 	
 	
 }
-

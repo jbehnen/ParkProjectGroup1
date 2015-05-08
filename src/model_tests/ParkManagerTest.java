@@ -8,13 +8,12 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import config_files.Config;
 import park_model.ParkManager;
 
 public class ParkManagerTest {
 	
 	private static final String DEFAULT_EMAIL = "smith@aol.com";
-	private static final String DEFAULT_FIRST_NAME = "Bob";
-	private static final String DEFAULT_LAST_NAME = "Smith";
 	
 	private ParkManager myPM;
 	private List<String> myParks;
@@ -23,7 +22,8 @@ public class ParkManagerTest {
 	public void setUp() throws Exception {
 		myParks = new ArrayList<String>();
 		myParks.add("Park");
-		myPM = new ParkManager(DEFAULT_EMAIL, DEFAULT_FIRST_NAME, DEFAULT_LAST_NAME, myParks);
+		myPM = new ParkManager(Config.DEFAULT_EMAIL, Config.DEFAULT_FIRST_NAME, 
+				Config.DEFAULT_LAST_NAME, myParks);
 	}
 
 	@Test

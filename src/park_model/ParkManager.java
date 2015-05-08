@@ -1,6 +1,5 @@
 package park_model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,12 +11,8 @@ import java.util.List;
  * @version 5/3/2015
  */
 
-public class ParkManager extends User implements Serializable {
+public class ParkManager extends User {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7453917017716177528L;
 	
 	/**
 	 * A list of parks that the ParkManager manages.

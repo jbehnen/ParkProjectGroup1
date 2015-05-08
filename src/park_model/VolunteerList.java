@@ -17,7 +17,7 @@ public class VolunteerList {
 	 */
 	public VolunteerList() {
 		
-		list = new ArrayList<>();
+		list = new ArrayList<User>();
 //		Volunteer theLastName = null;
 //		list.add(theLastName);
 	}
@@ -28,7 +28,7 @@ public class VolunteerList {
 	 * @param test A boolean indicating that this is a test.
 	 */
 	public VolunteerList(boolean test) {
-		list = new ArrayList<>();
+		list = new ArrayList<User>();
 	}
 	
 	/**
@@ -60,37 +60,34 @@ public class VolunteerList {
 		list.add(theVolunteer);
 	}
 	
-	// Note from your friendly neighborhood Julia: I realized we don't actually
-	// need this function, as the list of users will never change. 
-	
-//	/**
-//	 * Writes all list information to the back-end storage.
-//	 */
-//	public void saveList() {
-//		
-//		//create a input file of volunteer list
-//		Scanner input = null; 
-//	    try
-//	    { 
-//	        input = new Scanner(new File("VolunteerList/volunteerList.txt")); 
-//	          
-//	        while (input.hasNextLine()) 
-//	        { 
-//	            String lastName = input.nextLine();
-//	            System.out.println(lastName);   
-//	        } 
-//	    } 
-//	    catch (FileNotFoundException ex) 
-//	    { 
-//	        System.out.println(ex.getMessage()); 
-//	    } 
-//	    finally
-//	    { 
-//	        if (input != null) 
-//	        { 
-//	            input.close(); 
-//	        } 
-//	    }
-//	}
+	/**
+	 * Writes all list information to the back-end storage.
+	 */
+	public void saveList() {
+		
+		//create a input file of volunteer list
+		Scanner input = null; 
+	    try
+	    { 
+	        input = new Scanner(new File("VolunteerList/volunteerList.txt")); 
+	          
+	        while (input.hasNextLine()) 
+	        { 
+	            String lastName = input.nextLine();
+	            System.out.println(lastName);   
+	        } 
+	    } 
+	    catch (FileNotFoundException ex) 
+	    { 
+	        System.out.println(ex.getMessage()); 
+	    } 
+	    finally
+	    { 
+	        if (input != null) 
+	        { 
+	            input.close(); 
+	        } 
+	    }
+	}
 	
 }

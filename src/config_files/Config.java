@@ -34,6 +34,11 @@ public class Config {
 	 */
 	public static final int MAX_JOBS_PER_WEEK = 5;
 	
+	// For unit tests
+	public static final String DEFAULT_EMAIL = "smith@aol.com";
+	public static final String DEFAULT_FIRST_NAME = "John";
+	public static final String DEFAULT_LAST_NAME = "Smith";
+	
 	/**
 	 * Rounds down a date to the midnight that starts the day.
 	 * 
