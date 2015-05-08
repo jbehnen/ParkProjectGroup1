@@ -1,9 +1,9 @@
+
 package park_model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -28,12 +28,13 @@ public class Job {
 	 * @param theMediumNum	the number of jobs in the work category Medium that is available.
 	 * @param theHeavyNum	the number of jobs in the work category Heavy that is available. 
 	 */
+
 	public Job(String thePark, List<DateAndTime> theDateAndTimes, int theLightNum, int theMediumNum, int theHeavyNum) {
 		myPark = thePark;
 		numLightJobs = theLightNum;
 		numMediumJobs = theMediumNum;
 		numHeavyJobs = theHeavyNum;
-		myVolunteers = new ArrayList<>();
+		myVolunteers = new ArrayList<User>();
 
 		myDateAndTimes = new ArrayList<DateAndTime>();
 		
