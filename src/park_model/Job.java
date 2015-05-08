@@ -1,3 +1,4 @@
+
 package park_model;
 
 import java.util.ArrayList;
@@ -25,17 +26,17 @@ public class Job {
 	 * @param theMediumNum	the number of jobs in the work category Medium that is available.
 	 * @param theHeavyNum	the number of jobs in the work category Heavy that is available. 
 	 */
-	public Job(String thePark, List<DateAndTime> theDateAndTimes, int theLightNum, int theMediumNum, int theHeavyNum) {
-		myPark = thePark;
-		numLightJobs = theLightNum;
-		numMediumJobs = theMediumNum;
-		numHeavyJobs = theHeavyNum;
+	public Job(String thePark, List<DateAndTime> theDateAndTimes, int numlightJobs, int numMediumJobs, int numHeavyJobs) {
+		this.myPark = thePark;
+		this.numLightJobs = numlightJobs;
+		this.numMediumJobs = numMediumJobs;
+		this.numHeavyJobs = numHeavyJobs;
 		myVolunteers = new ArrayList();
 
-		theDateAndTimes = new ArrayList<DateAndTime>();
+		myDateAndTimes = new ArrayList<DateAndTime>();
 		
 		for(int i= 0; i< theDateAndTimes.size(); i++){
-			theDateAndTimes.add(theDateAndTimes.get(i));
+			myDateAndTimes.add(theDateAndTimes.get(i));
 		}
 		
 		Collections.sort(theDateAndTimes);
