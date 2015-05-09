@@ -1,5 +1,6 @@
 package user_interface;
 
+import config_files.Config;
 import park_model.JobSchedule;
 import park_model.User;
 
@@ -10,7 +11,7 @@ public class VolunteerIO implements IO {
 	
 	public VolunteerIO(User myUser) {
 		this.myUser = myUser;
-		myJobSchedule = new JobSchedule();
+		myJobSchedule = new JobSchedule(Config.JOB_SCHEDULE_FILE);
 	}
 
 	@Override

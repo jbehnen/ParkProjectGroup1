@@ -3,21 +3,28 @@ package config_files;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+/**
+ * Holds all of the important constants used by the program.
+ * 
+ * @author Julia Behnen
+ * @version 5/8/2015
+ */
 public class Config {
 	
+	/**
+	 * File that holds information about all users registered in the system.
+	 */
 	public static final String USER_FILE = "src/config_files/users.txt";
 	
+	/**
+	 * File that holds all upcoming jobs.
+	 */
 	public static final String JOB_SCHEDULE_FILE = "src/config_files/jobSchedule.txt";
 	
 	/**
 	 * Number of total dates in the job.
 	 */
 	public static final int MAX_JOB_DAYS = 2;
-	
-	/**
-	 * Maxiumum number of days that a job can span.
-	 */
-	public static final int MAX_JOB_LENGTH = 2;
 	
 	/**
 	 * Maximum pending jobs at any given time.

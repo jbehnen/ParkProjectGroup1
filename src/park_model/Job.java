@@ -4,9 +4,10 @@ package park_model;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+
+import config_files.Config;
 
 public class Job {
 	
@@ -17,6 +18,7 @@ public class Job {
 	private int numLightJobs;
 	private int numMediumJobs;
 	private int numHeavyJobs;
+	private String myDescription;
 
 	/**
 	 * Class Constructor
@@ -27,13 +29,14 @@ public class Job {
 	 * @param theMediumNum	the number of jobs in the work category Medium that is available.
 	 * @param theHeavyNum	the number of jobs in the work category Heavy that is available. 
 	 */
-	public Job(String thePark, List<GregorianCalendar> theDates, int theLightNum, int theMediumNum, int theHeavyNum) {
+	public Job(String thePark, List<GregorianCalendar> theDates, int theLightNum, int theMediumNum, 
+			int theHeavyNum, String theDescription) {
 		myPark = thePark;
 		numLightJobs = theLightNum;
 		numMediumJobs = theMediumNum;
 		numHeavyJobs = theHeavyNum;
 		myVolunteers = new ArrayList();
-
+		myDescription = theDescription;
 		myDates = new ArrayList<GregorianCalendar>();
 		
 		for(int i= 0; i< theDates.size(); i++){
@@ -48,7 +51,8 @@ public class Job {
 	 */
 	
 	public Job(Job theJob) {
-		this(theJob.getParkName(), theJob.getDates(), theJob.getNumLight(), theJob.getNumMedium(), theJob.getNumHeavy());
+		this(theJob.getParkName(), theJob.getDates(), theJob.getNumLight(),
+				theJob.getNumMedium(), theJob.getNumHeavy(), theJob.myDescription);
 	}
 	
 	
@@ -67,6 +71,7 @@ public class Job {
 		numHeavyJobs = theHeavyNum;
 		myVolunteers = theVolunteers; // okay because volunteer is immutable, and we
 										// actually want to modify this list
+		myDescription = theDescription;
 		GregorianCalendar startDate = new GregorianCalendar(theYear, theMonth, theDate);
 		startDate.get(Calendar.MILLISECOND); // reset fields after assignment
 		myDates = new ArrayList<>();
@@ -242,4 +247,164 @@ public class Job {
 	public int getNumHeavy(){
 		return numHeavyJobs;
 	}
+	
+	
+	
+	// ADD JOB FUNCTIONALITY
+	
+	/**
+	 * Returns the first date of the job.
+	 * 
+	 * @return The first date of the job.
+	 */
+	public GregorianCalendar getFirstDate() {
+		return (GregorianCalendar) getDates().get(0).clone();
+	}
+	
+	/**
+	 * Returns the last date of the job.
+	 * 
+	 * @return The last date of the job.
+	 */
+	public GregorianCalendar getLastDate() {
+		return (GregorianCalendar) getDates().get(myDates.size() - 1).clone();
+	}
+	
+	/**
+	 * Returns true if the job is longer than the maximum
+	 * allowed days, false otherwise.
+	 * 
+	 * @return True if the job is longer than the maximum
+	 * allowed days, false otherwise.
+	 */
+	public boolean isJobTooLong() {
+		List<GregorianCalendar> dates = getDates();
+		int numDates = dates.size();
+		if (numDates > Config.MAX_JOB_DAYS) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Returns true if the first day of the job is an 
+	 * earlier date than today, false otherwise.
+	 * 
+	 * @return true if the first day of the job is an 
+	 * earlier date than today, false otherwise.
+	 */
+	public boolean isJobInPast() {
+		GregorianCalendar today = Config.getTodaysDate();
+		if (getFirstDate().compareTo(today) < 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Returns true if the last day of the job is more
+	 * than the maximum allowed number of days in the
+	 * future, false otherwise.
+	 * 
+	 * @return true if the last day of the job is more
+	 * than the maximum allowed number of days in the
+	 * future, false otherwise.
+	 */
+	public boolean isJobTooFarInFuture() {
+		GregorianCalendar futureBound = Config.getTodaysDate();
+		futureBound.add(Calendar.DATE, Config.MAX_DAYS_IN_FUTURE);
+		if (getLastDate().compareTo(futureBound) > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static Job parseDelimitedString(String theString) {
+		String[] jobInfo = theString.split("DELIM");
+		List<User> volunteers = new ArrayList<>();
+		for (int i = 9; i < jobInfo.length; i++) {
+			volunteers.add(User.parseDelimitedString(jobInfo[i]));
+		}
+		return new Job(jobInfo[0], Integer.parseInt(jobInfo[1]),
+				Integer.parseInt(jobInfo[2]), Integer.parseInt(jobInfo[3]),
+				Integer.parseInt(jobInfo[4]), Integer.parseInt(jobInfo[5]),
+				Integer.parseInt(jobInfo[6]), Integer.parseInt(jobInfo[7]),
+				jobInfo[8], volunteers);
+	}
+	
+	public String createDelimitedString() {
+		StringBuilder string = new StringBuilder();
+		string.append(myPark);
+		string.append("DELIM" + getFirstDate().get(Calendar.YEAR));
+		string.append("DELIM" + getFirstDate().get(Calendar.MONTH));
+		string.append("DELIM" + getFirstDate().get(Calendar.DATE));
+		string.append("DELIM" + myDates.size());
+		string.append("DELIM" + numLightJobs);
+		string.append("DELIM" + numMediumJobs);
+		string.append("DELIM" + numHeavyJobs);
+		string.append("DELIM" + myDescription);
+		for (User vol: myVolunteers) {
+			string.append("DELIM" + vol.toDelimitedStringVolunteer());
+		}
+		return string.toString();
+	}
+
+	// If you don't already know, you can auto-generate hashCode, equals,
+	// and toString by right clicking somewhere in the code window, clicking
+	// "Source", and then "Generate [...]" whatever you need! That's
+	// where these came from. A test needed "equals".
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((myDates == null) ? 0 : myDates.hashCode());
+		result = prime * result
+				+ ((myDescription == null) ? 0 : myDescription.hashCode());
+		result = prime * result + ((myPark == null) ? 0 : myPark.hashCode());
+		result = prime * result
+				+ ((myVolunteers == null) ? 0 : myVolunteers.hashCode());
+		result = prime * result + numHeavyJobs;
+		result = prime * result + numLightJobs;
+		result = prime * result + numMediumJobs;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Job other = (Job) obj;
+		if (myDates == null) {
+			if (other.myDates != null)
+				return false;
+		} else if (!myDates.equals(other.myDates))
+			return false;
+		if (myDescription == null) {
+			if (other.myDescription != null)
+				return false;
+		} else if (!myDescription.equals(other.myDescription))
+			return false;
+		if (myPark == null) {
+			if (other.myPark != null)
+				return false;
+		} else if (!myPark.equals(other.myPark))
+			return false;
+		if (myVolunteers == null) {
+			if (other.myVolunteers != null)
+				return false;
+		} else if (!myVolunteers.equals(other.myVolunteers))
+			return false;
+		if (numHeavyJobs != other.numHeavyJobs)
+			return false;
+		if (numLightJobs != other.numLightJobs)
+			return false;
+		if (numMediumJobs != other.numMediumJobs)
+			return false;
+		return true;
+	}
+	
 }

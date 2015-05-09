@@ -1,5 +1,6 @@
 package user_interface;
 
+import config_files.Config;
 import park_model.JobSchedule;
 import park_model.ParkManager;
 import park_model.User;
@@ -11,7 +12,7 @@ public class ParkManagerIO implements IO {
 	
 	public ParkManagerIO(ParkManager myUser) {
 		this.myUser = myUser;
-		myJobSchedule = new JobSchedule();
+		myJobSchedule = new JobSchedule(Config.JOB_SCHEDULE_FILE);
 	}
 
 	@Override

@@ -43,6 +43,26 @@ public class User {
 	public String getLastName() {
 		return myLastName;
 	}
+	
+	/**
+	 * Returns a User derived from the string produced by a CSV line,
+	 * format "{user id char},email,firstName,lastName"
+	 * 
+	 * @param theString
+	 */
+	public static User parseDelimitedString(String theString) {
+		String[] userInfo = theString.split(",");
+		return new User(userInfo[1], userInfo[2], userInfo[3]);
+	}
+	
+	/**
+	 * A delimited string that can be parsed by parseDelimitedString.
+	 * 
+	 * @return a delimited string that can be parsed by parseDelimitedString.
+	 */
+	public String toDelimitedStringVolunteer() {
+		return "V," + myEmail + "," + myFirstName + "," + myLastName;
+	}
 
 	/**
 	 * Generates a hash code based only on user email.

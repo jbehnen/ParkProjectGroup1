@@ -14,6 +14,13 @@ import config_files.Config;
 
 // File reading assistance from https://www.daniweb.com/software-development/java/threads/17262/reading-in-a-csv-file-and-loading-the-data-into-an-array
 
+/**
+ * Starts up the program, lets the user log in,
+ * and directs the user to their proper menu.
+ * 
+ * @author Julia Behnen
+ * @version 5/8/2015
+ */
 public class StartUp {
 	
 	public static void main(String args[]) throws IOException {

@@ -1,30 +1,40 @@
 package model_tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Scanner;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import config_files.Config;
 import park_model.Job;
 import park_model.JobSchedule;
 import park_model.User;
 import park_model.WorkCategory;
+import config_files.Config;
 
-@SuppressWarnings("deprecation")
 public class JobScheduleTest {
 
+	/**
+	 * A JobSchedule initialized with 0 jobs.
+	 */
 	private JobSchedule myJobSchedule;
 	private GregorianCalendar legalDate;
 	private List<GregorianCalendar> myOneDateList;
+	
+	/**
+	 * A job that is scheduled on today only.
+	 */
+	private Job myDefaultJob;
 
 	@Before
 	public void setUp() throws Exception {
@@ -33,12 +43,97 @@ public class JobScheduleTest {
 		legalDate = Config.getTodaysDate();
 		legalDate.add(Calendar.DATE, 1);
 		myOneDateList.add(legalDate);
+		myDefaultJob = new Job("Park", Config.getTodaysDate(), 1, 1,
+				1, 1, "description");
+	}
+	
+	// Expires in August due to hard-coded time values
+	@SuppressWarnings("resource")
+	@Test
+	public void JobScheduleConstructorAndSaveFileShouldPreserveJobInfo() {
+		JobSchedule jobSchedule = 
+				new JobSchedule("src/config_files/jobScheduleAllJobsInFuture.txt");
+		assertEquals("All jobs should be in list", 
+				3, jobSchedule.numberOfJobs());
+		jobSchedule.saveList("src/config_files/tempJobSchedule.txt");
+		jobSchedule = 
+				new JobSchedule("src/config_files/jobScheduleAllJobsInFuture.txt");
+		assertEquals("All jobs should be in list", 
+				3, jobSchedule.numberOfJobs());
+		jobSchedule.saveList("src/config_files/tempJobSchedule.txt");
+		jobSchedule = 
+				new JobSchedule("src/config_files/jobScheduleAllJobsInFuture.txt");
+		assertEquals("Exact original jobs should be in list after file overwrite", 
+				3, jobSchedule.numberOfJobs());
+		// http://jdevelopment.nl/java-7-oneliner-read-file-string/
+		String original = null;
+		try {
+			original = new Scanner(new File("src/config_files/jobScheduleAllJobsInFuture.txt")).useDelimiter("\\Z").next();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		String copy = null;
+		try {
+			copy = new Scanner(new File("src/config_files/tempJobSchedule.txt")).useDelimiter("\\Z").next();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		assertEquals("Original file and copy should be the same", original, copy);
+	}
+	
+	// Expires in August due to hard-coded time values
+	@Test
+	public void JobScheduleConstructorShouldRemovePastJobs() {
+		JobSchedule jobSchedule = 
+				new JobSchedule("src/config_files/jobScheduleOneJobInPast.txt");
+		assertEquals("One of the four original jobs should be eliminated", 
+				3, jobSchedule.numberOfJobs());
 	}
 
-	
-	
-	
-	
+	@Test
+	public void testAddJobShouldAddAJob() {
+		assertEquals("Job list should start empty", 0,
+				myJobSchedule.numberOfJobs());
+		myJobSchedule.addJob(myDefaultJob);
+		assertEquals("Job list should now have one job", 1,
+				myJobSchedule.numberOfJobs());
+	}
+
+	@Test
+	public void testTooManyExistingJobsShouldReturnFalseUntilJobsGreaterThanMax() {
+		boolean check;
+		for (int i = 1; i <= Config.MAX_TOTAL_JOBS; i++) {
+			check = myJobSchedule.tooManyExistingJobs();
+			myJobSchedule.addJob(new Job(myDefaultJob));
+			assertEquals("Not too many jobs", false, check);
+		}
+		assertEquals("We should now have maximum possible jobs",
+				myJobSchedule.numberOfJobs(), Config.MAX_TOTAL_JOBS);
+		check = myJobSchedule.tooManyExistingJobs();
+		assertEquals("Too many jobs", true, check);
+	}
+
+	@Test
+	public void testIsWeekFullShouldReturnFalseUntilMoreJobsThanAllowedPerWeek() {
+		GregorianCalendar date = Config.getTodaysDate();
+		GregorianCalendar comparisonDate = Config.getTodaysDate();
+		comparisonDate.add(Calendar.DATE, 2);
+		Job comparisonJob = new Job("Park", comparisonDate, 1, 1, 1, 1, "");
+		for (int i = 1; i <= Config.MAX_JOBS_PER_WEEK; i++) {
+			assertEquals("Week is not full", false,
+					myJobSchedule.isWeekFull(comparisonJob));
+			Job job = new Job("Park", (GregorianCalendar) date.clone(),
+					1, 1, 1, 1, "");
+			myJobSchedule.addJob(job);
+			date.add(Calendar.DATE, 1);
+			
+		}
+		assertEquals("Week is full", true,
+				myJobSchedule.isWeekFull(comparisonJob));
+	}
 
 	// A volunteer may not sign up for a work catagory on a job if the max
 	// number of volunteers for that
@@ -48,8 +143,8 @@ public class JobScheduleTest {
 
 		List<GregorianCalendar> jobDates = new ArrayList<>();
 		jobDates.add((GregorianCalendar) legalDate.clone());
-		Job job = new Job("Park", jobDates, 1, 1, 1);
-		Job job2 = new Job("Park", jobDates, 1, 1, 1);
+		Job job = new Job("Park", jobDates, 1, 1, 1, "");
+		Job job2 = new Job("Park", jobDates, 1, 1, 1, "");
 		// Two jobs with the same date
 		myJobSchedule.addJob(job);
 		myJobSchedule.addJob(job2);
@@ -67,7 +162,7 @@ public class JobScheduleTest {
 
 		List<GregorianCalendar> jobDates = new ArrayList<>();
 		jobDates.add((GregorianCalendar) legalDate.clone());
-		Job job = new Job("Park", jobDates, 1, 1, 1);
+		Job job = new Job("Park", jobDates, 1, 1, 1, "");
 		myJobSchedule.addJob(job);
 
 		// Add volunteers for for the job in each categories
@@ -105,10 +200,10 @@ public class JobScheduleTest {
 		List<GregorianCalendar> jobDates2 = new ArrayList<>();
 		jobDates2.add((GregorianCalendar) legalDate.clone());
 
-		Job job = new Job("Park", jobDates, 1, 1, 1);
+		Job job = new Job("Park", jobDates, 1, 1, 1, "");
 		myJobSchedule.addJob(job);
 
-		Job job2 = new Job("Park", jobDates, 1, 1, 1);
+		Job job2 = new Job("Park", jobDates, 1, 1, 1, "");
 		myJobSchedule.addJob(job2);
 
 		User v1 = new User("you@gmail.com", "", "Wise");
@@ -126,10 +221,10 @@ public class JobScheduleTest {
 		List<GregorianCalendar> jobDates = new ArrayList<>();
 		jobDates.add((GregorianCalendar) legalDate.clone());
 
-		Job job = new Job("Park", jobDates, 1, 1, 1);
+		Job job = new Job("Park", jobDates, 1, 1, 1, "");
 		myJobSchedule.addJob(job);
 
-		Job job2 = new Job("Park2", jobDates, 1, 1, 1);
+		Job job2 = new Job("Park2", jobDates, 1, 1, 1, "");
 		myJobSchedule.addJob(job2);
 
 		assertEquals("Volunteer didn't register for future jobs", 1,

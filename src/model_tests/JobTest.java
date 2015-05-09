@@ -3,6 +3,7 @@ package model_tests;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import config_files.Config;
 import park_model.Job;
 import park_model.User;
 import park_model.WorkCategory;
@@ -46,8 +48,8 @@ public class JobTest {
 		jobDates.add(end1);
 		
 		//Create 2 jobs
-		firstJob = new Job("Lincoln",jobDates, 2, 1, 0);
-		secondJob = new Job("Tide", jobDates, 1, 4, 2);
+		firstJob = new Job("Lincoln",jobDates, 2, 1, 0, "");
+		secondJob = new Job("Tide", jobDates, 1, 4, 2, "");
 
 	}
 
@@ -98,6 +100,71 @@ public class JobTest {
 		assertTrue(secondJob.signUp(v2, WorkCategory.LIGHT));
 		//Light jobs available = 0
 		assertFalse(secondJob.signUp(v3, WorkCategory.LIGHT));
+	}
+	
+	
+	// ADD JOB FUNCTIONALITY TESTS
+	
+	@Test
+	public void testIsJobTooLongShouldReturnFalseIfJobIsMaxDaysLong() {
+		Job job = new Job("Park", Config.getTodaysDate(), Config.MAX_JOB_DAYS,
+				1, 1, 1, "description");
+		boolean check = job.isJobTooLong();
+		assertEquals("Job is maximum acceptable length", false, check);
+	}
+
+	@Test
+	public void testIsJobTooLongShouldReturnTrueIfJobMoreThanMaxDaysLong() {
+		Job job = new Job("Park", Config.getTodaysDate(), Config.MAX_JOB_DAYS + 1,
+				1, 1, 1, "description");
+		boolean check = job.isJobTooLong();
+		assertEquals("Job too long", true, check);
+	}
+
+	@Test
+	public void testIsJobInPastShouldReturnFalseIfJobToday() {
+		Job job = new Job("Rosa", Config.getTodaysDate(), 1, 1, 1, 1, "description");
+		boolean check = job.isJobInPast();
+		assertFalse("Job not in past", check);
+		
+	}
+	
+	@Test
+	public void testIsJobInPastShouldReturnTrueIfJobYesterday() {
+		GregorianCalendar yesterday = Config.getTodaysDate();
+		yesterday.add(Calendar.DATE, -1);
+		Job job = new Job("Rosa", yesterday, 1, 1, 1, 1, "description");
+		boolean check = job.isJobInPast();
+		assertTrue("Job in past", check);
+	}
+	
+	@Test
+	public void testIsJobTooFarInFutureShouldReturnFalseIfOnLastLegalDay() {
+		GregorianCalendar futureDate = Config.getTodaysDate();
+		futureDate.add(Calendar.DATE, Config.MAX_DAYS_IN_FUTURE);
+		Job job = new Job("Rosa", futureDate, 1, 1, 1, 1, "description");
+		boolean check = job.isJobTooFarInFuture();
+		assertFalse("Job is within allowed time frame", check);
+	}
+	
+	@Test
+	public void testIsJobTooFarInFutureShouldReturnTrueIfAfterLastLegalDay() {
+		GregorianCalendar futureDate = Config.getTodaysDate();
+		futureDate.add(Calendar.DATE, Config.MAX_DAYS_IN_FUTURE + 1);
+		Job job = new Job("Rosa", futureDate, 1, 1, 1, 1, "description");
+		boolean check = job.isJobTooFarInFuture();
+		assertTrue("Job is after allowed time frame", check);
+	}
+	
+	@Test
+	public void createDelimitedStringShouldProduceDataThatCanBeParsed() {
+		List<User> users = new ArrayList<>();
+		users.add(new User("a", "b", "c"));
+		users.add(new User("dsf", "afew", "fda"));
+		Job job = new Job("Park", 2015, 5, 8, 2, 1, 2, 3, "Description", users);
+		String string = job.createDelimitedString();
+		Job sameJob = Job.parseDelimitedString(string);
+		assertEquals("Job info transferred to/from string", job, sameJob);
 	}
 
 }

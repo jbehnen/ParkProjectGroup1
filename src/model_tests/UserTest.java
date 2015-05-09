@@ -30,5 +30,14 @@ public class UserTest {
 		otherUser = new User("jones@aol.com", Config.DEFAULT_LAST_NAME, Config.DEFAULT_LAST_NAME);
 		assertNotEquals("Last name does not guarantee equality", myUser, otherUser);
 	}
+	
+	@Test
+	public void toDelimitedStringVolunteerShouldProduceDataThatCanBeParsed() {
+		User user = new User(Config.DEFAULT_EMAIL, Config.DEFAULT_FIRST_NAME,
+				Config.DEFAULT_LAST_NAME);
+		String string = user.toDelimitedStringVolunteer();
+		User sameUser = User.parseDelimitedString(string);
+		assertEquals("User info transferred to/from string", user, sameUser);
+	}
 
 }

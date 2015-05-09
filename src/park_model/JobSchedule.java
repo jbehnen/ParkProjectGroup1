@@ -1,28 +1,20 @@
 package park_model;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import config_files.Config;
+
 public class JobSchedule {
-	
-	/**
-	 * The maximum number of jobs that can be scheduled at any given time.
-	 */
-	private static final int MAX_JOBS = 30;
-	
-	/**
-	 * The maximum job length in days.
-	 */
-	private static final int MAX_JOB_DAYS = 2;
-	
-	/**
-	 * 
-	 */
-	private static final int MAX_JOBS_PER_WEEK = 5;
 	
 	/**
 	 * The list of all jobs scheduled in the future.
@@ -32,9 +24,57 @@ public class JobSchedule {
 	/**
 	 * Constructs a list of all jobs in the system from the back-end data.
 	 */
-	public JobSchedule() {
-		// This constructor should also get rid of any jobs that are in the past.
-		myJobList = new ArrayList<>(); // Will eventually get input from file
+	public JobSchedule(String jobFile) {
+		myJobList = new ArrayList<>(); 
+		File file = new File(jobFile);
+		String line;
+		BufferedReader fileReader = null;
+		try {
+			
+			fileReader = new BufferedReader(new FileReader(file));
+
+			while((line = fileReader.readLine()) != null) {
+				Job job = Job.parseDelimitedString(line);
+				if (!job.isJobInPast()) { // elimiates jobs from past
+					myJobList.add(job);
+				}
+			}
+
+			fileReader.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Writes all list information to the back-end storage.
+	 * 
+	 * Adapted from http://www.mkyong.com/java/how-to-write-to-file-in-java-bufferedwriter-example/
+	 */
+	
+	// park manager should call this with Config.JOB_SCHEDULE_FILE
+	public void saveList(String theFile) {
+		File file = new File(theFile);
+		try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			
+			FileWriter fileWriter = new FileWriter(file.getAbsoluteFile(), false);
+			
+			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+			
+			for(Job job: myJobList) {
+				bufferedWriter.write(job.createDelimitedString() + "\r\n");
+			}
+			
+			bufferedWriter.close();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -50,94 +90,51 @@ public class JobSchedule {
 	/**
 	 * Adds a job to the list of jobs if it doesn't violate any business rules; returns true
 	 * if the job is successfully added, false otherwise.
-	 *
-	 * @return true if the job is successfully added, false otherwise
-	 * @param theJob
+	 * 
+	 * @param theJob The job to be added.
 	 */
-	public boolean addJob(Job theJob) {  // need to use the copy constructor or something
-		// check if too many jobs already scheduled
-		if (myJobList.size() >= MAX_JOBS) { 
-			return false;
+	public void addJob(Job theJob) {  
+		myJobList.add(new Job(theJob));
+	}
+	
+	/**
+	 * Checks if the system will allow a new job
+	 * to be scheduled based on system capacity.
+	 * 
+	 * @return true if there is space in the system to
+	 * schedule a new job, false otherwise.
+	 */
+	public boolean tooManyExistingJobs() {
+		if (myJobList.size() >= Config.MAX_TOTAL_JOBS) { 
+			return true;
 		}
-		
-		//check if job is more than the max number of days
-		List<GregorianCalendar> dates = theJob.getDates();
-		int numDates = dates.size();
-		if (numDates > MAX_JOB_DAYS) {
-			return false;
-		}
-		
-		GregorianCalendar firstDate, lastDate;
-		firstDate = new GregorianCalendar();
-//		firstDate.setTime(dates.get(0));
-		firstDate = roundDown(firstDate);
-		
-		lastDate = new GregorianCalendar();
-		
-		if (numDates > 1) {
-//			lastDate.setTime(dates.get(numDates - 1));
-			lastDate = roundDown(lastDate);
-		} else {
-			lastDate = (GregorianCalendar) firstDate.clone();
-		}
-		
-		// check if job is out of acceptable time range
-		if (!isInTimeRange(firstDate) || !isInTimeRange(lastDate)) {
-			return false;
-		}
-		
-		// check if too many jobs within the week
-		firstDate.add(Calendar.DATE, -3);
-		lastDate.add(Calendar.DATE, 4); // adds 4 days: 3 to move forward 3
-											// days, 1 to move time to very end of the last day
-		
+		return false;
+	}
+	
+	/**
+	 * Returns true if the week surrounding the proposed job has
+	 * already reached maximum jobs, false otherwise. 
+	 * 
+	 * "Week" is += 3 days.
+	 * 
+	 * @return true if the week surrounding the proposed job has
+	 * already reached maximum jobs, false otherwise. 
+	 */
+	public boolean isWeekFull(Job theJob) {
+		GregorianCalendar weekStart = theJob.getFirstDate();
+		weekStart.add(Calendar.DATE, -3);
+		GregorianCalendar weekEnd = theJob.getLastDate();
+		weekEnd.add(Calendar.DATE, 3);
 		int sameWeekJobs = 0;
 		for (Job j: myJobList) {
-			if (isJobInRange(j, firstDate, lastDate)) {
+			if (isJobInRange(j, weekStart, weekEnd)) {
 				sameWeekJobs += 1;
 			}
 		}
-		if (sameWeekJobs >= MAX_JOBS_PER_WEEK) {
-			return false;
+		if (sameWeekJobs >= Config.MAX_JOBS_PER_WEEK) {
+			return true;
 		}
-		myJobList.add(new Job(theJob));
-		return true;
-	}
-	
-	/**
-	 * Rounds down a date to the midnight that starts the day.
-	 * 
-	 * @param theDate The date to be rounded down.
-	 * @return a date set to the midnight that starts the theDate.
-	 */
-	private GregorianCalendar roundDown(GregorianCalendar theDate) {
-		theDate.set(Calendar.HOUR, 0);
-		theDate.set(Calendar.MINUTE, 0);
-		theDate.set(Calendar.SECOND, 0);
-		theDate.set(Calendar.MILLISECOND, 0);
-		theDate.get(Calendar.MILLISECOND); //reset milliseconds
-		return theDate;
-	}
-	
-	/**
-	 * Returns true if the given date is neither in the past nor more than 90 days in the
-	 * future, false otherwise.
-	 * 
-	 * @param theDate The date being checked.
-	 * @return true if the given date is neither in the past nor more than 90 days in the
-	 * future, false otherwise.
-	 */
-	private boolean isInTimeRange(GregorianCalendar theDate) {
-		GregorianCalendar comparisonDate = new GregorianCalendar();
-		comparisonDate = roundDown(comparisonDate);
-		if (theDate.compareTo(comparisonDate) < 0) {
-			return false;
-		}
-		comparisonDate.add(Calendar.DATE, 90);
-		if (theDate.compareTo(comparisonDate) > 0) {
-			return false;
-		}
-		return true;
+		return false;
 	}
 	
 	/**
@@ -151,16 +148,14 @@ public class JobSchedule {
 	 * time range from theFirstDate to theEndDate, false otherwise.
 	 */
 	private boolean isJobInRange(Job theJob, GregorianCalendar theFirstDate, GregorianCalendar theEndDate) {
-		for (GregorianCalendar date: theJob.getDates()) {
-			GregorianCalendar thisDate = new GregorianCalendar();
-//			thisDate.setTime(date);
-			if (thisDate.compareTo(theFirstDate) > 0 && thisDate.compareTo(theEndDate) < 0) {
+		for (GregorianCalendar thisDate: theJob.getDates()) {
+			if (thisDate.compareTo(theFirstDate) >= 0 && thisDate.compareTo(theEndDate) <= 0) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns the number of scheduled jobs.
 	 * 
@@ -190,15 +185,6 @@ public class JobSchedule {
 	}	
 	
 	/**
-	 * Returns the number of scheduled jobs.
-	 * 
-	 * @return The number of scheduled jobs. 
-	 */
-	public int jobListSize() {
-		return myJobList.size();
-	}
-	
-	/**
 	 * Returns an unmodifiable list of future jobs that the given volunteer is signed up for. 
 	 * 
 	 * @param theVolunteer The volunteer being searched for.
@@ -210,12 +196,18 @@ public class JobSchedule {
 		List<Job> jobList = new ArrayList<Job>();
 
 		// check if my job list is empty
-		if (jobListSize() == 0) {
+		if (numberOfJobs() == 0) {
 			System.out.print("Your job list is empty. ");
 			return null;
 		}
 		for (Job myJob : myJobList) {
 			if (myJob.isSignedUp(theVolunteer)) {
+				
+				// FRIENDLY HELLO FROM JULIA
+				// I TAKE CARE OF THIS WHEN I LOAD IN THE JOBS
+				// ALL JOBS IN THE LIST ARE IN THE FUTURE
+				// IT'S ALL GOOD. :) 
+				
 				// if true for that job check if job's start day is in the future				
 				if (isJobInFuture(myJob.getDates().get(0))) {
 					jobList.add(myJob);
@@ -282,7 +274,7 @@ public class JobSchedule {
 		
 		List<Job> jobList = new ArrayList<Job>();
 		// check if my job list is empty
-		if (jobListSize() == 0) {
+		if (numberOfJobs() == 0) {
 			System.out.print("Your job list is empty. ");
 			return null;
 		}
@@ -300,13 +292,6 @@ public class JobSchedule {
 
 		return Collections.unmodifiableList(jobList);
 
-	}
-	
-	/**
-	 * Writes all list information to the back-end storage.
-	 */
-	public void saveList() {
-		// don't do this yet?
 	}
 	
 	

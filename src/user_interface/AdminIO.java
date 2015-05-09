@@ -1,5 +1,6 @@
 package user_interface;
 
+import config_files.Config;
 import park_model.User;
 import park_model.VolunteerList;
 
@@ -10,7 +11,7 @@ public class AdminIO implements IO {
 	
 	public AdminIO(User myUser) {
 		this.myUser = myUser;
-		myVolunteerList = new VolunteerList();
+		myVolunteerList = new VolunteerList(Config.USER_FILE);
 	}
 
 	@Override
