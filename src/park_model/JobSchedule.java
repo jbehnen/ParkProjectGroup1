@@ -66,7 +66,8 @@ public class JobSchedule {
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 			
 			for(Job job: myJobList) {
-				bufferedWriter.write(job.createDelimitedString() + "\r\n");
+				bufferedWriter.write(job.createDelimitedString());
+				bufferedWriter.newLine();
 			}
 			
 			bufferedWriter.close();
