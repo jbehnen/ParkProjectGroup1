@@ -87,8 +87,8 @@ public class VolunteerIO implements IO {
 		do{
 		System.out.println(String.format("%50s"," This job currently has the following work need "));
 		System.out.println(String.format("%50s"," 4. Heavy Load    "  + theJob.getNumHeavy()));
-		System.out.println(String.format("%50s"," 5. Medium Load   " + theJob.getNumLight()));
-		System.out.println(String.format("%50s"," 6. Light Load    " + theJob.getNumMedium()));
+		System.out.println(String.format("%50s"," 5. Medium Load   " + theJob.getNumMedium()));
+		System.out.println(String.format("%50s"," 6. Light Load    " + theJob.getNumLight()));
 		
 		System.out.println(String.format("%50s"," Which Load do you need ot sign up for? "));
 		} while(invalidate(1,myotherScanner.nextInt(),theJob));
