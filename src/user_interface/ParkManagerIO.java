@@ -72,10 +72,10 @@ public class ParkManagerIO implements IO {
 						System.err.println("Error: incorrect choice taken at console input");
 					}
 				}else{
-					System.err.println("Please make a valid seletion");
+					System.err.println("Please make a valid selection");
 				}
 			} catch(NumberFormatException | IOException nfe){
-				System.err.println("Please make a valid seletion");
+				System.err.println("Please make a valid selection");
 			}
 		}
 

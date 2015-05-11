@@ -42,7 +42,7 @@ public class StartUp {
 		System.out.println("Please enter your email: ");
 		Scanner in = new Scanner(System.in); 
 		email = in.next();
-		in.close();
+//		in.close();
 		
 		// search Config.USER_FILE for user
 		while((line = fileReader.readLine()) != null) {
