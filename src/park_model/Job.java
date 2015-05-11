@@ -193,23 +193,7 @@ public class Job {
 	 * @return boolean 
 	 */
 	public boolean isSignedUp(User theVolunteer) {
-		boolean isSignedUp = false;
-		int count = 0;
-
-		//Searches the Volunteer List for the volunteer attempting to sign up for this job.
-		while(!(isSignedUp) && (count < myVolunteers.size())){
-			User v = (User) myVolunteers.get(count);
-			if(v.getEmail().equals(theVolunteer.getEmail())){
-				isSignedUp = true;
-			}else{
-				isSignedUp = false;
-			}
-			count++;
-		}
-
-		//If in the list, returns true.
-		//If not in the list, returns false.
-		return isSignedUp;
+		return myVolunteers.contains(theVolunteer);
 	}
 	
 	/**
