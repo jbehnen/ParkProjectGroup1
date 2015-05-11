@@ -1,4 +1,10 @@
-
+/**
+ * Job class
+ * Creates a job
+ * Author: L. Hamaker
+ * Last Edit: 10 May 2015
+ * 
+ */
 package park_model;
 
 import java.util.ArrayList;
@@ -82,7 +88,7 @@ public class Job {
 	}
 	
 	/**
-	 * Constructs a new Job.
+	 * Constructs a new 1Job.
 	 * 
 	 * Primarily useful for unit testing.
 	 * 
@@ -405,6 +411,11 @@ public class Job {
 		if (numMediumJobs != other.numMediumJobs)
 			return false;
 		return true;
+	}
+
+	public String getDescription(){
+		return myDescription.toString();
+		
 	}
 	
 }
