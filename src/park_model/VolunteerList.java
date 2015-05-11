@@ -50,15 +50,6 @@ public class VolunteerList {
 	}
 	
 	/**
-	 * A constructor that makes an empty list. Testing purposes only.
-	 * 
-	 * @param test A boolean indicating that this is a test.
-	 */
-	public VolunteerList(boolean test) {
-		list = new ArrayList<User>();
-	}
-	
-	/**
 	 *	Class Constructor.
 	 * 	Creates an instance of Job.
 	 * @param theLastName The last name being searched for.
@@ -75,21 +66,10 @@ public class VolunteerList {
 			{
 				newList.add(myVolunteer);
 			}
-			if (myVolunteer.getLastName() != theLastName)
-			{
-				return null;
-			}
 		}
 		
 		return Collections.unmodifiableList(newList);	
 	}
-	
-	/**
-	 * Adds volunteer to list. Testing purposes only.
-	 */
-	public void addVolunteer(User theVolunteer) {
-		list.add(theVolunteer);
-	}	
 
 	
 }

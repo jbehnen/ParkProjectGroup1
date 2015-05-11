@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import config_files.Config;
@@ -19,66 +20,67 @@ import park_model.User;
 import park_model.VolunteerList;
 
 
+/**
+ * Runs the menu for administrators.
+ * 
+ * @author Julia and Lee
+ * @version 5/10/2015
+ */
 public class AdminIO implements IO{
 	private User myUser;
 	private VolunteerList myVolunteerList;
-	private List<User> myVolList;
-	public List<User> getVolunteerByLastName(String lastName){
-		List<User> searchResult = new ArrayList<>();
-		for(User vol : myVolList){
-			
-			if(lastName == vol.getLastName()){
-				searchResult.add(vol);
-			}
-			//Want to ask if there are no lastName in List, should It return an original list or keep searching
-//			if(lastName != vol.getLastName()){ 
-//				return myVolList;
-//			}
-			//Want to ask if there more than 1 volunteer have same lastName in List, what should it return???
-		}
-		return searchResult;
-	}
-	
+	List<User>myVolList;
 	
 	public AdminIO(User myUser) {
 		this.myUser = myUser;
 		myVolunteerList = new VolunteerList(Config.USER_FILE);
 	}
-
+	/**
+	 * This my control menu
+	 */
 	@Override
 	public void mainMenu() {
-		System.out.println("I'm in the Admin menu.");
-		System.out.println("Admin " + myUser);
-		System.out.println("1: Search For Volunteer. \n2: Quit");
 		
-		int c = 1;
+		int i = 0;
+		boolean valid = false;
 		
  		BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
+		System.out.println("1: Search For Volunteer. \n2: Quit");
 		
-		while(c != 0){
+		while(!valid){
 			try{
-				int i = Integer.parseInt(console.readLine());
-				if(i > 0){
-					
-					switch(i){
-					case 1:
-						myVolList.add(myUser);
-						break;
-					case 2:
-						System.exit(0);
-					default:
-						System.err.println("Error!!!");
-					}
-				}else{
-					System.err.println("You can only take 1 or 2");
+				i = Integer.parseInt(console.readLine());
+				
+				switch(i){
+				case 1:
+					searchVol(console);
+				case 2:	
+					System.exit(0);
 				}
-			} catch(IOException e){
-				System.err.println("You have to take right choice");
+			}catch(IOException e){
+				System.err.println("Make your choice");
 			}
 		}
 		
-		
 	}
 	
+	//This method shows off the name of volunteer have been searched
+	private void searchVol(BufferedReader console){
+		String name = null;
+		while (name == null) {
+			System.out.println("Please enter a last name to search with: ");
+			try {
+				name = console.readLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		List<User> volunteers = myVolunteerList.getVolunteersByLastName(name);
+		for(int i = 0; i < volunteers.size(); i++){
+			System.out.println(volunteers.get(i).toString());
+		}
+		mainMenu();
+	}
 	
 }

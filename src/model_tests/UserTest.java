@@ -9,6 +9,12 @@ import org.junit.Test;
 import park_model.User;
 import config_files.Config;
 
+/**
+ * Tests the User class.
+ * 
+ * @author Julia Behnen
+ * @version 5/10/2015
+ */
 public class UserTest {
 	
 	private User myUser;

@@ -12,31 +12,32 @@ import park_model.User;
 import park_model.VolunteerList;
 
 
+/**
+ * Tests the VolunteerList class.
+ * 
+ * @author Julia Behnen
+ * @version 5/10/2015
+ */
 public class VolunteerListTest {
 	private static final String LastName = "Smith";
 	private VolunteerList myVolunteerList;
 	@Before
 	public void setUp() throws Exception {
 		
-		// this file has some duplicate last names, some non-duplicates.
-		// It will be good for testing
 		myVolunteerList = new VolunteerList("src/config_files/volunteerByLastNameTest.txt");
 
 	}
 	
 	@Test
-	public void testGetVolunteersByLastName() {
-		
+	public void testGetVolunteersByLastNameShouldReturnAllVolunteersWithThatLastName() {
+
 		List<User> expectedList = new ArrayList<>();
 		expectedList.add(new User("stewart@cc.com", "Jon", "Stewart"));
-		assertEquals(myVolunteerList.getVolunteersByLastName("Stewart"), expectedList);
-		
-		// checking the size of the list you get back is a good alternative,
-		
-		assertEquals(myVolunteerList.getVolunteersByLastName("Smith").size(), 0);
-		myVolunteerList.addVolunteer(new User("smith@aol.com", "John" ,"Smith"));
-		assertEquals(myVolunteerList.getVolunteersByLastName("Smith").size(), 1);
-		assertEquals(myVolunteerList.getVolunteersByLastName("Jones").size(), 0);
+		assertEquals(expectedList, myVolunteerList.getVolunteersByLastName("Stewart"));
+		expectedList.clear();
+		expectedList.add(new User("king@selma.org", "Martin Luther", "King"));
+		expectedList.add(new User("mcking@uw.edu", "Mary-Claire", "King"));
+		assertEquals(expectedList, myVolunteerList.getVolunteersByLastName("King"));
 	}
 
 }
