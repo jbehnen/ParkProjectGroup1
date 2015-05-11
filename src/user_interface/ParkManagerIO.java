@@ -85,33 +85,38 @@ public class ParkManagerIO implements IO {
 		List<Job> jobs= getJobs(con);
 		
 		//Display the jobs
-		System.out.println("Which job do you want to see?");
-		for(int i = 0; i < jobs.size(); i++) {
-			System.out.println(i + ": " + jobs.get(i).toString());
-		}
-		
-		//Validate the selection
-		while(!validJob){
-			try{
-				index = Integer.parseInt(con.readLine());
-				if(index >= 0 && index < jobs.size()){
-					validJob = true;
-					//Get the list of Volunteers for the selected job and display. 
-					List<User> vols = jobs.get(index).getVolunteers();
-					for(User v : vols){
-						System.out.println(v.toString());
-					}
-					
-				}else{
-					System.err.println("please make a valid selection.");;
-				}
-			}catch(NumberFormatException | IOException nfe){
-				System.err.println("Please make a valid selection");
+		if(jobs.size() >0){
+			System.out.println("Which job do you want to see?");
+			for(int i = 0; i < jobs.size(); i++) {
+				System.out.println(i + ": " + jobs.get(i).toString());
 			}
+			
+			//Validate the selection
+			while(!validJob){
+				try{
+					index = Integer.parseInt(con.readLine());
+					if(index >= 0 && index < jobs.size()){
+						validJob = true;
+						//Get the list of Volunteers for the selected job and display. 
+						List<User> vols = jobs.get(index).getVolunteers();
+						if(vols.size() >0){
+							for(User v : vols){
+								System.out.println(v.toString());
+							}
+						}else{
+							System.out.println("There are no volunteers schedules for this job.");
+						}
+						
+					}else{
+						System.err.println("please make a valid selection.");;
+					}
+				}catch(NumberFormatException | IOException nfe){
+					System.err.println("Please make a valid selection");
+				}
+			}
+		}else{
+			System.out.println("There are no jobs scheduled for this park.");
 		}
-
-		//Ask user which job they want to see
-		//validate choice and print out the list of volunteers.
 		mainMenu();
 	}
 	
