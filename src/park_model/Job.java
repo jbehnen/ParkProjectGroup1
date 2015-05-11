@@ -417,5 +417,19 @@ public class Job {
 		return myDescription;
 	}
 	
+	@Override
+	public String toString() {
+		return myPark + " " + dateString(getFirstDate()) + "-" 
+				+ dateString(getLastDate())  + ", "
+				+ myDescription + " "
+				+ "Light: " + numLightJobs + ", "
+				+ "Medium: " + numMediumJobs + ", "
+				+ "Heavy: " + numHeavyJobs;
+	}
+
+	public String dateString(GregorianCalendar theDate) {
+		return theDate.get(Calendar.MONTH) + "/" + theDate.get(Calendar.DATE) 
+				+ "/" + theDate.get(Calendar.YEAR);
+	}
 	
 }

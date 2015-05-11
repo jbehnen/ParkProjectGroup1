@@ -30,7 +30,7 @@ public class ParkManagerIO implements IO {
 	
 	public ParkManagerIO(ParkManager myUser) {
 		this.myUser = myUser;
-		myJobSchedule = new JobSchedule(Config.JOB_SCHEDULE_FILE);
+		myJobSchedule = new JobSchedule("src/config_files/5JobsInWeekMay122015.txt");
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class ParkManagerIO implements IO {
 						viewVol(console);
 						break;
 					case 4:
-						myJobSchedule.saveList(Config.JOB_SCHEDULE_FILE);
+						myJobSchedule.saveList(Config.JOB_TEST_OUTPUT_FILE);
 						System.exit(0);
 					default:
 						System.err.println("Error: incorrect choice taken at console input");
@@ -275,8 +275,6 @@ public class ParkManagerIO implements IO {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		System.out.println(theDescription.toString());
 		///////////////////////////Description////////////////////////////////
 		//Ask for the description
 		System.out.println("Please enter any notes for this job.");
@@ -285,7 +283,6 @@ public class ParkManagerIO implements IO {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(theDescription.toString());
 		///////////////////////Work Category/////////////////////////////////
 		//Ask for the num of light jobs
 		System.out.println("How many volunteers do you need for light work?");

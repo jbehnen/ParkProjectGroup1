@@ -21,6 +21,8 @@ public class Config {
 	 */
 	public static final String JOB_SCHEDULE_FILE = "src/config_files/jobSchedule.txt";
 	
+	public static final String JOB_TEST_OUTPUT_FILE = "src/config_files/text.txt";
+	
 	/**
 	 * Number of total dates in the job.
 	 */
