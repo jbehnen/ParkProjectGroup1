@@ -84,15 +84,38 @@ public class ParkManagerIO implements IO {
 	//Method that views volunteers for a specific job
 	private void viewVol(BufferedReader con){
 		
+		boolean validJob = false;
+		int index;
 		List<Job> jobs= getJobs(con);
+		
+		//Display the jobs
 		System.out.println("Which job do you want to see?");
 		for(int i = 0; i < jobs.size(); i++) {
-			//Need a toString method to display the user's choices
+			System.out.println(i + ": " + jobs.get(i).toString());
 		}
 		
+		//Validate the selection
+		while(!validJob){
+			try{
+				index = Integer.parseInt(con.readLine());
+				if(index >= 0 && index < jobs.size()){
+					validJob = true;
+					//Get the list of Volunteers for the selected job and display. 
+					List<User> vols = jobs.get(index).getVolunteers();
+					for(User v : vols){
+						System.out.println(v.toString());
+					}
+					
+				}else{
+					System.err.println("please make a valid selection.");;
+				}
+			}catch(NumberFormatException | IOException nfe){
+				System.err.println("Please make a valid selection");
+			}
+		}
+
 		//Ask user which job they want to see
 		//validate choice and print out the list of volunteers.
-		
 		mainMenu();
 	}
 	
@@ -100,9 +123,9 @@ public class ParkManagerIO implements IO {
 	private void viewJobs(BufferedReader con){
 		List<Job> jobs= getJobs(con);
 		for(int i = 0; i < jobs.size(); i++) {
-			//Need a toString method to display the user's choices
+			System.out.println(jobs.get(i).toString());
 		}
-		
+		mainMenu();
 	}
 	
 
@@ -183,6 +206,7 @@ public class ParkManagerIO implements IO {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println(theDescription.toString());
 
 		///////////////////////////DATE///////////////////////////////////////
 		//////////Get the month
@@ -193,7 +217,7 @@ public class ParkManagerIO implements IO {
 				temp = Integer.parseInt(console2.readLine());
 				if(temp > 0 && temp < 13){
 					validDate = true;
-					month = temp - 1; //Accounting for the GregorianCalender indexing. 
+					month = temp; 
 				}else{
 					System.err.println("Please make a valid selection (1-12).");
 				}
@@ -267,7 +291,7 @@ public class ParkManagerIO implements IO {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		System.out.println(theDescription.toString());
 		///////////////////////////Description////////////////////////////////
 		//Ask for the description
 		System.out.println("Please enter any notes for this job.");
@@ -276,7 +300,7 @@ public class ParkManagerIO implements IO {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		System.out.println(theDescription.toString());
 		///////////////////////Work Category/////////////////////////////////
 		//Ask for the num of light jobs
 		System.out.println("How many volunteers do you need for light work?");
@@ -342,7 +366,6 @@ public class ParkManagerIO implements IO {
 		}else{
 			System.out.println("Your job was not added");
 		}
-		
 		mainMenu();
 	}
 	
