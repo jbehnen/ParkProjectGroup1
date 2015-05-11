@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import config_files.Config;
 
@@ -194,7 +196,7 @@ public class JobSchedule {
 	 */
 	public List<Job> getUpcomingJobsByVolunteer(User theVolunteer) {
 		
-		List<Job> jobList = new ArrayList<Job>();
+		Set<Job> jobSet = new HashSet<Job>();
 
 		// check if my job list is empty
 		if (numberOfJobs() == 0) {
@@ -211,13 +213,18 @@ public class JobSchedule {
 				
 				// if true for that job check if job's start day is in the future				
 				if (isJobInFuture(myJob.getDates().get(0))) {
-					jobList.add(myJob);
+					jobSet.add(myJob);
 
 				}
 
 			}
 
 		}	
+		
+		List<Job> jobList = new ArrayList<Job>();
+		for (Job job: jobSet) {
+			jobList.add(job);
+		}
 		return Collections.unmodifiableList(jobList);
 	}
 	
@@ -232,7 +239,7 @@ public class JobSchedule {
 		// number of volunteers for that
 		// work catagoey has aleady been reached
 		
-		List<Job> jobList = new ArrayList<Job>();
+		Set<Job> jobSet = new HashSet<Job>();
 		
 		for (Job myJob : myJobList) {
 			// Get jobs that are open
@@ -245,7 +252,7 @@ public class JobSchedule {
 						if (nextJob.getDates().get(0)
 								.compareTo(myJob.getDates().get(0)) != 0) {
 
-							jobList.add(myJob);
+							jobSet.add(myJob);
 
 						}
 						// System.out.print("You hava a job on this date");
@@ -261,6 +268,12 @@ public class JobSchedule {
 		}
 
 		// volunteer can't sign up for two jobs on the same day
+		
+		List<Job> jobList = new ArrayList<Job>();
+		for (Job job: jobSet) {
+			jobList.add(job);
+		}
+		
 		return Collections.unmodifiableList(jobList);
 
 	}

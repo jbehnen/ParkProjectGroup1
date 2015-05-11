@@ -52,17 +52,17 @@ public class JobScheduleTest {
 	@Test
 	public void JobScheduleConstructorAndSaveFileShouldPreserveJobInfo() {
 		JobSchedule jobSchedule = 
-				new JobSchedule("src/config_files/jobScheduleAllJobsInFuture.txt");
+				new JobSchedule("jobScheduleAllJobsInFuture.txt");
 		assertEquals("All jobs should be in list", 
 				3, jobSchedule.numberOfJobs());
-		jobSchedule.saveList("src/config_files/tempJobSchedule.txt");
+		jobSchedule.saveList("tempJobSchedule.txt");
 		jobSchedule = 
-				new JobSchedule("src/config_files/jobScheduleAllJobsInFuture.txt");
+				new JobSchedule("jobScheduleAllJobsInFuture.txt");
 		assertEquals("All jobs should be in list", 
 				3, jobSchedule.numberOfJobs());
-		jobSchedule.saveList("src/config_files/tempJobSchedule.txt");
+		jobSchedule.saveList("tempJobSchedule.txt");
 		jobSchedule = 
-				new JobSchedule("src/config_files/jobScheduleAllJobsInFuture.txt");
+				new JobSchedule("jobScheduleAllJobsInFuture.txt");
 		assertEquals("Exact original jobs should be in list after file overwrite", 
 				3, jobSchedule.numberOfJobs());
 		// http://jdevelopment.nl/java-7-oneliner-read-file-string/
@@ -88,7 +88,7 @@ public class JobScheduleTest {
 	@Test
 	public void JobScheduleConstructorShouldRemovePastJobs() {
 		JobSchedule jobSchedule = 
-				new JobSchedule("src/config_files/jobScheduleOneJobInPast.txt");
+				new JobSchedule("jobScheduleOneJobInPast.txt");
 		assertEquals("One of the four original jobs should be eliminated", 
 				3, jobSchedule.numberOfJobs());
 	}

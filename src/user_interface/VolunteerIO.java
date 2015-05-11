@@ -111,24 +111,7 @@ public class VolunteerIO implements IO {
 			for (Job myJob : list) {
 				System.out.println(String.format("%-20s", ++count));
 				
-				System.out.println(String.format("%-20s", "Park Name: ",
-						"%-20s" + myJob.getParkName().toString()));
-				
-				
-				System.out.println(String.format("%-20s", "Start Date: "
-						+ myJob.getDates().get(0).get(Calendar.YEAR) + " "
-						+ myJob.getDates().get(0).get(Calendar.MONTH) + " "
-						+ myJob.getDates().get(0).get(Calendar.DATE)));
-
-				System.out.println(String.format("%-20s",
-						"Volunteers for a Light Duty: " + myJob.getNumLight()));
-				
-				System.out.println(String
-						.format("%-20s", "Volunteers for a Medium Duty: "
-								+ myJob.getNumMedium()));
-				
-				System.out.println(String.format("%-20s",
-						"Volunteers for a Heavy Duty: " + myJob.getNumHeavy()));
+				System.out.println(myJob);
 				
 				// System.out.println(String.format("%-20s","Description: " +
 				// myJob.getDescribtion())); + myJob.getDates().get(0).DATE

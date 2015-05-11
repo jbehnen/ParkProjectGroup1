@@ -24,7 +24,7 @@ public class VolunteerListTest {
 	@Before
 	public void setUp() throws Exception {
 		
-		myVolunteerList = new VolunteerList("src/config_files/volunteerByLastNameTest.txt");
+		myVolunteerList = new VolunteerList("volunteerByLastNameTest.txt");
 
 	}
 	
