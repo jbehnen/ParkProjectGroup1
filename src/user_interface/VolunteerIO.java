@@ -16,8 +16,7 @@ public class VolunteerIO implements IO {
 
 	@Override
 	public void mainMenu() {
-		System.out.println("I'm in the Volunteer menu.");
-		System.out.println("Volunteer " + myUser);
+		
 	}
 
 }

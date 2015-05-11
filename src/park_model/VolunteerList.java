@@ -75,6 +75,10 @@ public class VolunteerList {
 			{
 				newList.add(myVolunteer);
 			}
+			if (myVolunteer.getLastName() != theLastName)
+			{
+				return null;
+			}
 		}
 		
 		return Collections.unmodifiableList(newList);	
