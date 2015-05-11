@@ -411,7 +411,7 @@ public class Job {
 				+ "Heavy: " + numHeavyJobs;
 	}
 
-	public String dateString(GregorianCalendar theDate) {
+	private String dateString(GregorianCalendar theDate) {
 		return theDate.get(Calendar.MONTH) + "/" + theDate.get(Calendar.DATE) 
 				+ "/" + theDate.get(Calendar.YEAR);
 	}
