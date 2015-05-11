@@ -1,0 +1,6 @@
+V,smith@aol.com,John,Smith
+A,brenner@hotmail.com,Yul,Brenner
+P,goodall@research.com,Jane,Goodall,Rosa Park,King Park
+V,stewart@cc.com,Jon,Stewart
+V,king@selma.org,Martin Luther,King
+V,mcking@uw.edu,Mary-Claire,King

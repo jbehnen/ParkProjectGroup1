@@ -2,14 +2,12 @@ package park_model;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import config_files.Config;
 
 public class VolunteerList {
 	
@@ -22,15 +20,9 @@ public class VolunteerList {
 	 */
 	public VolunteerList(String inputFile) {
 		list = new ArrayList<User>();
-		File file = new File(inputFile);
 		String line;
-		BufferedReader fileReader = null;
-		try {
-			fileReader = new BufferedReader(new FileReader(file));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		InputStream is = this.getClass().getResourceAsStream(inputFile);
+		BufferedReader fileReader = new BufferedReader(new InputStreamReader(is));
 		try {
 			while((line = fileReader.readLine()) != null) {
 				if (line.charAt(0) == 'V') {

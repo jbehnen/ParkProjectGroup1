@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -33,9 +35,8 @@ public class StartUp {
 		String[] split = null;
 		User user;
 		boolean loggedIn = false;
-		File file = new File(Config.USER_FILE);
-		
-		BufferedReader fileReader = new BufferedReader(new FileReader(file));
+		InputStream is = StartUp.class.getClassLoader().getResourceAsStream(Config.USER_FILE_FOR_START);
+		BufferedReader fileReader = new BufferedReader(new InputStreamReader(is));
 		
 		//http://stackoverflow.com/questions/4644415/java-how-to-get-input-from-system-console
 		

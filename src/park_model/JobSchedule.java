@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -26,12 +28,10 @@ public class JobSchedule {
 	 */
 	public JobSchedule(String jobFile) {
 		myJobList = new ArrayList<>(); 
-		File file = new File(jobFile);
 		String line;
-		BufferedReader fileReader = null;
+		InputStream is = this.getClass().getResourceAsStream(jobFile);
+		BufferedReader fileReader = new BufferedReader(new InputStreamReader(is));
 		try {
-			
-			fileReader = new BufferedReader(new FileReader(file));
 
 			while((line = fileReader.readLine()) != null) {
 				Job job = Job.parseDelimitedString(line);

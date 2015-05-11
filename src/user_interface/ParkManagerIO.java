@@ -30,7 +30,7 @@ public class ParkManagerIO implements IO {
 	
 	public ParkManagerIO(ParkManager myUser) {
 		this.myUser = myUser;
-		myJobSchedule = new JobSchedule("src/config_files/5JobsInWeekMay122015.txt");
+		myJobSchedule = new JobSchedule("5JobsInWeekMay122015.txt");
 	}
 
 	@Override
