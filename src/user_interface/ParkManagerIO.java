@@ -35,11 +35,6 @@ public class ParkManagerIO implements IO {
 
 	@Override
 	public void mainMenu() {
-		System.out.println("I'm in the Park Manager menu.");
-		System.out.println("Park Manager " + myUser);
-		for(String park: myUser.getParks()) {
-			System.out.println(park);
-		}
 		
 		int i = 0;
 		boolean validChoice = false;
@@ -67,6 +62,7 @@ public class ParkManagerIO implements IO {
 						viewVol(console);
 						break;
 					case 4:
+						myJobSchedule.saveList(Config.JOB_SCHEDULE_FILE);
 						System.exit(0);
 					default:
 						System.err.println("Error: incorrect choice taken at console input");
@@ -202,7 +198,7 @@ public class ParkManagerIO implements IO {
 		//////////Ask for the job name and read in a job name
 		System.out.println("What is the job name?");
 		try {
-			theDescription.append(console2.readLine() + "^");
+			theDescription.append(console2.readLine() + " ");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -210,14 +206,13 @@ public class ParkManagerIO implements IO {
 
 		///////////////////////////DATE///////////////////////////////////////
 		//////////Get the month
-		System.out.println("What date is the job beginning?  (mm/dd/yy)");
-		System.out.println("Enter the month:");
+		System.out.println("Enter the month (number):");
 		while(!validDate){
 			try{
 				temp = Integer.parseInt(console2.readLine());
 				if(temp > 0 && temp < 13){
 					validDate = true;
-					month = temp; 
+					month = temp - 1; 
 				}else{
 					System.err.println("Please make a valid selection (1-12).");
 				}
@@ -227,7 +222,6 @@ public class ParkManagerIO implements IO {
 		}
 		
 		validDate = false;
-		temp=-1;
 		
 		///////Get the Day
 		System.out.println("Enter the starting day:");
@@ -245,10 +239,9 @@ public class ParkManagerIO implements IO {
 			}
 		}
 		validDate = false;
-		temp=-1;
 		
 		////////Get the year
-		System.out.println("Enter the year:");
+		System.out.println("Enter the year (yyyy):");
 		while(!validDate){
 			try{
 				temp = Integer.parseInt(console2.readLine());
@@ -263,7 +256,6 @@ public class ParkManagerIO implements IO {
 			}
 		}
 		validDate = false;
-		temp=-1;
 
 		///////////Ask if it is a two day job
 		System.out.println("How long does this job last? (in number of days)");
@@ -277,26 +269,19 @@ public class ParkManagerIO implements IO {
 		}
 
 		///////////////////////////TIME///////////////////////////////////////
-		//Start Time
-		System.out.println("What time does the job start?");
+		System.out.println("What are the hours for this job?");
 		try {
-			theDescription.append(console2.readLine() + "^");
+			theDescription.append(console2.readLine() + " ");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//Ending time
-		System.out.println("What time does the job finish?");
-		try {
-			theDescription.append(console2.readLine() + "^");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
 		System.out.println(theDescription.toString());
 		///////////////////////////Description////////////////////////////////
 		//Ask for the description
 		System.out.println("Please enter any notes for this job.");
 		try {
-			theDescription.append(console2.readLine() + "^");
+			theDescription.append(console2.readLine());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

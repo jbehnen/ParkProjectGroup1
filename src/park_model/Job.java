@@ -414,8 +414,8 @@ public class Job {
 	}
 
 	public String getDescription(){
-		return myDescription.toString();
-		
+		return myDescription;
 	}
+	
 	
 }

@@ -101,8 +101,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [myEmail=" + myEmail + ", myFirstName=" + myFirstName
-				+ ", myLastName=" + myLastName + "]";
+		return myFirstName + " " + myLastName + " " + myEmail;
 	}
 	
 }
