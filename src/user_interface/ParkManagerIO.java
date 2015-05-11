@@ -142,7 +142,6 @@ public class ParkManagerIO implements IO {
 					validPark = true;
 					thePark = myUser.getParks().get(ind);
 					jobList = myJobSchedule.getJobsByPark(thePark);
-					//ind = -1;
 				}else{
 					System.err.println("please make a valid selection.");;
 				}
@@ -150,11 +149,8 @@ public class ParkManagerIO implements IO {
 				System.err.println("Please make a valid selection");
 			}
 		}
-		
 		return jobList;
-		
 	}
-	
 	
 	private void addJob(BufferedReader console2) {
 		String thePark = "";
@@ -170,7 +166,6 @@ public class ParkManagerIO implements IO {
 		boolean validDate = false;
 		int index = -1;
 		
-		
 		StringBuilder theDescription = new StringBuilder();
 		
 		//Ask for a park and get park
@@ -184,7 +179,6 @@ public class ParkManagerIO implements IO {
 				if(index >= 0 && index < myUser.getParks().size()){
 					validPick = true;
 					thePark = myUser.getParks().get(index);
-					System.out.println(thePark); //!!!!!!!!!!!!!!!!!!!!!!!!!!!
 					index = -1;
 				}else{
 					System.err.println("please make a valid selection.");;
@@ -290,7 +284,7 @@ public class ParkManagerIO implements IO {
 		while(!validPick){
 			try{
 				index = Integer.parseInt(console2.readLine());
-				if(index > 0){
+				if(index >= 0){
 					validPick = true;
 					numLightJobs = index;
 				}else{
@@ -307,7 +301,7 @@ public class ParkManagerIO implements IO {
 		while(!validPick){
 			try{
 				index = Integer.parseInt(console2.readLine());
-				if(index > 0){
+				if(index >= 0){
 					validPick = true;
 					numMediumJobs = index;
 				}else{
@@ -324,7 +318,7 @@ public class ParkManagerIO implements IO {
 		while(!validPick){
 			try{
 				index = Integer.parseInt(console2.readLine());
-				if(index > 0){
+				if(index >= 0){
 					validPick = true;
 					numHeavyJobs = index;
 				}else{
