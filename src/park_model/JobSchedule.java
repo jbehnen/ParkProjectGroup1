@@ -188,7 +188,7 @@ public class JobSchedule {
 				sameWeekJobs += 1;
 			}
 		}
-		if (sameWeekJobs >= Config.IMMEDIATE_TIME_FRAME_DAYS) {
+		if (sameWeekJobs >= Config.MAX_DENSE_JOBS) {
 			return true;
 		}
 		return false;
