@@ -9,22 +9,29 @@ import java.util.Scanner;
 import park_model.Job;
 import park_model.JobSchedule;
 import park_model.User;
+import park_model.VolunteerAbilities;
 import park_model.WorkCategory;
 import config_files.Config;
 
 public class VolunteerIO implements IO {
 
 	private User myUser;
+	
+	@Deprecated
 	private JobSchedule myJobSchedule;
+	
+	private VolunteerAbilities myAbilities;
 	
 	
 	public VolunteerIO(User myUser) {
 		this.myUser = myUser;
 		myJobSchedule = new JobSchedule(Config.JOB_SCHEDULE_FILE);
+		myAbilities = new VolunteerAbilities(Config.JOB_SCHEDULE_FILE_FOR_STATIC);
 	}
 
 	@Override
 	public void mainMenu() {
+		
 			System.out.println(String.format("%40s","Hi Volunteer " + myUser.getFirstName()));		
 			Scanner myScan = new Scanner(System.in);
 

@@ -1,5 +1,7 @@
 package park_model;
 
+import java.io.Serializable;
+
 /**
  * An immutable system user; used for Admin and Volunteer.
  * 
@@ -7,7 +9,12 @@ package park_model;
  * @version 5/3/2015
  */
 
-public class User {
+public class User implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2978455524937410469L;
 
 	/**
 	 * The user's email address.
@@ -50,6 +57,7 @@ public class User {
 	 * 
 	 * @param theString
 	 */
+	@Deprecated
 	public static User parseDelimitedString(String theString) {
 		String[] userInfo = theString.split(",");
 		return new User(userInfo[1], userInfo[2], userInfo[3]);
@@ -60,6 +68,7 @@ public class User {
 	 * 
 	 * @return a delimited string that can be parsed by parseDelimitedString.
 	 */
+	@Deprecated
 	public String toDelimitedStringVolunteer() {
 		return "V," + myEmail + "," + myFirstName + "," + myLastName;
 	}

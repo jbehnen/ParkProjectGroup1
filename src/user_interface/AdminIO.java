@@ -6,18 +6,15 @@
 package user_interface;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
-import config_files.Config;
+import park_model.AdminAbilities;
 import park_model.User;
-import park_model.VolunteerList;
+import config_files.Config;
 
 
 /**
@@ -28,12 +25,12 @@ import park_model.VolunteerList;
  */
 public class AdminIO implements IO{
 	private User myUser;
-	private VolunteerList myVolunteerList;
+	private AdminAbilities myAdminAbilities;
 	List<User>myVolList;
 	
 	public AdminIO(User myUser) {
 		this.myUser = myUser;
-		myVolunteerList = new VolunteerList(Config.USER_FILE);
+		myAdminAbilities = new AdminAbilities(Config.USER_FILE_FOR_STATIC);
 	}
 	/**
 	 * This my control menu
@@ -41,10 +38,13 @@ public class AdminIO implements IO{
 	@Override
 	public void mainMenu() {
 		
+		System.out.println(); // spacer
+		
 		int i = 0;
 		boolean valid = false;
 		
  		BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
+ 		System.out.println("Please select an option, Administrator " + myUser.getLastName() + ".");
 		System.out.println("1: Search For Volunteer. \n2: Quit");
 		
 		while(!valid){
@@ -55,10 +55,11 @@ public class AdminIO implements IO{
 				case 1:
 					searchVol(console);
 				case 2:	
+					System.out.println("\nHave a good day.");
 					System.exit(0);
 				}
 			}catch(IOException e){
-				System.err.println("Make your choice");
+				System.err.println("Please enter a number from the menu.");
 			}
 		}
 		
@@ -66,6 +67,7 @@ public class AdminIO implements IO{
 	
 	//This method shows off the name of volunteer have been searched
 	private void searchVol(BufferedReader console){
+		System.out.println(); // spacer
 		String name = null;
 		while (name == null) {
 			System.out.println("Please enter a last name to search with: ");
@@ -76,9 +78,15 @@ public class AdminIO implements IO{
 				e.printStackTrace();
 			}
 		}
-		List<User> volunteers = myVolunteerList.getVolunteersByLastName(name);
-		for(int i = 0; i < volunteers.size(); i++){
-			System.out.println(volunteers.get(i).toString());
+		Collection<User> volunteers = myAdminAbilities.getVolunteersByLastName(name);
+		System.out.println(); // spacer
+		if (volunteers.isEmpty()) {
+			System.out.println("There are no volunteers with that last name.\n");
+		}
+		else {
+			for (User vol: volunteers) {
+				System.out.println(vol);
+			}
 		}
 		mainMenu();
 	}

@@ -35,7 +35,7 @@ public class StartUp {
 		String[] split = null;
 		User user;
 		boolean loggedIn = false;
-		InputStream is = StartUp.class.getClassLoader().getResourceAsStream(Config.USER_FILE_FOR_START);
+		InputStream is = StartUp.class.getClassLoader().getResourceAsStream(Config.USER_FILE_FOR_STATIC);
 		BufferedReader fileReader = new BufferedReader(new InputStreamReader(is));
 		
 		//http://stackoverflow.com/questions/4644415/java-how-to-get-input-from-system-console

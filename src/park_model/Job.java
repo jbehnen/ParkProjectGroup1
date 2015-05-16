@@ -7,6 +7,7 @@
  */
 package park_model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -15,7 +16,12 @@ import java.util.List;
 
 import config_files.Config;
 
-public class Job {
+public class Job implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4056472263186921581L;
 	
 	//Class Variables
 	private String myPark;
@@ -25,7 +31,7 @@ public class Job {
 	private int numMediumJobs;
 	private int numHeavyJobs;
 	private String myDescription;
-
+	
 	/**
 	 * Class Constructor
 	 * Creates an instance of a Job.
@@ -35,6 +41,8 @@ public class Job {
 	 * @param theMediumNum	the number of jobs in the work category Medium that is available.
 	 * @param theHeavyNum	the number of jobs in the work category Heavy that is available. 
 	 */
+	
+	@Deprecated
 	public Job(String thePark, List<GregorianCalendar> theDates, int theLightNum, int theMediumNum, 
 			int theHeavyNum, String theDescription) {
 		myPark = thePark;
@@ -68,6 +76,7 @@ public class Job {
 	 * 
 	 * @param theNumDays The total number of consecutive days that the job spans.
 	 */
+	@Deprecated
 	public Job(String thePark, int theYear, int theMonth, int theDate, int theNumDays,
 			int theLightNum, int theMediumNum, int theHeavyNum, String theDescription,
 			List<User> theVolunteers) {
@@ -106,6 +115,7 @@ public class Job {
 	 * Returns an unmodifiable list of the date(s) during which this job takes place.
 	 * @return unmodifiable list of dates for a job.
 	 */
+	@Deprecated
 	public List<GregorianCalendar> getDates() {
 		return Collections.unmodifiableList(myDates);
 	}
@@ -114,7 +124,8 @@ public class Job {
 	 * Returns an unmodifiable list of the work categories that still have slots available for sign-up.
 	 * @return a list of Work Categories still available. 
 	*/ 
-	 
+	
+	@Deprecated
 	public List<WorkCategory> getAvailableWorkCategories() {
 		List<WorkCategory> wcList = new ArrayList<WorkCategory>();
 		
@@ -148,6 +159,8 @@ public class Job {
 	 * @param theVolunteer
 	 * @return boolean value
 	 */
+
+	// Should stop returning a boolean.
 	public boolean signUp(User theVolunteer, WorkCategory theCategory) {
 		
 		boolean signUp = true;
@@ -187,7 +200,6 @@ public class Job {
 	}
 	
 	/**
-	 * isSignedUp
 	 * Returns true if theVolunteer is signed up for the job, false otherwise.
 	 * @param theVolunteer
 	 * @return boolean 
@@ -201,6 +213,7 @@ public class Job {
 	 * Returns the number of open jobs
 	 * 
 	 */
+	@Deprecated
 	public int getNumOpenJobs(){
 		return (numLightJobs + numMediumJobs + numHeavyJobs);
 	}
@@ -220,6 +233,7 @@ public class Job {
 	 * getNumLight
 	 * Returns the number of light jobs available
 	 */
+	@Deprecated
 	public int getNumLight(){
 		return numLightJobs;
 	}
@@ -227,18 +241,29 @@ public class Job {
 	 * getNumMedium
 	 * Returns the number of medium jobs available
 	 */
+	@Deprecated
 	public int getNumMedium(){
 		return numMediumJobs;
 	}
+	
 	/**
 	 * getNumHeavy
 	 * Returns the number of heavy jobs available
 	 */
+	@Deprecated
 	public int getNumHeavy(){
 		return numHeavyJobs;
 	}
 	
+	public int getNumOpen(WorkCategory theCategory) {
+		// method stub
+		return 0;
+	}
 	
+	public boolean isOpen(WorkCategory theCategory) {
+		// method stub
+		return false;
+	}
 	
 	// ADD JOB FUNCTIONALITY
 	
@@ -267,6 +292,7 @@ public class Job {
 	 * @return True if the job is longer than the maximum
 	 * allowed days, false otherwise.
 	 */
+	@Deprecated // this can now happen in the ParkManagerIO
 	public boolean isJobTooLong() {
 		List<GregorianCalendar> dates = getDates();
 		int numDates = dates.size();
@@ -283,6 +309,7 @@ public class Job {
 	 * @return true if the first day of the job is an 
 	 * earlier date than today, false otherwise.
 	 */
+	@Deprecated // moved to RulesHelp
 	public boolean isJobInPast() {
 		GregorianCalendar today = Config.getTodaysDate();
 		if (getFirstDate().compareTo(today) < 0) {
@@ -300,6 +327,7 @@ public class Job {
 	 * than the maximum allowed number of days in the
 	 * future, false otherwise.
 	 */
+	@Deprecated //moved to RulesHelp
 	public boolean isJobTooFarInFuture() {
 		GregorianCalendar futureBound = Config.getTodaysDate();
 		futureBound.add(Calendar.DATE, Config.MAX_DAYS_IN_FUTURE);
@@ -309,6 +337,7 @@ public class Job {
 		return false;
 	}
 	
+	@Deprecated
 	public static Job parseDelimitedString(String theString) {
 		String[] jobInfo = theString.split("DELIM");
 		List<User> volunteers = new ArrayList<>();
@@ -322,6 +351,7 @@ public class Job {
 				jobInfo[8], volunteers);
 	}
 	
+	@Deprecated
 	public String createDelimitedString() {
 		StringBuilder string = new StringBuilder();
 		string.append(myPark);
@@ -339,10 +369,6 @@ public class Job {
 		return string.toString();
 	}
 
-	// If you don't already know, you can auto-generate hashCode, equals,
-	// and toString by right clicking somewhere in the code window, clicking
-	// "Source", and then "Generate [...]" whatever you need! That's
-	// where these came from. A test needed "equals".
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -396,7 +422,8 @@ public class Job {
 			return false;
 		return true;
 	}
-
+	
+	@Deprecated
 	public String getDescription(){
 		return myDescription;
 	}

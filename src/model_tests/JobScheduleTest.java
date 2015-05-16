@@ -126,7 +126,7 @@ public class JobScheduleTest {
 		GregorianCalendar comparisonDate = Config.getTodaysDate();
 		comparisonDate.add(Calendar.DATE, 2);
 		Job comparisonJob = new Job("Park", comparisonDate, 1, 1, 1, 1, "");
-		for (int i = 1; i <= Config.MAX_JOBS_PER_WEEK; i++) {
+		for (int i = 1; i <= Config.MAX_DENSE_JOBS; i++) {
 			assertEquals("Week is not full", false,
 					myJobSchedule.isWeekFull(comparisonJob));
 			Job job = new Job("Park", (GregorianCalendar) date.clone(),

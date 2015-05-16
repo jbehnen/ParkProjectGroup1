@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -23,11 +24,59 @@ public class JobSchedule {
 	/**
 	 * The list of all jobs scheduled in the future.
 	 */
+	@Deprecated
 	private List<Job> myJobList;
+	
+	public static Collection<Job> getAllFutureJobs(String theFile) {
+		Collection<Job> jobList = new ArrayList<>(); 
+		String line;
+		InputStream is = JobSchedule.class.getClassLoader().getResourceAsStream(theFile);
+		BufferedReader fileReader = new BufferedReader(new InputStreamReader(is));
+		try {
+
+			while((line = fileReader.readLine()) != null) {
+				Job job = Job.parseDelimitedString(line);
+				if (!job.isJobInPast()) { // elimiates jobs from past
+					jobList.add(job);
+				}
+			}
+
+			fileReader.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return jobList;
+	}
+	
+	public static void saveJobList(Collection<Job> theJobs, String theFile) {
+		File file = new File(theFile);
+		try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			
+			FileWriter fileWriter = new FileWriter(file.getAbsoluteFile(), false);
+			
+			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+			
+			for(Job job: theJobs) {
+				bufferedWriter.write(job.createDelimitedString());
+				bufferedWriter.newLine();
+			}
+			
+			bufferedWriter.close();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * Constructs a list of all jobs in the system from the back-end data.
 	 */
+	@Deprecated
 	public JobSchedule(String jobFile) {
 		myJobList = new ArrayList<>(); 
 		String line;
@@ -56,6 +105,7 @@ public class JobSchedule {
 	 */
 	
 	// park manager should call this with Config.JOB_SCHEDULE_FILE
+	@Deprecated
 	public void saveList(String theFile) {
 		File file = new File(theFile);
 		try {
@@ -86,6 +136,7 @@ public class JobSchedule {
 	 * @param test Either boolean value; simply used to indicate that a 
 	 * test JobSchedule should be constructed.
 	 */
+	@Deprecated
 	public JobSchedule(boolean test) {
 		myJobList = new ArrayList<>();
 	}
@@ -96,6 +147,7 @@ public class JobSchedule {
 	 * 
 	 * @param theJob The job to be added.
 	 */
+	@Deprecated
 	public void addJob(Job theJob) {  
 		myJobList.add(new Job(theJob));
 	}
@@ -107,6 +159,7 @@ public class JobSchedule {
 	 * @return true if there is space in the system to
 	 * schedule a new job, false otherwise.
 	 */
+	@Deprecated
 	public boolean tooManyExistingJobs() {
 		if (myJobList.size() >= Config.MAX_TOTAL_JOBS) { 
 			return true;
@@ -123,6 +176,7 @@ public class JobSchedule {
 	 * @return true if the week surrounding the proposed job has
 	 * already reached maximum jobs, false otherwise. 
 	 */
+	@Deprecated 
 	public boolean isWeekFull(Job theJob) {
 		GregorianCalendar weekStart = theJob.getFirstDate();
 		weekStart.add(Calendar.DATE, -3);
@@ -134,7 +188,7 @@ public class JobSchedule {
 				sameWeekJobs += 1;
 			}
 		}
-		if (sameWeekJobs >= Config.MAX_JOBS_PER_WEEK) {
+		if (sameWeekJobs >= Config.IMMEDIATE_TIME_FRAME_DAYS) {
 			return true;
 		}
 		return false;
@@ -150,6 +204,7 @@ public class JobSchedule {
 	 * @return true if part of the job falls within the inclusive 
 	 * time range from theFirstDate to theEndDate, false otherwise.
 	 */
+	@Deprecated // alternate version - isDateInRange - in RulesHelp
 	private boolean isJobInRange(Job theJob, GregorianCalendar theFirstDate, GregorianCalendar theEndDate) {
 		for (GregorianCalendar thisDate: theJob.getDates()) {
 			if (thisDate.compareTo(theFirstDate) >= 0 && thisDate.compareTo(theEndDate) <= 0) {
@@ -164,6 +219,7 @@ public class JobSchedule {
 	 * 
 	 * @return The number of scheduled jobs. 
 	 */
+	@Deprecated
 	public int numberOfJobs() {
 		return myJobList.size();
 	}
@@ -175,6 +231,7 @@ public class JobSchedule {
 	 *            - job start date
 	 * @return -true in the future
 	 */
+	@Deprecated
 	private boolean isJobInFuture(GregorianCalendar theStartDate) {
 		// get current date time with Date()
 		GregorianCalendar currentDate = new GregorianCalendar();
@@ -194,6 +251,7 @@ public class JobSchedule {
 	 * @return An unmodifiable list of future jobs that the given volunteer is signed up for. 
 	 * 	
 	 */
+	@Deprecated
 	public List<Job> getUpcomingJobsByVolunteer(User theVolunteer) {
 		
 		Set<Job> jobSet = new HashSet<Job>();
@@ -234,6 +292,7 @@ public class JobSchedule {
 	 * @param theVolunteer
 	 * @return
 	 */
+	@Deprecated
 	public List<Job> getJobsForSignUp(User theVolunteer) {
 		// A volunteer may not sign up for a work catagory on a job if the max
 		// number of volunteers for that
@@ -284,6 +343,7 @@ public class JobSchedule {
 	 * @param thePark
 	 * @return
 	 */
+	@Deprecated
 	public List<Job> getJobsByPark(String thePark) {
 		
 		List<Job> jobList = new ArrayList<Job>();
