@@ -97,7 +97,7 @@ public class Job implements Serializable {
 	}
 	
 	/**
-	 * Constructs a new 1Job.
+	 * Constructs a new Job.
 	 * 
 	 * Primarily useful for unit testing.
 	 * 

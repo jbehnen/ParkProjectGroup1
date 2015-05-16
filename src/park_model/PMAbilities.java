@@ -15,7 +15,18 @@ public class PMAbilities {
 	}
 	
 	public void addJob(Job theJob) {
-		myJobs.add(theJob);
+		myJobs.add(new Job(theJob));
+	}
+	
+	/**
+	 * Returns the number of jobs in the list.
+	 * 
+	 * Testing purposes only.
+	 * 
+	 * @return The number of jobs in the list.
+	 */
+	public int getNumJobs() {
+		return myJobs.size();
 	}
 	
 	public Collection<User> getVolunteersForJob(Job theJob) {
@@ -26,10 +37,14 @@ public class PMAbilities {
 		Collection<Job> jobsAtPark = new ArrayList<>();
 		for (Job job: myJobs) {
 			if (job.getParkName().equals(thePark)) {
-				jobsAtPark.add(job);
+				jobsAtPark.add(new Job(job));
 			}
 		}
 		return jobsAtPark;
+	}
+	
+	public void saveJobs(String fileName) {
+		JobSchedule.saveJobList(myJobs, fileName);
 	}
 	
 	public boolean tooManyTotalJobs() {

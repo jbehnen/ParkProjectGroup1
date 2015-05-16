@@ -5,9 +5,17 @@ import java.util.GregorianCalendar;
 
 import config_files.Config;
 
+/**
+ * Provides helper methods for business rules that are not directly
+ * tied to any given class.
+ * 
+ * @author Julia Behnen
+ * @version 5/16/2015
+ */
 public class RulesHelp {
+	
 	/**
-	 * Gets today's date date to the midnight that started the day.
+	 * Gets today's date set to the midnight that started the day.
 	 * 
 	 * @param theDate The date to be rounded down.
 	 * @return a date set to the midnight that starts the theDate.
@@ -23,7 +31,7 @@ public class RulesHelp {
 	}
 	
 	/**
-	 * Returns rue if the date is in the past (before today), false otherwise.
+	 * Returns true if the date is in the past (before today), false otherwise.
 	 * 
 	 * @param theDate The date being checked to see if it is in the past.
 	 * @return True if the date is in the past (before today), false otherwise.

@@ -19,4 +19,8 @@ public class VolunteerAbilities {
 		return null;
 	}
 	
+	public void saveJobs(String fileName) {
+		JobSchedule.saveJobList(myJobs, fileName);
+	}
+	
 }
