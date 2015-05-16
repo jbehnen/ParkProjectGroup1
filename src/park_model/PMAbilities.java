@@ -7,13 +7,34 @@ import java.util.GregorianCalendar;
 
 import config_files.Config;
 
+/**
+ * Provides the methods that allow ParkManagers to complete
+ * their user stories and access the list of jobs.
+ * 
+ * @author Julia Behnen
+ * @version 5/16/2015
+ */
 public class PMAbilities {
+	
 	Collection<Job> myJobs;
 	
+	/**
+	 * Constructs the PMAbilities and gets all of the jobs
+	 * stored in the given file.
+	 * 
+	 * @param fileName The name of the file that holds the
+	 * jobs that the ParkManager should be able to 
+	 * access.
+	 */
 	public PMAbilities(String fileName) {
 		myJobs = JobSchedule.getAllFutureJobs(fileName);
 	}
 	
+	/**
+	 * Adds a job to the list of jobs.
+	 * 
+	 * @param theJob The job to be added.
+	 */
 	public void addJob(Job theJob) {
 		myJobs.add(new Job(theJob));
 	}
@@ -29,10 +50,22 @@ public class PMAbilities {
 		return myJobs.size();
 	}
 	
+	/**
+	 * Returns the volunteers signed up for a given job.
+	 * 
+	 * @return the volunteers signed up for a given job.
+	 */
 	public Collection<User> getVolunteersForJob(Job theJob) {
 		return theJob.getVolunteers();
 	}
 	
+	/**
+	 * Gets all jobs scheduled at a given park; the interface 
+	 * is responsible for making sure that PMs 
+	 * can only get jobs for parks that they manage.
+	 * 
+	 * @return all jobs scheduled at the park.
+	 */
 	public Collection<Job> getJobsAtPark(String thePark) {
 		Collection<Job> jobsAtPark = new ArrayList<>();
 		for (Job job: myJobs) {
@@ -43,10 +76,20 @@ public class PMAbilities {
 		return jobsAtPark;
 	}
 	
+	/**
+	 * Saves jobs to file.
+	 */
 	public void saveJobs(String fileName) {
 		JobSchedule.saveJobList(myJobs, fileName);
 	}
 	
+	/**
+	 * Returns true if there are too many total jobs to
+	 * add a new job, false otherwise.
+	 * 
+	 * @return true if there are too many total jobs to
+	 * add a new job, false otherwise.
+	 */
 	public boolean tooManyTotalJobs() {
 		return myJobs.size() >= Config.MAX_TOTAL_JOBS;
 	}
