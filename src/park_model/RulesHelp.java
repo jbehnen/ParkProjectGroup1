@@ -30,10 +30,7 @@ public class RulesHelp {
 	 */
 	public static boolean isDateInPast(GregorianCalendar theDate) {
 		GregorianCalendar today = RulesHelp.getTodaysDate();
-		if (theDate.compareTo(today) < 0) {
-			return true;
-		}
-		return false;
+		return (theDate.compareTo(today) < 0);
 	}
 	
 	/**
@@ -48,13 +45,10 @@ public class RulesHelp {
 	 * than the maximum allowed number of days in the
 	 * future, false otherwise.
 	 */
-	public boolean isJobTooFarInFuture(GregorianCalendar theDate) {
+	public static boolean isDateTooFarInFuture(GregorianCalendar theDate) {
 		GregorianCalendar futureBound = RulesHelp.getTodaysDate();
 		futureBound.add(Calendar.DATE, Config.MAX_DAYS_IN_FUTURE);
-		if (theDate.compareTo(futureBound) > 0) {
-			return true;
-		}
-		return false;
+		return (theDate.compareTo(futureBound) > 0);
 	}
 	
 	/**
@@ -69,10 +63,8 @@ public class RulesHelp {
 	 */
 	public static boolean isDateInRange(GregorianCalendar theDate, 
 			GregorianCalendar theFirstDate, GregorianCalendar theEndDate) {
-		if (theDate.compareTo(theFirstDate) >= 0 && theDate.compareTo(theEndDate) <= 0) {
-			return true;
-		}
-		return false;
+		return (theDate.compareTo(theFirstDate) >= 0 
+				&& theDate.compareTo(theEndDate) <= 0);
 	}
 	
 }
