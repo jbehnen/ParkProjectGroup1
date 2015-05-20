@@ -4,33 +4,53 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * Provides the methods that allow Administrators to complete
+ * their user stories and access the list of jobs.
+ * 
+ * @author Julia Behnen
+ * @version 5/19/2015
+ */
 public class AdminAbilities {
 	
-	Collection<User> myVolunteerList;
+	Collection<User> myVolunteers;
 	
+	/**
+	 * Constructs the AdminAbilities and gets all of the volunteers
+	 * stored in the given file.
+	 * 
+	 * @param fileName The name of the file that the list of all
+	 * volunteers is stored in and loaded from.
+	 */
 	public AdminAbilities(String fileName) {
-		myVolunteerList = UserList.getAllUsers(fileName);
+		myVolunteers = UserList.getAllUsers(fileName);
 	}
 	
 	/**
-	 *	Class Constructor.
-	 * 	Creates an instance of Job.
-	 * @param theLastName The last name being searched for.
-	 * @return An unmodifiable list of volunteers with the last name theLastName. 
+	 * Returns an unmodifiable list of volunteers with the last name theLastName. 
 	 * 
+	 * @return An unmodifiable list of volunteers with the last name theLastName. 
 	 */
 	public Collection<User> getVolunteersByLastName(String theLastName) {   
 		
 		Collection<User> lastNameList = new ArrayList<User>();
 		
-		for(User myVolunteer : myVolunteerList)
-		{
-			if (myVolunteer.getLastName().equals(theLastName))
-			{
+		for(User myVolunteer : myVolunteers) {
+			if (myVolunteer.getLastName().equals(theLastName)) {
 				lastNameList.add(myVolunteer);
 			}
 		}
 		
 		return Collections.unmodifiableCollection(lastNameList);	
+	}
+	
+	/**
+	 * Adds a volunteer to the collection of volunteers.
+	 * 
+	 * TESTING PURPOSES ONLY. Needs to be repackaged and
+	 * have the access modifier changed.
+	 */
+	public void addVolunteer(User theVolunteer) {
+		myVolunteers.add(theVolunteer);
 	}
 }

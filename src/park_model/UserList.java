@@ -15,9 +15,6 @@ import config_files.Config;
 
 public class UserList {
 	
-	private List<User> list;
-	private List<User> newList;
-	
 	/**
 	 * Constructs a list of all users from a given file.
 	 * @throws IOException 
@@ -43,7 +40,7 @@ public class UserList {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return Collections.unmodifiableCollection(users);
+		return users;
 	}
 	
 }

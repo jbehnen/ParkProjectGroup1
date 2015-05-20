@@ -22,13 +22,20 @@ import park_model.UserList;
  */
 public class AdminAbilitiesTest {
 	
+	private User stewart;
+	private User martin;
+	private User maryClaire;
 	private AdminAbilities myAdminAbilities;
+	private Collection<User> expectedCollection;
 	
 	@Before
 	public void setUp() throws Exception {
-		
-		myAdminAbilities = new AdminAbilities("config_files/volunteerByLastNameTest.txt");
-
+		stewart = new User("stewart@cc.com", "Jon", "Stewart");
+		martin = new User("king@selma.org", "Martin Luther", "King");
+		maryClaire = new User("mcking@uw.edu", "Mary-Claire", "King");
+		// Construct an admin abilities class with no stored volunteers
+		myAdminAbilities = new AdminAbilities("config_files/empty.txt");
+		expectedCollection = new ArrayList<>();
 	}
 	
 	@Test
@@ -38,11 +45,10 @@ public class AdminAbilitiesTest {
 	}
 	
 	@Test
-	public void testGetVolunteersByLastNameShouldReturnOneVolunteersWithThatLastName() {
-		Collection<User> expectedCollection = new ArrayList<>();
-		expectedCollection.add(new User("stewart@cc.com", "Jon", "Stewart"));
-		assertEquals("Should return a single volunteer if one match", 
-				expectedCollection.size(), 
+	public void testGetVolunteersByLastNameShouldReturnOneVolunteerWithThatLastName() {
+		expectedCollection.add(stewart);
+		myAdminAbilities.addVolunteer(stewart);
+		assertEquals("Should return a single volunteer if one match", 1, 
 				(myAdminAbilities.getVolunteersByLastName("Stewart").size()));
 		assertTrue("The returned entry should be a match to the existing volunteer", 
 				expectedCollection.containsAll(myAdminAbilities.getVolunteersByLastName("Stewart")));
@@ -50,14 +56,26 @@ public class AdminAbilitiesTest {
 	
 	@Test
 	public void testGetVolunteersByLastNameShouldReturnMultipleVolunteersWithThatLastName() {
-		Collection<User> expectedCollection = new ArrayList<>();
-		expectedCollection.add(new User("king@selma.org", "Martin Luther", "King"));
-		expectedCollection.add(new User("mcking@uw.edu", "Mary-Claire", "King"));
-		assertEquals("Should return multiple volunteer if multiple matches", 
-				expectedCollection.size(), 
+		expectedCollection.add(martin);
+		expectedCollection.add(maryClaire);
+		myAdminAbilities.addVolunteer(martin);
+		myAdminAbilities.addVolunteer(maryClaire);
+		assertEquals("Should return two volunteers if multiple matches", 2, 
 				(myAdminAbilities.getVolunteersByLastName("King").size()));
 		assertTrue("The returned volunteers should match the existing volunteers", 
 				expectedCollection.containsAll(myAdminAbilities.getVolunteersByLastName("King")));
+	}
+	
+	@Test
+	public void testGetVolunteersByLastNameShouldOnlyReturnVolunteersWithThatLastName() {
+		expectedCollection.add(martin);
+		expectedCollection.add(maryClaire);
+		expectedCollection.add(stewart);
+		myAdminAbilities.addVolunteer(martin);
+		myAdminAbilities.addVolunteer(maryClaire);
+		myAdminAbilities.addVolunteer(stewart);
+		assertEquals("Should return only the two volunteers that match", 2, 
+				(myAdminAbilities.getVolunteersByLastName("King").size()));
 	}
 
 }
