@@ -13,10 +13,6 @@ import java.util.List;
 public class ParkManager extends User {
 	
 	private static final long serialVersionUID = 8909077605412708768L;
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 	/**
 	 * A list of parks that the ParkManager manages.
 	 */
