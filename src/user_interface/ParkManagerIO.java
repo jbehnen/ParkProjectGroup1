@@ -15,27 +15,28 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import config_files.Config;
 import park_model.Job;
-import park_model.JobSchedule;
+import park_model.PMAbilities;
 import park_model.ParkManager;
+import park_model.RulesHelp;
 import park_model.User;
 
 public class ParkManagerIO implements IO {
 
 	private ParkManager myUser;
-	private JobSchedule myJobSchedule;
+	private PMAbilities abilities;
 	
 	public ParkManagerIO(ParkManager myUser) {
 		this.myUser = myUser;
-		myJobSchedule = new JobSchedule("5JobsInWeekMay122015.txt");
+		abilities = new PMAbilities("5JobsInWeekMay122015.txt");
 	}
 
 	@Override
 	public void mainMenu() {
-		
 		int i = 0;
 		boolean validChoice = false;
 		
@@ -49,8 +50,7 @@ public class ParkManagerIO implements IO {
 			try{
 				i = Integer.parseInt(console.readLine());
 				if(i>0 && i<5){
-					validChoice = true;
-					
+					validChoice = true; 
 					switch(i){
 					case 1:
 						addJob(console);
@@ -62,7 +62,7 @@ public class ParkManagerIO implements IO {
 						viewVol(console);
 						break;
 					case 4:
-						myJobSchedule.saveList(Config.JOB_TEST_OUTPUT_FILE);
+						abilities.saveJobs(Config.JOB_TEST_OUTPUT_FILE);
 						System.exit(0);
 					default:
 						System.err.println("Error: incorrect choice taken at console input");
@@ -74,7 +74,6 @@ public class ParkManagerIO implements IO {
 				System.err.println("Please make a valid selection");
 			}
 		}
-
 	}
 	
 	//Method that views volunteers for a specific job
@@ -146,7 +145,7 @@ public class ParkManagerIO implements IO {
 				if(ind >= 0 && ind < myUser.getParks().size()){
 					validPark = true;
 					thePark = myUser.getParks().get(ind);
-					jobList = myJobSchedule.getJobsByPark(thePark);
+					jobList = (List<Job>)(abilities.getJobsAtPark(thePark));
 				}else{
 					System.err.println("please make a valid selection.");;
 				}
@@ -338,58 +337,58 @@ public class ParkManagerIO implements IO {
 		List<User> newList = new ArrayList<User>();
 		
 		////////////////////CREATE JOB////////////////////////////
-		Job thisJob = new Job(thePark, year, month, day, numDays,numLightJobs, numMediumJobs, numHeavyJobs, theDescription.toString(), newList);
+		GregorianCalendar startDate = new GregorianCalendar(year, month, day);
+		Job thisJob = new Job(thePark, startDate, numDays,numLightJobs, numMediumJobs, numHeavyJobs, theDescription.toString());
 
 		//If it passed, then add to jobSchedule
 		if(testsPassed(thisJob)){
-			myJobSchedule.addJob(thisJob);
+			abilities.addJob(thisJob);
 			System.out.println("Your job is now on the schedule");
 		}else{
 			System.out.println("Your job was not added");
 		}
 		mainMenu();
 	}
-	
+
+	//////////////////////////////////////////////////////////
 	///////////////VALIDATION CHECK OF JOBS///////////////////
 	//If the job passes the 5 tests, then TRUE is returned. 
 	private boolean testsPassed(Job j){
 		int count = 0;
 		
-		//If it returns false, the job can be scheduled as it is not in the past.
-		//If it returns true, the job cannot be scheduled as it is in the past.
-		if(j.isJobInPast()){
-			System.out.println("The job's starting date is in the past.");
+		//If it returns true, the date is in the past and the job cannot be added to the schedule
+		if(RulesHelp.isDateInPast(j.getFirstDate())){
+			System.out.println("The starting date is in the past.");
 			count++;
 		}
 		
-		//If it returns false, it is within range and can be added to the schedule.
-		//If it returns true, it is not within the range and cannot be added to the schedule
-		if(j.isJobTooFarInFuture()){
-			System.out.println("The job's starting date is too far in the future.");
+		//If the starting date is too far in the future, the job cannot be added to the schedule. 
+		if(RulesHelp.isDateTooFarInFuture(j.getFirstDate())){
+			System.out.println("The date is too far in the future.");
 			count++;
 		}
 		
-		//If it returns false, the job is the right amount of time and can be added to the schedule.
-		//If it returns true, it is not and cannot be added to the schedule
-		if(j.isJobTooLong()){
+		///If it returns false, the job is the right amount of time and can be added to the schedule.
+		///If it returns true, it is not and cannot be added to the schedule
+		if(j.getNumDays() > Config.MAX_JOB_DAYS){
 			System.out.println("The job's duration is too long.");
 			count++;
 		}
 		
-		//If it returns false, the week is not too full and the job can be scheduled.
-		//If it returns true, the week is too full and the job cannot be scheduled. 
-		if(myJobSchedule.isWeekFull(j)){
+		///If it returns false, the week is not too full and the job can be scheduled.
+		///If it returns true, the week is too full and the job cannot be scheduled. 
+		if(abilities.tooManyTotalJobs()){
 			System.out.println("The week's schedule is too full.");
 			count++;
 		}
 		
-		//If it returns false, the maximum number of jobs have not been reached and the job can be added. 
-		//If it returns true, the maximum number of jobs have been reached and the job cannot be added to the system. 
-		if(myJobSchedule.tooManyExistingJobs()){
+		///If it returns false, the maximum number of jobs have not been reached and the job can be added. 
+		///If it returns true, the maximum number of jobs have been reached and the job cannot be added to the system. 
+		if(abilities.tooManyJobsNearJobTime(j)){
 			System.out.println("There are too many jobs in the system.");
 			count++;
 		}
+	
 		return (count == 0);
 	}
-
 }
