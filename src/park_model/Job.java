@@ -190,7 +190,7 @@ public class Job implements Serializable {
 	 */
 	public GregorianCalendar getLastDate() {
 		GregorianCalendar temp = (GregorianCalendar) startDate.clone();
-		temp.add(Calendar.DAY_OF_MONTH, numDays);
+		temp.add(Calendar.DAY_OF_MONTH, numDays-1);
 		return temp;
 	}
 
