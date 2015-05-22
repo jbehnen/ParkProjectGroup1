@@ -2,8 +2,8 @@ package park_model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import config_files.Config;
 
@@ -16,7 +16,7 @@ import config_files.Config;
  */
 public class PMAbilities {
 	
-	Collection<Job> myJobs;
+	List<Job> myJobs;
 	
 	/**
 	 * Constructs the PMAbilities and gets all of the jobs
@@ -64,7 +64,7 @@ public class PMAbilities {
 	 * 
 	 * @return the volunteers signed up for a given job.
 	 */
-	public Collection<User> getVolunteersForJob(Job theJob) {
+	public List<User> getVolunteersForJob(Job theJob) {
 		return theJob.getVolunteers();
 	}
 	
@@ -77,8 +77,8 @@ public class PMAbilities {
 	 * 
 	 * @return all jobs scheduled at the park.
 	 */
-	public Collection<Job> getJobsAtPark(String thePark) {
-		Collection<Job> jobsAtPark = new ArrayList<>();
+	public List<Job> getJobsAtPark(String thePark) {
+		List<Job> jobsAtPark = new ArrayList<>();
 		for (Job job: myJobs) {
 			if (job.getParkName().equals(thePark)) {
 				jobsAtPark.add(new Job(job));

@@ -27,8 +27,8 @@ public class JobSchedule {
 	@Deprecated
 	private List<Job> myJobList;
 	
-	public static Collection<Job> getAllFutureJobs(String theFile) {
-		Collection<Job> jobList = new ArrayList<>(); 
+	public static List<Job> getAllFutureJobs(String theFile) {
+		List<Job> jobList = new ArrayList<>(); 
 		String line;
 		InputStream is = JobSchedule.class.getClassLoader().getResourceAsStream(theFile);
 		BufferedReader fileReader = new BufferedReader(new InputStreamReader(is));
