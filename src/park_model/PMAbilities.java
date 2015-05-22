@@ -24,12 +24,12 @@ public class PMAbilities {
 	 * 
 	 * Preconditions: theFileName != null.
 	 * 
-	 * @param fileName The name of the file that holds the
+	 * @param theFileName The name of the file that holds the
 	 * jobs that the ParkManager should be able to 
 	 * access.
 	 */
-	public PMAbilities(String fileName) {
-		myJobs = JobSchedule.getAllFutureJobs(fileName);
+	public PMAbilities(String theFileName) {
+		myJobs = JobSchedule.getAllFutureJobs(theFileName);
 		assert myJobs != null;
 	}
 	
@@ -93,8 +93,8 @@ public class PMAbilities {
 	 * 
 	 * Preconditions: fileName != null.
 	 */
-	public void saveJobs(String fileName) {
-		JobSchedule.saveJobList(myJobs, fileName);
+	public void saveJobs(String theFileName) {
+		JobSchedule.saveJobList(myJobs, theFileName);
 		assert myJobs != null;
 	}
 	

@@ -13,8 +13,6 @@ import park_model.ParkManager;
 
 public class ParkManagerTest {
 	
-	private static final String DEFAULT_EMAIL = "smith@aol.com";
-	
 	private ParkManager myPM;
 	private List<String> myParks;
 
@@ -27,8 +25,8 @@ public class ParkManagerTest {
 	}
 
 	@Test
-	public void testParkManagerConstructor() {
-		assertEquals("Email should be the same", DEFAULT_EMAIL, myPM.getEmail());
+	public void testParkManagerConstructorShouldContainACopyOfTheParks() {
+		assertEquals("Email should be the same", Config.DEFAULT_EMAIL, myPM.getEmail());
 		assertEquals("Park list contents should be the same", myParks, myPM.getParks());
 		assertNotSame("List should be a copy", myParks, myPM.getParks());
 	}

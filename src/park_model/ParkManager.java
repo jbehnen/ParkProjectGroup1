@@ -1,6 +1,5 @@
 package park_model;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,9 +12,6 @@ import java.util.List;
 
 public class ParkManager extends User {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8909077605412708768L;
 	
 	/**
@@ -26,12 +22,17 @@ public class ParkManager extends User {
 	/**
 	 * Constructs a new Park Manager.
 	 * 
+	 * Preconditions: theEmail != null, theFirstName != null, theLastName != null, 
+	 * and theParks != null.
+	 * 
 	 * @param theEmail The email address used to identify the ParkManager.
 	 * @param theParks The parks that the ParkManager manages.
 	 */
-	public ParkManager(String myEmail, String myFirstName, String myLastName, List<String> myParks) {
-		super(myEmail, myFirstName, myLastName);
-		this.myParks = new ArrayList<String>(myParks);
+	public ParkManager(String theEmail, String theFirstName, String theLastName, 
+			List<String> theParks) {
+		super(theEmail, theFirstName, theLastName);
+		this.myParks = Collections.unmodifiableList(theParks);
+		assert myParks != null;
 	}
 	
 	/**

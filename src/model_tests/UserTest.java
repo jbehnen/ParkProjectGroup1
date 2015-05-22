@@ -25,25 +25,22 @@ public class UserTest {
 	}
 
 	@Test
-	public void testVolunteerConstructor() {
+	public void testUserConstructorShouldConstructAUser() {
 		assertEquals("Email should be set", Config.DEFAULT_EMAIL, myUser.getEmail());
+		assertEquals("First name should be set", Config.DEFAULT_FIRST_NAME, myUser.getFirstName());
+		assertEquals("Last name should be set", Config.DEFAULT_LAST_NAME, myUser.getLastName());
 	}
 	
 	@Test
-	public void testUserEquals() {
+	public void testUserEqualsShouldBeTrueIfSameEmail() {
 		User otherUser = new User(Config.DEFAULT_EMAIL, "Eddie", "Izzard");
 		assertEquals("Email is only parameter needed for equality", myUser, otherUser);
-		otherUser = new User("jones@aol.com", Config.DEFAULT_LAST_NAME, Config.DEFAULT_LAST_NAME);
-		assertNotEquals("Last name does not guarantee equality", myUser, otherUser);
 	}
 	
 	@Test
-	public void toDelimitedStringVolunteerShouldProduceDataThatCanBeParsed() {
-		User user = new User(Config.DEFAULT_EMAIL, Config.DEFAULT_FIRST_NAME,
-				Config.DEFAULT_LAST_NAME);
-		String string = user.toDelimitedStringVolunteer();
-		User sameUser = User.parseDelimitedString(string);
-		assertEquals("User info transferred to/from string", user, sameUser);
+	public void testUserEqualsShouldNotBeTrueIfNotSameEmail() {
+		User otherUser = new User("jones@aol.com", Config.DEFAULT_LAST_NAME, Config.DEFAULT_LAST_NAME);
+		assertNotEquals("Same name does not guarantee equality", myUser, otherUser);
 	}
 
 }

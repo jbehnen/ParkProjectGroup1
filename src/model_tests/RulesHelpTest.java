@@ -59,6 +59,13 @@ public class RulesHelpTest {
 	}
 	
 	@Test
+	public void testIsDateInPastShouldReturnFalseIfTenDaysInFuture() {
+		GregorianCalendar tenDaysInFuture = today;
+		tenDaysInFuture.add(Calendar.DATE, 10);
+		assertFalse("Tomorrow is not in the past", RulesHelp.isDateInPast(tenDaysInFuture));
+	}
+	
+	@Test
 	public void testIsDateInPastShouldReturnTrueIfYesterday() {
 		GregorianCalendar yesterday = today;
 		yesterday.add(Calendar.DATE, -1);
@@ -66,54 +73,61 @@ public class RulesHelpTest {
 	}
 	
 	@Test
-	public void testIsDateTooFarInFutureShouldReturnFalseIfOnLastLegalDay() {
-		GregorianCalendar futureDate = today;
-		futureDate.add(Calendar.DATE, Config.MAX_DAYS_IN_FUTURE);
-		boolean check = RulesHelp.isDateTooFarInFuture(futureDate);
+	public void testIsDateInPastShouldReturnTrueIfTenDaysAgo() {
+		GregorianCalendar tenDaysAgo = today;
+		tenDaysAgo.add(Calendar.DATE, -10);
+		assertTrue("Yesterday is in the past", RulesHelp.isDateInPast(tenDaysAgo));
+	}
+	
+	@Test
+	public void testIsDateTooFarInFutureShouldReturnFalseIfOnLastAllowedDay() {
+		GregorianCalendar lastAllowedDay = today;
+		lastAllowedDay.add(Calendar.DATE, Config.MAX_DAYS_IN_FUTURE);
+		boolean check = RulesHelp.isDateTooFarInFuture(lastAllowedDay);
 		assertFalse("Job is within allowed time frame", check);
 	}
 	
 	@Test
 	public void testIsDateTooFarInFutureShouldReturnTrueIfAfterLastLegalDay() {
-		GregorianCalendar futureDate = today;
-		futureDate.add(Calendar.DATE, Config.MAX_DAYS_IN_FUTURE + 1);
-		boolean check = RulesHelp.isDateTooFarInFuture(futureDate);
+		GregorianCalendar dayAfterLastAllowedDay = today;
+		dayAfterLastAllowedDay.add(Calendar.DATE, Config.MAX_DAYS_IN_FUTURE + 1);
+		boolean check = RulesHelp.isDateTooFarInFuture(dayAfterLastAllowedDay);
 		assertTrue("Job is after allowed time frame", check);
 	}
 	
 	@Test
 	public void testIsDateInRangeShouldReturnFalseIfDateBeforeFirstDate() {
-		GregorianCalendar testDate = new GregorianCalendar(2015, 2, 7);
+		GregorianCalendar dayBeforeFirstDayInRange = new GregorianCalendar(2015, 2, 7);
 		assertFalse("Date before first date", 
-				RulesHelp.isDateInRange(testDate, firstDate, lastDate));
+				RulesHelp.isDateInRange(dayBeforeFirstDayInRange, firstDate, lastDate));
 	}
 	
 	@Test
 	public void testIsDateInRangeShouldReturnTrueIfDateIsFirstDate() {
-		GregorianCalendar testDate = new GregorianCalendar(2015, 2, 8);
+		GregorianCalendar firstDayInRange = (GregorianCalendar) firstDate.clone();
 		assertTrue("Date is first date", 
-				RulesHelp.isDateInRange(testDate, firstDate, lastDate));
+				RulesHelp.isDateInRange(firstDayInRange, firstDate, lastDate));
 	}
 	
 	@Test
 	public void testIsDateInRangeShouldReturnTrueIfDateBetweenFirstAndLastDate() {
-		GregorianCalendar testDate = new GregorianCalendar(2015, 2, 14);
+		GregorianCalendar dayInMiddleOfRange = new GregorianCalendar(2015, 2, 14);
 		assertTrue("Date is between first and last date", 
-				RulesHelp.isDateInRange(testDate, firstDate, lastDate));
+				RulesHelp.isDateInRange(dayInMiddleOfRange, firstDate, lastDate));
 	}
 	
 	@Test
 	public void testIsDateInRangeShouldReturnTrueIfDateIsLastDate() {
-		GregorianCalendar testDate = new GregorianCalendar(2015, 2, 17);
+		GregorianCalendar lastDayInRange = (GregorianCalendar) lastDate.clone();
 		assertTrue("Date is last date", 
-				RulesHelp.isDateInRange(testDate, firstDate, lastDate));
+				RulesHelp.isDateInRange(lastDayInRange, firstDate, lastDate));
 	}
 	
 	@Test
 	public void testIsDateInRangeShouldReturnFalseIfDateAfterLastDate() {
-		GregorianCalendar testDate = new GregorianCalendar(2015, 2, 18);
+		GregorianCalendar dayAfterLastDayInRange = new GregorianCalendar(2015, 2, 18);
 		assertFalse("Date after last date", 
-				RulesHelp.isDateInRange(testDate, firstDate, lastDate));
+				RulesHelp.isDateInRange(dayAfterLastDayInRange, firstDate, lastDate));
 	}
 
 }

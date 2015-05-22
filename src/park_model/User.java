@@ -11,14 +11,8 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2978455524937410469L;
 
-	/**
-	 * The user's email address.
-	 */
 	private String myEmail;
 	
 	private String myFirstName;
@@ -27,6 +21,8 @@ public class User implements Serializable {
 	
 	/**
 	 * Constructs a User.
+	 * 
+	 * Preconditions: theEmail != null, theFirstName != null, theLastName != null.
 	 */
 	public User(String myEmail, String myFirstName, String myLastName) {
 		this.myEmail = myEmail;
@@ -43,10 +39,20 @@ public class User implements Serializable {
 		return myEmail;
 	}
 	
+	/**
+	 * Return the user's first name.
+	 * 
+	 * @return The user's first name.
+	 */
 	public String getFirstName() {
 		return myFirstName;
 	}
 	
+	/**
+	 * Return the user's last name.
+	 * 
+	 * @return The user's last name.
+	 */
 	public String getLastName() {
 		return myLastName;
 	}
