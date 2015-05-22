@@ -105,26 +105,26 @@ public class Job implements Serializable {
 	 * @return boolean value
 	 */
 
-	// Should stop returning a boolean.
-	public boolean signUp(User theVolunteer, WorkCategory theCategory) {
-
-		boolean signUp = true;
-		signUp = !isSignedUp(theVolunteer); // This has to be reversed as if
-											// they are not signed up (false)
-											// then they can be signed up
-											// (true).
-
-		// Checks to see if their work category is available.
-		//If its available, add the volunteer and return true.
-		//Otherwise return false. 
-		if (signUp) {
+	/**
+	 * signUp method
+	 * 
+	 * Signs up the user if the work category is still available. 
+	 * @param theVolunteer
+	 * @param theCategory
+	 */
+	
+	/*Precondition: caller must check to see if Volunteer is already signed up*/
+	public void signUp(User theVolunteer, WorkCategory theCategory) {
 			if (isOpen(theCategory)) {
 				myVolunteers.add(theVolunteer);
-			} else {
-				signUp = false;
-			}
-		}
-		return signUp;
+				if (theCategory == WorkCategory.LIGHT) {
+					numLightJobs--;
+				} else if (theCategory == WorkCategory.MEDIUM) {
+					numMediumJobs--;
+				} else {
+					numHeavyJobs--;
+				}
+			} 
 	}
 
 	/**
