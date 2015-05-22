@@ -114,8 +114,8 @@ public class Job implements Serializable {
 	 */
 	
 	/*Precondition: caller must check to see if Volunteer is already signed up*/
+	/*Precondition: caller must check to see if the Work Category is still available*/
 	public void signUp(User theVolunteer, WorkCategory theCategory) {
-			if (isOpen(theCategory)) {
 				myVolunteers.add(theVolunteer);
 				if (theCategory == WorkCategory.LIGHT) {
 					numLightJobs--;
@@ -124,7 +124,6 @@ public class Job implements Serializable {
 				} else {
 					numHeavyJobs--;
 				}
-			} 
 	}
 
 	/**
