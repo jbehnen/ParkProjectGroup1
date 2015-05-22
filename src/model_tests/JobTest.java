@@ -1,170 +1,112 @@
 package model_tests;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import config_files.Config;
 import park_model.Job;
+import park_model.RulesHelp;
 import park_model.User;
 import park_model.WorkCategory;
 
 public class JobTest {
-	//Private fields to use in testing
 	
-	// The Jobs for testing
-	private Job firstJob;
-	private Job secondJob;
-	private Job copySecondJob;
+	//assertEquals("Message", expected, actual)
+	//assertTrue(methodCall)
+	//assertFalse(methodCall)
 	
-	//The Date List
-	private List<GregorianCalendar> jobDates;
+	private User volun1, volun2;
+	private Job job1, job2, job3, job4;
 	
-	//The Dates
-	private GregorianCalendar begin1;
-	private GregorianCalendar begin2;
-	private GregorianCalendar end1;
-	private GregorianCalendar end2;
-
-	//Date is depricated and until another data type is chosen, the program will suppress the warning.
-	@SuppressWarnings("deprecation")
+	//Set up the data needed
 	@Before
 	public void setUp() throws Exception {
-		
-		//Create 2 List of Dates
-		jobDates = new ArrayList();
-		
-		begin1 = new GregorianCalendar(2015, 05, 04);
-		end1 = new GregorianCalendar(2015, 05, 05);
-		
-		jobDates.add(begin1);
-		jobDates.add(end1);
-		
-		//Create 2 jobs
-		firstJob = new Job("Lincoln",jobDates, 2, 1, 0, "");
-		secondJob = new Job("Tide", jobDates, 1, 4, 2, "");
-
+		volun1 = new User("Betty", "White", "white@gmail.com");
+		volun2 = new User("Lucille", "Ball", "ball@gmail.com");
+		job1 = new Job("King", RulesHelp.getTodaysDate(), 1, 2, 3, 1, "Planting roses and eating ice cream.");
+		job2 = new Job("Rosa", RulesHelp.getTodaysDate(), 2, 2, 2, 2, "Building a trail and clearing brush.");
+		job3 = new Job("King", RulesHelp.getTodaysDate(), 1, 1, 1, 1, "Planting trees");
+		job4 = new Job("Rosa", RulesHelp.getTodaysDate(), 2, 0, 1, 4, "Clearin Debris"); 
 	}
 
+	////////////////Test signUp method////////////////
+	//Case 1: Tests new signUp
 	@Test
-	public void testJobConstructor() {
-		//Check Park
-		assertEquals("Parks should be the same", "Lincoln", firstJob.getParkName());
-		//Check instantiation of empty volunteer list
-		assertEquals("Volunteer sign up list should be empty", firstJob.getVolunteers().size(), 0);
+	public void testSignUpWhenListIsEmpty(){
+		assertEquals("There should be no volunteers in the new list", 0, job1.getVolunteers().size());
+		job1.signUp(volun1,  WorkCategory.LIGHT);
+		assertEquals("There should be a volunteer in the list", 1, job1.getVolunteers().size());
 	}
 	
+	//Case 2: Tests when already in list
 	@Test
-	public void testGetAvailableWorkCategory(){
-		//Create list of available work categories
-		List<WorkCategory> myCategories = new ArrayList();
-		//Adding the work categorys to List
-		myCategories.add(WorkCategory.MEDIUM);
-		myCategories.add(WorkCategory.LIGHT);
-		//Test 
-		assertEquals("A list of available work categories should be returned.", firstJob.getAvailableWorkCategories(), myCategories);
+	public void testSignUpWhenListNotEmpty(){
+		job1.signUp(volun1, WorkCategory.LIGHT);
+		assertEquals("There should be a volunteer in the list", 1, job1.getVolunteers().size());
+		job1.signUp(volun2, WorkCategory.MEDIUM);
+		assertEquals("There should be two volunteers in the list", 2, job1.getVolunteers().size());
 	}
 	
+	//////////////Test isSignedUp method/////////
+	//Tests isSignedUp when volunteer is in the list
 	@Test
-	public void testSignUp(){
-		User v1 = new User("you@gmail.com", "", "Wise");
-		//Tests if the volunteer is already signed up for the job
-		assertFalse(firstJob.isSignedUp(v1));
-		//Tests to see if the volunteer can sign up for the job under a category that has 0 available jobs
-		assertFalse(firstJob.signUp(v1, WorkCategory.HEAVY));
-		//Tests if the volunteer signed up
-		assertTrue(firstJob.signUp(v1, WorkCategory.LIGHT));
-		//Tests to see if the volunteer is listed for that job
-		assertTrue(firstJob.isSignedUp(v1));
-		//Tests to see if volunteer can sign up again
-		assertFalse(firstJob.signUp(v1, WorkCategory.LIGHT));
-		//Tests to see if volunteer can sign up again with a different work category
-		assertFalse(firstJob.signUp(v1, WorkCategory.MEDIUM));
+	public void testisSignedUpWhenSignedUp(){
+		job1.signUp(volun1, WorkCategory.LIGHT);
+		assertTrue("True should be returned as the volunteer is already signed up. ", job1.isSignedUp(volun1));
 	}
 	
+	//Tests isSignedUp when volunteer is not in the list
 	@Test
-	public void testCategoryDecrement(){
-		
-		User v2 = new User("you@gmail.com", "", "Wise");
-		User v3 = new User("everyone@gmail.com", "", "Gandolf");
-		
-		//Light has 1 availability
-		//Light jobs available = 1
-		assertTrue(secondJob.signUp(v2, WorkCategory.LIGHT));
-		//Light jobs available = 0
-		assertFalse(secondJob.signUp(v3, WorkCategory.LIGHT));
+	public void testIsSignedUpWhenNotSignedUpListEmpty(){
+		job2.isSignedUp(volun2);
 	}
 	
-	
-	// ADD JOB FUNCTIONALITY TESTS
-	
+	//Tests isSignedUp when volunteer is not in the list and the list is not empty
 	@Test
-	public void testIsJobTooLongShouldReturnFalseIfJobIsMaxDaysLong() {
-		Job job = new Job("Park", Config.getTodaysDate(), Config.MAX_JOB_DAYS,
-				1, 1, 1, "description");
-		boolean check = job.isJobTooLong();
-		assertEquals("Job is maximum acceptable length", false, check);
+	public void testIsSignedUpWhenNotSignedUpListNotEmpty(){
+		job2.signUp(volun1, WorkCategory.MEDIUM);
+		job2.isSignedUp(volun2);
+	}
+	
+	///////////////Test the getNumOpen method ////////////////
+	//Tests when the WorkCategory is LIGHT
+	@Test
+	public void testgetNumOpenLIGHT() {
+		assertEquals(job3.getNumOpen(WorkCategory.LIGHT), 1);
+	}
+	
+	//Tests when the Work Category is HEAVY 
+	@Test
+	public void testgetNumOpenMEDIUM() {
+		assertEquals(job3.getNumOpen(WorkCategory.MEDIUM), 1);
 	}
 
+	//Tests when the Work Category is HEAVY 
 	@Test
-	public void testIsJobTooLongShouldReturnTrueIfJobMoreThanMaxDaysLong() {
-		Job job = new Job("Park", Config.getTodaysDate(), Config.MAX_JOB_DAYS + 1,
-				1, 1, 1, "description");
-		boolean check = job.isJobTooLong();
-		assertEquals("Job too long", true, check);
-	}
-
-	@Test
-	public void testIsJobInPastShouldReturnFalseIfJobToday() {
-		Job job = new Job("Rosa", Config.getTodaysDate(), 1, 1, 1, 1, "description");
-		boolean check = job.isJobInPast();
-		assertFalse("Job not in past", check);
-		
+	public void testgetNumOpenHEAVY() {
+		assertEquals(job3.getNumOpen(WorkCategory.HEAVY), 1);
 	}
 	
+	//Tests after a volunteer has been added and 1 is decremented from the job category
 	@Test
-	public void testIsJobInPastShouldReturnTrueIfJobYesterday() {
-		GregorianCalendar yesterday = Config.getTodaysDate();
-		yesterday.add(Calendar.DATE, -1);
-		Job job = new Job("Rosa", yesterday, 1, 1, 1, 1, "description");
-		boolean check = job.isJobInPast();
-		assertTrue("Job in past", check);
+	public void testgetNumOpenDecremented() {
+		assertEquals(job3.getNumOpen(WorkCategory.HEAVY), 1);
+		job3.signUp(volun1,WorkCategory.HEAVY);
+		assertEquals(job3.getNumOpen(WorkCategory.HEAVY), 0);
 	}
 	
-	@Test
-	public void testIsJobTooFarInFutureShouldReturnFalseIfOnLastLegalDay() {
-		GregorianCalendar futureDate = Config.getTodaysDate();
-		futureDate.add(Calendar.DATE, Config.MAX_DAYS_IN_FUTURE);
-		Job job = new Job("Rosa", futureDate, 1, 1, 1, 1, "description");
-		boolean check = job.isJobTooFarInFuture();
-		assertFalse("Job is within allowed time frame", check);
+	/////////////Test isOpen//////////////////
+	//Tests isOpen when the total for the WorkCategory is 0
+	//Should return false
+	public void testIsOpenWhenZero(){
+		assertFalse(job4.isOpen(WorkCategory.LIGHT));
 	}
 	
-	@Test
-	public void testIsJobTooFarInFutureShouldReturnTrueIfAfterLastLegalDay() {
-		GregorianCalendar futureDate = Config.getTodaysDate();
-		futureDate.add(Calendar.DATE, Config.MAX_DAYS_IN_FUTURE + 1);
-		Job job = new Job("Rosa", futureDate, 1, 1, 1, 1, "description");
-		boolean check = job.isJobTooFarInFuture();
-		assertTrue("Job is after allowed time frame", check);
+	//Should return true
+	public void testIsOpenWhenGreaterThanZero(){
+		assertFalse(job4.isOpen(WorkCategory.MEDIUM));
 	}
-	
-	@Test
-	public void createDelimitedStringShouldProduceDataThatCanBeParsed() {
-		List<User> users = new ArrayList<>();
-		users.add(new User("a", "b", "c"));
-		users.add(new User("dsf", "afew", "fda"));
-		Job job = new Job("Park", 2015, 5, 8, 2, 1, 2, 3, "Description", users);
-		String string = job.createDelimitedString();
-		Job sameJob = Job.parseDelimitedString(string);
-		assertEquals("Job info transferred to/from string", job, sameJob);
-	}
-
 }
