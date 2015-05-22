@@ -19,15 +19,20 @@ public class AdminAbilities {
 	 * Constructs the AdminAbilities and gets all of the volunteers
 	 * stored in the given file.
 	 * 
+	 * Preconditions: fileName != null.
+	 * 
 	 * @param fileName The name of the file that the list of all
 	 * volunteers is stored in and loaded from.
 	 */
 	public AdminAbilities(String fileName) {
 		myVolunteers = UserList.getAllUsers(fileName);
+		assert myVolunteers != null;
 	}
 	
 	/**
 	 * Returns an unmodifiable list of volunteers with the last name theLastName. 
+	 * 
+	 * Precondition: theLastName != null.
 	 * 
 	 * @return An unmodifiable list of volunteers with the last name theLastName. 
 	 */
@@ -40,17 +45,20 @@ public class AdminAbilities {
 				lastNameList.add(myVolunteer);
 			}
 		}
-		
+		assert myVolunteers != null;
 		return Collections.unmodifiableCollection(lastNameList);	
 	}
 	
 	/**
 	 * Adds a volunteer to the collection of volunteers.
 	 * 
+	 * Precondition: theVolunteer != null.
+	 * 
 	 * TESTING PURPOSES ONLY. Needs to be repackaged and
 	 * have the access modifier changed.
 	 */
 	public void addVolunteer(User theVolunteer) {
 		myVolunteers.add(theVolunteer);
+		assert myVolunteers != null;
 	}
 }

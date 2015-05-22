@@ -22,21 +22,28 @@ public class PMAbilities {
 	 * Constructs the PMAbilities and gets all of the jobs
 	 * stored in the given file.
 	 * 
+	 * Preconditions: theFileName != null.
+	 * 
 	 * @param fileName The name of the file that holds the
 	 * jobs that the ParkManager should be able to 
 	 * access.
 	 */
 	public PMAbilities(String fileName) {
 		myJobs = JobSchedule.getAllFutureJobs(fileName);
+		assert myJobs != null;
 	}
 	
 	/**
 	 * Adds a job to the list of jobs.
 	 * 
+	 * Preconditions: theJob != null, !tooManyTotalJobs(),
+	 * !tooManyJobsNearJobTime(theJob). 
+	 * 
 	 * @param theJob The job to be added.
 	 */
 	public void addJob(Job theJob) {
 		myJobs.add(new Job(theJob));
+		assert myJobs != null;
 	}
 	
 	/**
@@ -53,6 +60,8 @@ public class PMAbilities {
 	/**
 	 * Returns the volunteers signed up for a given job.
 	 * 
+	 * Preconditions: theJob != null.
+	 * 
 	 * @return the volunteers signed up for a given job.
 	 */
 	public Collection<User> getVolunteersForJob(Job theJob) {
@@ -64,6 +73,8 @@ public class PMAbilities {
 	 * is responsible for making sure that PMs 
 	 * can only get jobs for parks that they manage.
 	 * 
+	 * Preconditions: thePark != null.
+	 * 
 	 * @return all jobs scheduled at the park.
 	 */
 	public Collection<Job> getJobsAtPark(String thePark) {
@@ -73,14 +84,18 @@ public class PMAbilities {
 				jobsAtPark.add(new Job(job));
 			}
 		}
+		assert myJobs != null;
 		return jobsAtPark;
 	}
 	
 	/**
 	 * Saves jobs to file.
+	 * 
+	 * Preconditions: fileName != null.
 	 */
 	public void saveJobs(String fileName) {
 		JobSchedule.saveJobList(myJobs, fileName);
+		assert myJobs != null;
 	}
 	
 	/**
@@ -98,9 +113,11 @@ public class PMAbilities {
 	 * ****************** REPLACES tooManyJobsInWeek() ************************
 	 * 
 	 * Returns true if the immediate time frame surrounding the proposed job has
-	 * already reached maximum jobs, false otherwise. 
+	 * already reached maximum jobs (Config.MAX_DENSE_JOBS), false otherwise. 
 	 * 
 	 * "Week" is += Config.IMMEDIATE_TIME_FRAME_DAYS days.
+	 * 
+	 * Precondition: theJob != null.
 	 * 
 	 * @return true if the immediate time frame surrounding the proposed job has
 	 * already reached maximum jobs, false otherwise. 
@@ -116,12 +133,17 @@ public class PMAbilities {
 				sameWeekJobs += 1;
 			}
 		}
+		assert myJobs != null;
 		return sameWeekJobs >= Config.MAX_DENSE_JOBS;
 	}
 	
 	/**
 	 * Returns true if part of the job falls within the inclusive 
 	 * time range from theFirstDate to theEndDate, false otherwise.
+	 * 
+	 * Helper method for tooManyJobsNearJobTime.
+	 * 
+	 * Precondition: theJob != null, theFirstDate != null, theLastDate != null.
 	 * 
 	 * @param theJob The job being checked against the time range.
 	 * @param theFirstDate The first day of the time range.
