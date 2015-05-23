@@ -32,7 +32,7 @@ public class ParkManagerIO implements IO {
 	
 	public ParkManagerIO(ParkManager myUser) {
 		this.myUser = myUser;
-		abilities = new PMAbilities("5JobsInWeekMay122015.txt");
+		abilities = new PMAbilities(Config.JOB_SCHEDULE_FILE_FOR_STATIC);
 	}
 
 	@Override

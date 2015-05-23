@@ -401,11 +401,8 @@ public class Job implements Serializable {
 		GregorianCalendar startDate = new GregorianCalendar(theYear, theMonth,
 				theDate);
 		startDate.get(Calendar.MILLISECOND); // reset fields after assignment
-		myDates = new ArrayList<>();
-		for (int i = 0; i < theNumDays; i++) {
-			myDates.add((GregorianCalendar) startDate.clone());
-			startDate.add(Calendar.DATE, 1);
-		}
+		this.startDate = startDate;
+		this.numDays = theNumDays;
 		assert myVolunteers != null;
 	}
 
