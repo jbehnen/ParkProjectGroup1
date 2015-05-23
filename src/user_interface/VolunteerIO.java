@@ -78,7 +78,8 @@ public class VolunteerIO implements IO {
 			// Inner option call to sign up?
 			break;
 		case 3:
-              System.exit(0);
+			myAbilities.saveJobs(Config.JOB_SCHEDULE_FILE_FOR_STATIC);
+            System.exit(0);
 			break;
 		case 10:
 
@@ -273,6 +274,7 @@ public class VolunteerIO implements IO {
 						fail = false;
 					}
 					jobForSignUp.signUp(myUser, WorkCategory.LIGHT);
+					System.out.print("Signed up for the job");
 					break;
 				case 2:
 					if (!jobForSignUp.isOpen(WorkCategory.MEDIUM)) {
@@ -281,6 +283,7 @@ public class VolunteerIO implements IO {
 						fail = false;
 					}
 					jobForSignUp.signUp(myUser, WorkCategory.MEDIUM);
+					System.out.print("Signed up for the job");
 					break;
 				case 3:
 					if (!jobForSignUp.isOpen(WorkCategory.HEAVY)) {
@@ -289,6 +292,7 @@ public class VolunteerIO implements IO {
 						fail = false;
 					}
 					jobForSignUp.signUp(myUser, WorkCategory.HEAVY);
+					System.out.print("Signed up for the job");
 					break;
 
 				case 10:
