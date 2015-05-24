@@ -1,22 +1,97 @@
 package park_model;
 
-import java.util.Collection;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.List;
 
+/**
+ * Provides the methods that allow Volunteers to complete
+ * their user stories and access the list of jobs.
+ * 
+ * @author Shewan, Lee Bui, and Julia
+ * @version 5/24/2015
+ */
 public class VolunteerAbilities {
 	
-	Collection<Job> myJobs;
-	
-	public VolunteerAbilities(String fileName) {
-		myJobs = JobSchedule.getAllFutureJobs(fileName);
-	}
-	
+	List<Job> myJobs;
 	
 	/**
-	 * Returns the list of all future jobs.
-	 * @return - list of future jobs.
+	 * Constructs the VolunteerAbilities and gets all of the jobs
+	 * stored in the given file.
+	 * 
+	 * Preconditions: theFileName != null.
+	 * 
+	 * @param theFileName The name of the file that holds the
+	 * jobs that the ParkManager should be able to 
+	 * access.
 	 */
-	public Collection<Job> getAllFutureJobs() {			
-		return myJobs; // must be deep copy
+	public VolunteerAbilities(String theFileName) {
+		myJobs = JobSchedule.getAllFutureJobs(theFileName);
+		assert myJobs != null;
+	}
+	
+	/**
+	 * Returns an unmodifiable list of all jobs in 
+	 * the class - not a deep copy. 
+	 * Stored jobs can be changed based on Volunteer input.
+	 * @return an unmodifiable list of all jobs in 
+	 * the class - not a deep copy.
+	 */
+	public List<Job> getAllFutureJobs() {			
+		return myJobs;
+	}
+	
+	public void signUp(Job theJob, User theVolunteer, WorkCategory theWorkCategory) {
+		theJob.signUp(theVolunteer, theWorkCategory);
+	}
+	
+	/**
+	 * Returns true if theVolunteer is already signed up for another job
+	 * that overlaps theJob, false otherwise. 
+	 * 
+	 * Preconditions: theVolunteer != null, theJob != null, theJob.getFirstDate() != null,
+	 * theJob.getLastDate() != null.
+	 * 
+	 * @return true if theVolunteer is already signed up for another job
+	 * that overlaps theJob, false otherwise. 
+	 */
+	public boolean isSignedUpForConflictingJob(User theVolunteer, Job theJob) {
+		GregorianCalendar firstDate = theJob.getFirstDate();
+		GregorianCalendar lastDate = theJob.getLastDate();
+		for (Job otherJob: myJobs) {
+			if (otherJob.isSignedUp(theVolunteer) 
+					&& RulesHelp.isJobInRange(otherJob, firstDate, lastDate)) {
+				assert myJobs != null;
+				return true;
+			}
+		}
+		assert myJobs != null;
+		return false;
+	}
+	
+	/**
+	 * Adds a job to the list of jobs.
+	 * 
+	 * TESTING PURPOSES ONLY
+	 * 
+	 * Preconditions: theJob != null, !tooManyTotalJobs(),
+	 * !tooManyJobsNearJobTime(theJob). 
+	 * 
+	 * @param theJob The job to be added.
+	 */
+	public void addJob(Job theJob) {
+		myJobs.add(new Job(theJob));
+		assert myJobs != null;
+	}
+	
+	/**
+	 * Saves jobs to file.
+	 * 
+	 * Preconditions: fileName != null.
+	 */
+	public void saveJobs(String fileName) {
+		JobSchedule.saveJobList(myJobs, fileName);
+		assert myJobs != null;
 	}
 	
 	/**
@@ -28,6 +103,7 @@ public class VolunteerAbilities {
 	 *            -= Second job
 	 * @return if these two jobs do have same day.
 	 */
+	@Deprecated
 	public boolean checkJobsOnSameDay(Job A, Job B) {
 		boolean sameDay = false;
 
@@ -47,7 +123,7 @@ public class VolunteerAbilities {
 		return sameDay;
 	}
 	
-	
+	@Deprecated
 	public boolean isFull(Job jobForSignUp){
 		
 		return !jobForSignUp.isOpen(WorkCategory.LIGHT)&&
@@ -56,24 +132,5 @@ public class VolunteerAbilities {
 			
 			
 		}
-		
-		
-		
-		
-		
-	
-	
-	
-	/**
-	 * 
-	 * @param fileName
-	 */
-	
-	public void saveJobs(String fileName) {
-		JobSchedule.saveJobList(myJobs, fileName);
-	}
-	
-	
-	 
 	
 }

@@ -75,4 +75,27 @@ public class RulesHelp {
 				&& theDate.compareTo(theEndDate) <= 0);
 	}
 	
+	/**
+	 * Returns true if part of the job falls within the inclusive 
+	 * time range from theFirstDate to theEndDate, false otherwise.
+	 * 
+	 * Precondition: theJob != null, theFirstDate != null, theLastDate != null.
+	 * 
+	 * @param theJob The job being checked against the time range.
+	 * @param theFirstDate The first day of the time range.
+	 * @param theLastDate The last day of the time range.
+	 * @return true if part of the job falls within the inclusive 
+	 * time range from theFirstDate to theLastDate, false otherwise.
+	 */
+	public static boolean isJobInRange(Job theJob, GregorianCalendar theFirstDate,
+			GregorianCalendar theLastDate) {
+		if (RulesHelp.isDateInRange(theJob.getFirstDate(), theFirstDate, theLastDate)) {
+			return true;
+		}
+		if (RulesHelp.isDateInRange(theJob.getLastDate(), theFirstDate, theLastDate)) {
+			return true;
+		}
+		return false;
+	}
+	
 }

@@ -28,6 +28,11 @@ public class PMAbilitiesTest {
 		testJob = new Job("Rosa Park", RulesHelp.getTodaysDate(), 1,
 				2, 3, 4, "Description");
 	}
+	
+	@Test
+	public void testConstructorShouldConstructEmptyJobListFromEmptyFile() {
+		assertEquals("Starts with no jobs", 0, abilities.getNumJobs());
+	}
 
 	@Test
 	public void testAddJobShouldAddAJob() {

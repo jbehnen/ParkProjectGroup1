@@ -42,13 +42,6 @@ public class JobScheduleTest {
 
 	@Before
 	public void setUp() throws Exception {
-		myJobSchedule = new JobSchedule(true);
-		myOneDateList = new ArrayList<GregorianCalendar>();
-		legalDate = Config.getTodaysDate();
-		legalDate.add(Calendar.DATE, 1);
-		myOneDateList.add(legalDate);
-		myDefaultJob = new Job("Park", Config.getTodaysDate(), 1, 1,
-				1, 1, "description");
 	}
 	
 	@Test
