@@ -22,9 +22,9 @@ public class VolunteerAbilitiesTest {
 	@Before
 	public void setUp() throws Exception {
 		myFirstJob = new Job("King", RulesHelp.getTodaysDate(), 
-				1, 2, 3, 4, "Description");
+				1, 2, 3, 4, "Planting trees");
 		mySecondJob = new Job("Rosa", RulesHelp.getTodaysDate(), 
-				1, 2, 3, 4, "Description");
+				1, 2, 3, 4, "Clearin Debris");
 		myVolunteerAbilities = new VolunteerAbilities("config_files/empty.txt");
 		expectedCollection   = new ArrayList<>();
 	}
