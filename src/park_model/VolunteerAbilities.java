@@ -1,13 +1,24 @@
 package park_model;
 
 import java.util.Collection;
-
+/**
+ * This class allow Volunteer to complete
+ * their user stories and business rules
+ * @author Le Bui & Shewan
+ * @version 05/22/2015
+ */
 public class VolunteerAbilities {
 	
 	Collection<Job> myJobs;
-	
+	/**
+	 * This Construct get all the future job 
+	 * and stored in given file
+	 * @param fileName the name of the file that list of
+	 * all future job is stored and loaded from
+	 */
 	public VolunteerAbilities(String fileName) {
 		myJobs = JobSchedule.getAllFutureJobs(fileName);
+		assert myJobs != null : "my list of job is null";
 	}
 	
 	
@@ -47,7 +58,13 @@ public class VolunteerAbilities {
 		return sameDay;
 	}
 	
-	
+	/**
+	 * This construct checks for level difficult
+	 * of job sign up for
+	 * @param jobForSignUp - it checks for oppening work category
+	 * about level difficult of job
+	 * @return level difficult of job
+	 */
 	public boolean isFull(Job jobForSignUp){
 		
 		return !jobForSignUp.isOpen(WorkCategory.LIGHT)&&
@@ -56,24 +73,13 @@ public class VolunteerAbilities {
 			
 			
 		}
-		
-		
-		
-		
-		
-	
-	
-	
 	/**
-	 * 
-	 * @param fileName
+	 * Construct is saving list of Job
+	 * @param fileName - the nam of this file is saved
+	 * and loaded the list of Job
 	 */
 	
 	public void saveJobs(String fileName) {
 		JobSchedule.saveJobList(myJobs, fileName);
 	}
-	
-	
-	 
-	
 }

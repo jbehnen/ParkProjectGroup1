@@ -1,6 +1,5 @@
 package user_interface;
 
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -13,7 +12,15 @@ import park_model.User;
 import park_model.VolunteerAbilities;
 import park_model.WorkCategory;
 import config_files.Config;
-
+/**
+ * Running the menu for Volunteer
+ * This class is checking valid or invalid or conflict date
+ * Viewing list of Job, Showing list of Job in the future
+ * Managing option the volunteer take for Job
+ * @author Le Bui and Shewan
+ * @version 05/22/2014
+ *
+ */
 public class VolunteerIO implements IO {
 
 	private User myUser;	
@@ -173,7 +180,7 @@ public class VolunteerIO implements IO {
 	}
 	
 	/**
-	 * Handles the siging up process.
+	 * Construct handles the siging up process.
 	 */
 	
 	@SuppressWarnings("resource")
