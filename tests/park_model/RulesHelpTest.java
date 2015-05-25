@@ -1,4 +1,4 @@
-package model_tests;
+package park_model;
 
 import static org.junit.Assert.*;
 
@@ -8,9 +8,9 @@ import java.util.GregorianCalendar;
 import org.junit.Before;
 import org.junit.Test;
 
-import config_files.Config;
 import park_model.Job;
 import park_model.RulesHelp;
+import config_files.Config;
 
 /**
  * Tests the RulesHelp class.

@@ -54,10 +54,9 @@ public class AdminAbilities {
 	 * 
 	 * Precondition: theVolunteer != null.
 	 * 
-	 * TESTING PURPOSES ONLY. Needs to be repackaged and
-	 * have the access modifier changed.
+	 * TESTING PURPOSES ONLY.
 	 */
-	public void addVolunteer(User theVolunteer) {
+	void addVolunteer(User theVolunteer) {
 		myVolunteers.add(theVolunteer);
 		assert myVolunteers != null;
 	}

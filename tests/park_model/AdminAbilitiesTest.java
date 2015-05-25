@@ -1,4 +1,4 @@
-package model_tests;
+package park_model;
 
 import static org.junit.Assert.*;
 
@@ -11,7 +11,6 @@ import org.junit.Test;
 
 import park_model.AdminAbilities;
 import park_model.User;
-import park_model.UserList;
 
 
 /**

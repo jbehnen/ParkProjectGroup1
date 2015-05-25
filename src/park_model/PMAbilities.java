@@ -53,7 +53,7 @@ public class PMAbilities {
 	 * 
 	 * @return The number of jobs in the list.
 	 */
-	public int getNumJobs() {
+	int getNumJobs() {
 		return myJobs.size();
 	}
 	

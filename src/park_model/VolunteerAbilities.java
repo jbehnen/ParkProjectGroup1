@@ -75,7 +75,7 @@ public class VolunteerAbilities {
 	 * 
 	 * @param theJob The job to be added.
 	 */
-	public void addJob(Job theJob) {
+	void addJob(Job theJob) {
 		myJobs.add(new Job(theJob));
 		assert myJobs != null;
 	}

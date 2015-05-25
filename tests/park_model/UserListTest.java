@@ -1,4 +1,4 @@
-package model_tests;
+package park_model;
 
 import static org.junit.Assert.*;
 
