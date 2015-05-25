@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.GregorianCalendar;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,6 +22,7 @@ public class JobTest {
 	
 	private User volun1, volun2;
 	private Job job1, job2, job3, job4;
+	private GregorianCalendar firstDate, lastDate;
 	
 	//Set up the data needed
 	@Before
@@ -30,6 +33,8 @@ public class JobTest {
 		job2 = new Job("Rosa", RulesHelp.getTodaysDate(), 2, 2, 2, 2, "Building a trail and clearing brush.");
 		job3 = new Job("King", RulesHelp.getTodaysDate(), 1, 1, 1, 1, "Planting trees");
 		job4 = new Job("Rosa", RulesHelp.getTodaysDate(), 2, 0, 1, 4, "Clearin Debris"); 
+		firstDate = new GregorianCalendar(2015, 2, 8);
+		lastDate = new GregorianCalendar(2015, 2, 17);
 	}
 
 	////////////////Test signUp method////////////////
@@ -108,5 +113,51 @@ public class JobTest {
 	//Should return true
 	public void testIsOpenWhenGreaterThanZero(){
 		assertFalse(job4.isOpen(WorkCategory.MEDIUM));
+	}
+	
+	///////////Test isJobInRange//////////////
+	@Test
+	public void testIsJobInRangeShouldReturnFalseIfJobJustBeforeRange() {
+		GregorianCalendar twoDaysBeforeRange = new GregorianCalendar(2015, 2, 6);
+		Job jobBeforeRange = new Job("King Park", 
+				twoDaysBeforeRange, 2, 1, 1, 1, "Description");
+		assertFalse("Job not in range", 
+				jobBeforeRange.isJobInRange(firstDate, lastDate));
+	}
+	
+	@Test
+	public void testIsJobInRangeShouldReturnTrueIfJobOverlapsStartOfRange() {
+		GregorianCalendar dayBeforeRange = new GregorianCalendar(2015, 2, 7);
+		Job jobOverlappingStartOfRange = new Job("King Park", 
+				dayBeforeRange, 2, 1, 1, 1, "Description");
+		assertTrue("Job overlaps start of range range", 
+				jobOverlappingStartOfRange.isJobInRange(firstDate, lastDate));
+	}
+	
+	@Test
+	public void testIsJobInRangeShouldReturnTrueIfJobWithinRange() {
+		GregorianCalendar dayInRange = new GregorianCalendar(2015, 2, 10);
+		Job jobWithinRange = new Job("King Park", 
+				dayInRange, 2, 1, 1, 1, "Description");
+		assertTrue("Job overlaps start of range range", 
+				jobWithinRange.isJobInRange(firstDate, lastDate));
+	}
+	
+	@Test
+	public void testIsJobInRangeShouldReturnTrueIfJobOverlapsEndOfRange() {
+		GregorianCalendar dayAtEndOfRange = new GregorianCalendar(2015, 2, 17);
+		Job jobOverlappingEndOfRange = new Job("King Park", 
+				dayAtEndOfRange, 2, 1, 1, 1, "Description");
+		assertTrue("Job overlaps start of range range", 
+				jobOverlappingEndOfRange.isJobInRange(firstDate, lastDate));
+	}
+	
+	@Test
+	public void testIsJobInRangeShouldReturnFalseIfJobJustAfterRange() {
+		GregorianCalendar dayAfterRange = new GregorianCalendar(2015, 2, 18);
+		Job jobAfterRange = new Job("King Park", 
+				dayAfterRange, 2, 1, 1, 1, "Description");
+		assertFalse("Job not in range", 
+				jobAfterRange.isJobInRange(firstDate, lastDate));
 	}
 }

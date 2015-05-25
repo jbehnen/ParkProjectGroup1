@@ -12,6 +12,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import config_files.Config;
 import park_model.Job;
 import park_model.RulesHelp;
 import park_model.User;
@@ -50,8 +51,8 @@ public class VolunteerAbilitiesTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		abilitiesWithNoJobs = new VolunteerAbilities("config_files/empty.txt");
-		abilitiesTestJobUser1 = new VolunteerAbilities("config_files/empty.txt");
+		abilitiesWithNoJobs = new VolunteerAbilities(Config.EMPTY_JOB_SCHEDULE);
+		abilitiesTestJobUser1 = new VolunteerAbilities(Config.EMPTY_JOB_SCHEDULE);
 		testJobUser1 = new Job("Rosa Park", RulesHelp.getTodaysDate(), 2,
 				2, 3, 4, "Description");
 		user1 = new User("user1@aol.com", "user1", "test");

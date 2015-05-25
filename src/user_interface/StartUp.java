@@ -1,20 +1,13 @@
 package user_interface;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Scanner;
-import java.util.StringTokenizer;
 
 import park_model.ParkManager;
 import park_model.User;
+import park_model.UserList;
 import config_files.Config;
-
-// File reading assistance from https://www.daniweb.com/software-development/java/threads/17262/reading-in-a-csv-file-and-loading-the-data-into-an-array
 
 /**
  * Starts up the program, lets the user log in,
@@ -26,62 +19,66 @@ import config_files.Config;
 public class StartUp {
 	
 	public static void main(String args[]) throws IOException {
-		// File reading code adapted from 
-		//https://www.daniweb.com/software-development/java/threads
-		//17262/reading-in-a-csv-file-and-loading-the-data-into-an-array
-		String line;
+
 		String email = null;
-		String userType = null;
-		String[] split = null;
-		User user;
-		boolean loggedIn = false;
-		InputStream is = StartUp.class.getClassLoader().getResourceAsStream(Config.USER_FILE_FOR_STATIC);
-		BufferedReader fileReader = new BufferedReader(new InputStreamReader(is));
-		
-		//http://stackoverflow.com/questions/4644415/java-how-to-get-input-from-system-console
 		
 		System.out.println("Please enter your email: ");
 		Scanner in = new Scanner(System.in); 
 		email = in.next();
 //		in.close();
 		
-		// search Config.USER_FILE for user
-		while((line = fileReader.readLine()) != null) {
-			split = line.split(",");
-			userType = split[0];
-			if (email.equals(split[1])) {
-				loggedIn = true;
-				break;
-			}
-		}
+		tryToSignIn(email, Config.VOLUNTEER_FILE, 'V');
+		tryToSignIn(email, Config.ADMIN_FILE, 'A');
+		tryToSignIn(email, Config.PARK_MANAGER_FILE, 'P');
 		
-		if(loggedIn) {
-			IO menu = null;
-			
-			// go to correct menu page
-			switch(userType) {
-				case("A"): 
-					user = new User(email, split[2], split[3]);
-					menu = new AdminIO(user);
-					menu.mainMenu();
-					break;
-				case("V"): 
-					user = new User(email, split[2], split[3]);
-					menu = new VolunteerIO(user);
-					break;
-				case("P"):
-					ArrayList<String> parks = new ArrayList<>();
-					for(int i = 4; i < split.length; i++) {
-						parks.add(split[i]);
-					}
-					user = new ParkManager(email, split[2], split[3], parks);
-					menu = new ParkManagerIO((ParkManager) user);
-					break;
+		System.out.println("Invalid login.");
+	}
+	
+	/**
+	 * Reads in a list of a specific type of user, checks to see if the email
+	 * belongs to one of those users, and if so, signs that user in and
+	 * sends them to the correct menu.
+	 * 
+	 * @param theUserType The char that identifies the type of the user that was read in.
+	 */
+	private static void tryToSignIn(String theEmail, String theFileName, char theUserType) {
+		User foundUser = null;
+		Collection<User> users = UserList.getAllUsers(theFileName);
+		for (User user: users) {
+			if (theEmail.equals(user.getEmail())) {
+				foundUser = user;
 			}
-			menu.mainMenu();
-		} else {
-			System.out.println("Invalid login.");
 		}
+		if (foundUser != null) {
+			goToMenu(foundUser, theUserType);
+			System.exit(0);
+		}
+	}
+	
+	/**
+	 * Logs in the user to the menu indicated by the theUserType; if the user type
+	 * is incorrect, exits the system.
+	 * 
+	 * @param theUserType The char that identifies the type of the user that was read in.
+	 */
+	private static void goToMenu(User theUser, char theUserType) {
+		
+		IO menu = null;
+		switch(theUserType) {
+			case('A'): 
+				menu = new AdminIO(theUser);
+				menu.mainMenu();
+				break;
+			case('V'): 
+				menu = new VolunteerIO(theUser);
+				break;
+			case('P'):
+				menu = new ParkManagerIO((ParkManager) theUser);
+				break;
+			default:
+				System.exit(0);
+		}
+		menu.mainMenu();
 	}
 	
 }

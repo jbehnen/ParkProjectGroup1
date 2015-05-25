@@ -62,7 +62,7 @@ public class ParkManagerIO implements IO {
 						viewVol(console);
 						break;
 					case 4:
-						abilities.saveJobs(Config.JOB_TEST_OUTPUT_FILE_FOR_STATIC);
+						abilities.saveJobs(Config.JOB_SCHEDULE_FILE_FOR_STATIC);
 						System.exit(0);
 					default:
 						System.err.println("Error: incorrect choice taken at console input");

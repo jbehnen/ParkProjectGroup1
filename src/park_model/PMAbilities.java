@@ -128,8 +128,8 @@ public class PMAbilities {
 		GregorianCalendar weekEnd = theJob.getLastDate();
 		weekEnd.add(Calendar.DATE, Config.IMMEDIATE_TIME_FRAME_DAYS);
 		int sameWeekJobs = 0;
-		for (Job j: myJobs) {
-			if (RulesHelp.isJobInRange(j, weekStart, weekEnd)) {
+		for (Job job: myJobs) {
+			if (job.isJobInRange(weekStart, weekEnd)) {
 				sameWeekJobs += 1;
 			}
 		}

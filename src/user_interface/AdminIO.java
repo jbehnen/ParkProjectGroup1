@@ -30,7 +30,7 @@ public class AdminIO implements IO{
 	
 	public AdminIO(User myUser) {
 		this.myUser = myUser;
-		myAdminAbilities = new AdminAbilities(Config.USER_FILE_FOR_STATIC);
+		myAdminAbilities = new AdminAbilities(Config.VOLUNTEER_FILE);
 	}
 	/**
 	 * This my control menu

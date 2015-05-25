@@ -129,50 +129,5 @@ public class RulesHelpTest {
 		assertFalse("Date after last date", 
 				RulesHelp.isDateInRange(dayAfterLastDayInRange, firstDate, lastDate));
 	}
-	
-	@Test
-	public void testIsJobInRangeShouldReturnFalseIfJobJustBeforeRange() {
-		GregorianCalendar twoDaysBeforeRange = new GregorianCalendar(2015, 2, 6);
-		Job jobBeforeRange = new Job("King Park", 
-				twoDaysBeforeRange, 2, 1, 1, 1, "Description");
-		assertFalse("Job not in range", 
-				RulesHelp.isJobInRange(jobBeforeRange, firstDate, lastDate));
-	}
-	
-	@Test
-	public void testIsJobInRangeShouldReturnTrueIfJobOverlapsStartOfRange() {
-		GregorianCalendar dayBeforeRange = new GregorianCalendar(2015, 2, 7);
-		Job jobOverlappingStartOfRange = new Job("King Park", 
-				dayBeforeRange, 2, 1, 1, 1, "Description");
-		assertTrue("Job overlaps start of range range", 
-				RulesHelp.isJobInRange(jobOverlappingStartOfRange, firstDate, lastDate));
-	}
-	
-	@Test
-	public void testIsJobInRangeShouldReturnTrueIfJobWithinRange() {
-		GregorianCalendar dayInRange = new GregorianCalendar(2015, 2, 10);
-		Job jobWithinRange = new Job("King Park", 
-				dayInRange, 2, 1, 1, 1, "Description");
-		assertTrue("Job overlaps start of range range", 
-				RulesHelp.isJobInRange(jobWithinRange, firstDate, lastDate));
-	}
-	
-	@Test
-	public void testIsJobInRangeShouldReturnTrueIfJobOverlapsEndOfRange() {
-		GregorianCalendar dayAtEndOfRange = new GregorianCalendar(2015, 2, 17);
-		Job jobOverlappingEndOfRange = new Job("King Park", 
-				dayAtEndOfRange, 2, 1, 1, 1, "Description");
-		assertTrue("Job overlaps start of range range", 
-				RulesHelp.isJobInRange(jobOverlappingEndOfRange, firstDate, lastDate));
-	}
-	
-	@Test
-	public void testIsJobInRangeShouldReturnFalseIfJobJustAfterRange() {
-		GregorianCalendar dayAfterRange = new GregorianCalendar(2015, 2, 18);
-		Job jobAfterRange = new Job("King Park", 
-				dayAfterRange, 2, 1, 1, 1, "Description");
-		assertFalse("Job not in range", 
-				RulesHelp.isJobInRange(jobAfterRange, firstDate, lastDate));
-	}
 
 }

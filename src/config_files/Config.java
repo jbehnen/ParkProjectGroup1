@@ -16,13 +16,20 @@ public class Config {
 	 */
 	public static final String USER_FILE_FOR_STATIC = "config_files/users.txt";
 	
+	public static final String VOLUNTEER_FILE = "src/config_files/volunteers.txt";
+	
+	public static final String ADMIN_FILE = "src/config_files/administrators.txt";
+	
+	public static final String PARK_MANAGER_FILE = "src/config_files/park_managers.txt";
+	
 	/**
 	 * File that holds all upcoming jobs.
 	 */
-	public static final String JOB_SCHEDULE_FILE_FOR_STATIC = "config_files/jobSchedule.txt";
+	public static final String JOB_SCHEDULE_FILE_FOR_STATIC = "src/config_files/jobSchedule.txt";
 	
+	public static final String EMPTY_JOB_SCHEDULE = "src/config_files/empty.txt";
 
-	public static final String JOB_TEST_OUTPUT_FILE_FOR_STATIC = "config_files/test.txt";
+	public static final String JOB_TEST_OUTPUT_FILE_FOR_STATIC = "src/config_files/test.txt";
 	
 	/**
 	 * Number of total dates in the job.

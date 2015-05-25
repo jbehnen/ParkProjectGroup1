@@ -19,8 +19,8 @@ public class Job implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4056472263186921581L;
-
+	private static final long serialVersionUID = 256786873250255803L;
+	
 	public final int LIGHT_JOBS;
 	public final int MEDIUM_JOBS;
 	public final int HEAVY_JOBS;
@@ -85,9 +85,9 @@ public class Job implements Serializable {
 
 	public Job(Job theJob) {
 		this(theJob.getParkName(), ((GregorianCalendar) theJob.startDate),
-				theJob.numDays, theJob.numLightJobs, theJob.numMediumJobs,
-				theJob.numHeavyJobs, theJob.myDescription);
-		myVolunteers = theJob.myVolunteers;
+				theJob.numDays, theJob.LIGHT_JOBS, theJob.MEDIUM_JOBS,
+				theJob.HEAVY_JOBS, theJob.myDescription);
+		myVolunteers = new ArrayList<>(theJob.myVolunteers);
 
 		assert myVolunteers != null;
 	}
@@ -212,31 +212,33 @@ public class Job implements Serializable {
 	}
 
 	/**
-	 * hashCode method returns a hashcode representation of the object
+	 * @see java.lang.Object#hashCode(java.lang.Object)
+	 * 
+	 * Uses all fields except myVolunteers.
 	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((startDate == null) ? 0 : startDate.hashCode());
+		result = prime * result + HEAVY_JOBS;
+		result = prime * result + LIGHT_JOBS;
+		result = prime * result + MEDIUM_JOBS;
 		result = prime * result
 				+ ((myDescription == null) ? 0 : myDescription.hashCode());
 		result = prime * result + ((myPark == null) ? 0 : myPark.hashCode());
-		result = prime * result
-				+ ((myVolunteers == null) ? 0 : myVolunteers.hashCode());
+		result = prime * result + numDays;
 		result = prime * result + numHeavyJobs;
 		result = prime * result + numLightJobs;
 		result = prime * result + numMediumJobs;
+		result = prime * result
+				+ ((startDate == null) ? 0 : startDate.hashCode());
 		return result;
 	}
 
 	/**
-	 * equals method compares two objects returns true if the objects are the
-	 * same, false otherwise.
+	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param Object
-	 *            obj
+	 * Uses all fields except myVolunteers.
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -247,10 +249,11 @@ public class Job implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Job other = (Job) obj;
-		if (startDate == null) {
-			if (other.startDate != null)
-				return false;
-		} else if (!startDate.equals(other.startDate))
+		if (HEAVY_JOBS != other.HEAVY_JOBS)
+			return false;
+		if (LIGHT_JOBS != other.LIGHT_JOBS)
+			return false;
+		if (MEDIUM_JOBS != other.MEDIUM_JOBS)
 			return false;
 		if (myDescription == null) {
 			if (other.myDescription != null)
@@ -262,16 +265,18 @@ public class Job implements Serializable {
 				return false;
 		} else if (!myPark.equals(other.myPark))
 			return false;
-		if (myVolunteers == null) {
-			if (other.myVolunteers != null)
-				return false;
-		} else if (!myVolunteers.equals(other.myVolunteers))
+		if (numDays != other.numDays)
 			return false;
 		if (numHeavyJobs != other.numHeavyJobs)
 			return false;
 		if (numLightJobs != other.numLightJobs)
 			return false;
 		if (numMediumJobs != other.numMediumJobs)
+			return false;
+		if (startDate == null) {
+			if (other.startDate != null)
+				return false;
+		} else if (!startDate.equals(other.startDate))
 			return false;
 		return true;
 	}
@@ -300,60 +305,27 @@ public class Job implements Serializable {
 				+ "Light: " + numLightJobs + ", " + "Medium: " + numMediumJobs
 				+ ", " + "Heavy: " + numHeavyJobs;
 	}
-
-	@Deprecated
-	public static Job parseDelimitedString(String theString) {
-		String[] jobInfo = theString.split("DELIM");
-		List<User> volunteers = new ArrayList<>();
-		for (int i = 9; i < jobInfo.length; i++) {
-			volunteers.add(User.parseDelimitedString(jobInfo[i]));
+	
+	/**
+	 * Returns true if part of the job falls within the inclusive 
+	 * time range from theFirstDate to theEndDate, false otherwise.
+	 * 
+	 * Precondition: theFirstDate != null, theLastDate != null.
+	 * 
+	 * @param theFirstDate The first day of the time range.
+	 * @param theLastDate The last day of the time range.
+	 * @return true if part of the job falls within the inclusive 
+	 * time range from theFirstDate to theLastDate, false otherwise.
+	 */
+	public boolean isJobInRange(GregorianCalendar theFirstDate,
+			GregorianCalendar theLastDate) {
+		if (RulesHelp.isDateInRange(getFirstDate(), theFirstDate, theLastDate)) {
+			return true;
 		}
-		return new Job(jobInfo[0], Integer.parseInt(jobInfo[1]),
-				Integer.parseInt(jobInfo[2]), Integer.parseInt(jobInfo[3]),
-				Integer.parseInt(jobInfo[4]), Integer.parseInt(jobInfo[5]),
-				Integer.parseInt(jobInfo[6]), Integer.parseInt(jobInfo[7]),
-				jobInfo[8], volunteers);
-	}
-
-	@Deprecated
-	public String createDelimitedString() {
-		StringBuilder string = new StringBuilder();
-		string.append(myPark);
-		string.append("DELIM" + getFirstDate().get(Calendar.YEAR));
-		string.append("DELIM" + getFirstDate().get(Calendar.MONTH));
-		string.append("DELIM" + getFirstDate().get(Calendar.DATE));
-		string.append("DELIM" + numDays);
-		string.append("DELIM" + numLightJobs);
-		string.append("DELIM" + numMediumJobs);
-		string.append("DELIM" + numHeavyJobs);
-		string.append("DELIM" + myDescription);
-		for (User vol : myVolunteers) {
-			string.append("DELIM" + vol.toDelimitedStringVolunteer());
+		if (RulesHelp.isDateInRange(getLastDate(), theFirstDate, theLastDate)) {
+			return true;
 		}
-		return string.toString();
-	}
-
-	@Deprecated
-	public Job(String thePark, int theYear, int theMonth, int theDate,
-			int theNumDays, int theLightNum, int theMediumNum, int theHeavyNum,
-			String theDescription, List<User> theVolunteers) {
-		myPark = thePark;
-		LIGHT_JOBS = theLightNum;
-		numLightJobs = 0;
-		MEDIUM_JOBS = theMediumNum;
-		numMediumJobs = 0;
-		HEAVY_JOBS = theHeavyNum;
-		numHeavyJobs = 0;
-		myVolunteers = theVolunteers; // okay because volunteer is immutable,
-										// and we
-										// actually want to modify this list
-		myDescription = theDescription;
-		GregorianCalendar startDate = new GregorianCalendar(theYear, theMonth,
-				theDate);
-		startDate.get(Calendar.MILLISECOND); // reset fields after assignment
-		this.startDate = startDate;
-		this.numDays = theNumDays;
-		assert myVolunteers != null;
+		return false;
 	}
 
 }

@@ -1,72 +1,70 @@
 package park_model;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import config_files.Config;
+// Serializable assistance from http://www.tutorialspoint.com/java/java_serialization.htm
 
+/**
+ * Provides the abilities to read and write job schedules to and from files.
+ * 
+ * @author Julia Behnen
+ * @version 5/24/2015
+ */
 public class JobSchedule {
 	
-	/**
-	 * The list of all jobs scheduled in the future.
-	 */
-	@Deprecated
-	private List<Job> myJobList;
-	
-	public static List<Job> getAllFutureJobs(String theFile) {
-		List<Job> jobList = new ArrayList<>(); 
-		String line;
-		InputStream is = JobSchedule.class.getClassLoader().getResourceAsStream(theFile);
-		BufferedReader fileReader = new BufferedReader(new InputStreamReader(is));
+	@SuppressWarnings("unchecked")
+	static List<Job> getAllJobs(String theFile) {
+		List<Job> allJobs = new ArrayList<>();
+		
 		try {
-
-			while((line = fileReader.readLine()) != null) {
-				Job job = Job.parseDelimitedString(line);
-				if (!RulesHelp.isDateInPast(job.getFirstDate())) { // elimiates jobs from past
-					jobList.add(job);
-				}
-			}
-
-			fileReader.close();
+			FileInputStream fileIn = new FileInputStream(theFile);
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			allJobs = (List<Job>) in.readObject();
+			in.close();
+			fileIn.close();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return jobList;
+		
+		return allJobs;
+	}
+	
+	public static List<Job> getAllFutureJobs(String theFile) {
+		List<Job> allJobs = getAllJobs(theFile);
+		List<Job> futureJobs = new ArrayList<>();
+		for (Job job: allJobs) {
+			if (!RulesHelp.isDateInPast(job.getFirstDate())) {
+				futureJobs.add(job);
+			}
+		}
+		return futureJobs;
 	}
 	
 	public static void saveJobList(Collection<Job> theJobs, String theFile) {
-		File file = new File(theFile);
 		try {
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			
-			FileWriter fileWriter = new FileWriter(file.getAbsoluteFile(), false);
-			
-			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-			
-			for(Job job: theJobs) {
-				bufferedWriter.write(job.createDelimitedString());
-				bufferedWriter.newLine();
-			}
-			
-			bufferedWriter.close();
-			
+			FileOutputStream fileOut = new FileOutputStream(theFile);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(theJobs);
+			out.close();
+			fileOut.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

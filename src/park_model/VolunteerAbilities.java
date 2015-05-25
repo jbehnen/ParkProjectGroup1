@@ -56,7 +56,7 @@ public class VolunteerAbilities {
 		GregorianCalendar lastDate = theJob.getLastDate();
 		for (Job otherJob: myJobs) {
 			if (otherJob.isSignedUp(theVolunteer) 
-					&& RulesHelp.isJobInRange(otherJob, firstDate, lastDate)) {
+					&& otherJob.isJobInRange(firstDate, lastDate)) {
 				assert myJobs != null;
 				return true;
 			}

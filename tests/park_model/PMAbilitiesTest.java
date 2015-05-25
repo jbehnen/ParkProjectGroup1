@@ -23,7 +23,7 @@ public class PMAbilitiesTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		abilities = new PMAbilities("config_files/empty.txt");
+		abilities = new PMAbilities(Config.EMPTY_JOB_SCHEDULE);
 		testJob = new Job("Rosa Park", RulesHelp.getTodaysDate(), 1,
 				2, 3, 4, "Description");
 	}
