@@ -78,7 +78,7 @@ public class PMAbilitiesTest {
 				abilities.tooManyTotalJobs());
 		abilities.addJob(new Job(testJob));
 		assertEquals("We should now have maximum possible jobs",
-				abilities.getNumJobs(), Config.MAX_TOTAL_JOBS);
+				Config.MAX_TOTAL_JOBS, abilities.getNumJobs());
 		assertTrue("Too many jobs if max jobs", 
 				abilities.tooManyTotalJobs());
 		abilities.addJob(testJob);
