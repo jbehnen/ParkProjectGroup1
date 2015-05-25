@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
-import java.util.List;
 
 import park_model.AdminAbilities;
 import park_model.User;
@@ -25,7 +24,6 @@ import config_files.Config;
 public class AdminIO implements IO{
 	private User myUser;
 	private AdminAbilities myAdminAbilities;
-	List<User>myVolList;
 	
 	public AdminIO(User myUser) {
 		this.myUser = myUser;
@@ -40,13 +38,13 @@ public class AdminIO implements IO{
 		System.out.println(); // spacer
 		
 		int i = 0;
-		boolean valid = false;
+		boolean validChoice = false;
 		
  		BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
  		System.out.println("Please select an option, Administrator " + myUser.getLastName() + ".");
-		System.out.println("1: Search For Volunteer. \n2: Quit");
 		
-		while(!valid){
+		while(!validChoice){
+			System.out.println("1: Search For Volunteer. \n2: Quit");
 			try{
 				i = Integer.parseInt(console.readLine());
 				
@@ -56,9 +54,11 @@ public class AdminIO implements IO{
 				case 2:	
 					System.out.println("\nHave a good day.");
 					System.exit(0);
+				default:
+					System.out.println("\nPlease enter a number from the menu.\n");
 				}
-			}catch(IOException e){
-				System.err.println("Please enter a number from the menu.");
+			}catch(NumberFormatException | IOException nfe){
+				System.out.println("\nPlease enter a number from the menu.\n");
 			}
 		}
 		
