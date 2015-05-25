@@ -1,21 +1,23 @@
 package park_model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.awt.List;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.GregorianCalendar;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import park_model.Job;
-import park_model.PMAbilities;
-import park_model.RulesHelp;
 import config_files.Config;
 
+/**
+ * Tests the PMAbilities class.
+ * 
+ * @author Julia Behnen
+ * @version 5/24/2015
+ */
 public class PMAbilitiesTest {
 	
 	PMAbilities abilities;
@@ -23,7 +25,7 @@ public class PMAbilitiesTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		abilities = new PMAbilities(Config.EMPTY_JOB_SCHEDULE);
+		abilities = new PMAbilities(Config.EMPTY_TEXT_FILE);
 		testJob = new Job("Rosa Park", RulesHelp.getTodaysDate(), 1,
 				2, 3, 4, "Description");
 	}

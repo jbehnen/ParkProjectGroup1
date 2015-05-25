@@ -13,13 +13,21 @@ import java.util.List;
 // Serializable assistance from http://www.tutorialspoint.com/java/java_serialization.htm
 
 /**
- * Provides the abilities to read and write job schedules to and from files.
+ * Provides the abilities to read and write job schedules to and from 
+ * serialized files.
  * 
  * @author Julia Behnen
  * @version 5/24/2015
  */
 public class JobSchedule {
 	
+	/**
+	 * Constructs a list of all jobs from the given serialized file.
+	 * 
+	 * Preconditions: theFile != null.
+	 * 
+	 * @return A list of all jobs from the given file.
+	 */
 	@SuppressWarnings("unchecked")
 	static List<Job> getAllJobs(String theFile) {
 		List<Job> allJobs = new ArrayList<>();
@@ -31,19 +39,24 @@ public class JobSchedule {
 			in.close();
 			fileIn.close();
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		
 		return allJobs;
 	}
 	
+	/**
+	 * Constructs a list of all jobs from a given serialized file that
+	 * occur in the future (their first date is on or after
+	 * today).
+	 * 
+	 * Preconditions: theFile != null.
+	 * 
+	 * @return A list of all jobs from a given serialized file that
+	 * occur in the future (their first date is on or after
+	 * today).
+	 */
 	public static List<Job> getAllFutureJobs(String theFile) {
 		List<Job> allJobs = getAllJobs(theFile);
 		List<Job> futureJobs = new ArrayList<>();
@@ -55,6 +68,11 @@ public class JobSchedule {
 		return futureJobs;
 	}
 	
+	/**
+	 * Writes the serialized list of jobs to the given file. 
+	 * 
+	 * Preconditions: theJobs != null, theFile != null.
+	 */
 	public static void saveJobList(Collection<Job> theJobs, String theFile) {
 		try {
 			FileOutputStream fileOut = new FileOutputStream(theFile);

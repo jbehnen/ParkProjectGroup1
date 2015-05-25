@@ -10,7 +10,7 @@ import config_files.Config;
  * tied to any given class.
  * 
  * @author Julia Behnen
- * @version 5/16/2015
+ * @version 5/24/2015
  */
 public class RulesHelp {
 	
@@ -33,7 +33,8 @@ public class RulesHelp {
 	/**
 	 * Returns true if the date is in the past (before today), false otherwise.
 	 * 
-	 * @param theDate The date being checked to see if it is in the past.
+	 * Preconditions: theDate != null.
+	 * 
 	 * @return True if the date is in the past (before today), false otherwise.
 	 */
 	public static boolean isDateInPast(GregorianCalendar theDate) {
@@ -46,8 +47,7 @@ public class RulesHelp {
 	 * than the maximum allowed number of days in the
 	 * future, false otherwise.
 	 * 
-	 * @param theDate The date being checked to see if it is
-	 * too far in the future.
+	 * Precondition: theDate != null.
 	 * 
 	 * @return true if the date is more
 	 * than the maximum allowed number of days in the
@@ -66,6 +66,9 @@ public class RulesHelp {
 	 * @param theDate The date being checked against the time range.
 	 * @param theFirstDate The first day of the time range.
 	 * @param theEndDate The last day of the time range.
+	 * 
+	 * Preconditions: theDate != null, theFirstDate != null, theLastDate != null.
+	 * 
 	 * @return true if part of the job falls within the inclusive 
 	 * time range from theFirstDate to theEndDate, false otherwise.
 	 */

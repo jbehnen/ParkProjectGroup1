@@ -1,238 +1,121 @@
 package park_model;
 
-/**
- * @author shewan 
- * @author Julia
- */
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Scanner;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import park_model.Job;
-import park_model.JobSchedule;
 import config_files.Config;
 
+/**
+ * Tests the JobSchedule class.
+ * 
+ * @author Julia Behnen
+ * @version 5/24/2015
+ */
 public class JobScheduleTest {
-
-	/**
-	 * A JobSchedule initialized with 0 jobs.
-	 */
-	private JobSchedule myJobSchedule;
-	private GregorianCalendar legalDate;
-	private List<GregorianCalendar> myOneDateList;
 	
-	/**
-	 * A job that is scheduled on today only.
-	 */
-	private Job myDefaultJob;
+	private List<Job> jobListWith5JobsInFuture;
+	private Job jobOnTodayAndTomorrow;
+	private Job jobInPast;
+	private Job jobOnYesterdayAndToday;
 
 	@Before
 	public void setUp() throws Exception {
+		GregorianCalendar today = RulesHelp.getTodaysDate();
+		GregorianCalendar yesterday = (GregorianCalendar) today.clone();
+		yesterday.add(Calendar.DATE, -1);
+		GregorianCalendar twoDaysAgo = (GregorianCalendar) today.clone();
+		twoDaysAgo.add(Calendar.DATE, -2);
+		jobOnTodayAndTomorrow = new Job("Default job", today, 2, 1, 1, 1, "Description");
+		jobOnYesterdayAndToday = new Job("Overlaps boundary", yesterday, 2, 1, 1, 1,
+				"On the edge");
+		jobInPast = new Job("Past job", twoDaysAgo, 2, 1, 1, 1, "The past is gone");
+		jobListWith5JobsInFuture = new ArrayList<>();
+		for (int i = 0; i < 5; i++) {
+			jobListWith5JobsInFuture.add(new Job(jobOnTodayAndTomorrow));
+		}
 	}
 	
 	@Test
-	public void test() {
-		assertTrue(true);
+	public void testGetAllJobsFromEmptyFileShouldReturnEmptyList() {
+		List<Job> jobs = JobSchedule.getAllJobs(Config.EMPTY_TEXT_FILE);
+		assertEquals(0, jobs.size());
 	}
 	
-//	// Expires in August due to hard-coded time values
-//	@SuppressWarnings("resource")
-//	@Test
-//	public void JobScheduleConstructorAndSaveFileShouldPreserveJobInfo() {
-//		JobSchedule jobSchedule = 
-//				new JobSchedule("jobScheduleAllJobsInFuture.txt");
-//		assertEquals("All jobs should be in list", 
-//				3, jobSchedule.numberOfJobs());
-//		jobSchedule.saveList("tempJobSchedule.txt");
-//		jobSchedule = 
-//				new JobSchedule("jobScheduleAllJobsInFuture.txt");
-//		assertEquals("All jobs should be in list", 
-//				3, jobSchedule.numberOfJobs());
-//		jobSchedule.saveList("tempJobSchedule.txt");
-//		jobSchedule = 
-//				new JobSchedule("jobScheduleAllJobsInFuture.txt");
-//		assertEquals("Exact original jobs should be in list after file overwrite", 
-//				3, jobSchedule.numberOfJobs());
-//		// http://jdevelopment.nl/java-7-oneliner-read-file-string/
-//		String original = null;
-//		try {
-//			original = new Scanner(new File("src/config_files/jobScheduleAllJobsInFuture.txt")).useDelimiter("\\Z").next();
-//		} catch (FileNotFoundException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//		String copy = null;
-//		try {
-//			copy = new Scanner(new File("src/config_files/tempJobSchedule.txt")).useDelimiter("\\Z").next();
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		assertEquals("Original file and copy should be the same", original, copy);
-//	}
+	@Test
+	public void testSaveAllJobsShouldWriteAllJobsAndGetAllJobsShouldRetrieveThem() {
+		JobSchedule.saveJobList(jobListWith5JobsInFuture, Config.JOB_TEST_OUTPUT_FILE);
+		List<Job> retrievedJobs = JobSchedule.getAllJobs(Config.JOB_TEST_OUTPUT_FILE);
+		assertEquals("All jobs that were written should have been retrieved", 5,
+				retrievedJobs.size());
+		assertTrue("Job data should be preserved", 
+				retrievedJobs.contains(jobOnTodayAndTomorrow));
+	}
 	
-//	// Expires in August due to hard-coded time values
-//	@Test
-//	public void JobScheduleConstructorShouldRemovePastJobs() {
-//		JobSchedule jobSchedule = 
-//				new JobSchedule("jobScheduleOneJobInPast.txt");
-//		assertEquals("One of the four original jobs should be eliminated", 
-//				3, jobSchedule.numberOfJobs());
-//	}
-//
-//	@Test
-//	public void testAddJobShouldAddAJob() {
-//		assertEquals("Job list should start empty", 0,
-//				myJobSchedule.numberOfJobs());
-//		myJobSchedule.addJob(myDefaultJob);
-//		assertEquals("Job list should now have one job", 1,
-//				myJobSchedule.numberOfJobs());
-//	}
-//
-//	@Test
-//	public void testTooManyExistingJobsShouldReturnFalseUntilJobsGreaterThanMax() {
-//		boolean check;
-//		for (int i = 1; i <= Config.MAX_TOTAL_JOBS; i++) {
-//			check = myJobSchedule.tooManyExistingJobs();
-//			myJobSchedule.addJob(new Job(myDefaultJob));
-//			assertEquals("Not too many jobs", false, check);
-//		}
-//		assertEquals("We should now have maximum possible jobs",
-//				myJobSchedule.numberOfJobs(), Config.MAX_TOTAL_JOBS);
-//		check = myJobSchedule.tooManyExistingJobs();
-//		assertEquals("Too many jobs", true, check);
-//	}
-//
-//	@Test
-//	public void testIsWeekFullShouldReturnFalseUntilMoreJobsThanAllowedPerWeek() {
-//		GregorianCalendar date = Config.getTodaysDate();
-//		GregorianCalendar comparisonDate = Config.getTodaysDate();
-//		comparisonDate.add(Calendar.DATE, 2);
-//		Job comparisonJob = new Job("Park", comparisonDate, 1, 1, 1, 1, "");
-//		for (int i = 1; i <= Config.MAX_DENSE_JOBS; i++) {
-//			assertEquals("Week is not full", false,
-//					myJobSchedule.isWeekFull(comparisonJob));
-//			Job job = new Job("Park", (GregorianCalendar) date.clone(),
-//					1, 1, 1, 1, "");
-//			myJobSchedule.addJob(job);
-//			date.add(Calendar.DATE, 1);
-//			
-//		}
-//		assertEquals("Week is full", true,
-//				myJobSchedule.isWeekFull(comparisonJob));
-//	}
-//
-//	// A volunteer may not sign up for a work catagory on a job if the max
-//	// number of volunteers for that
-//	// work catagoey has aleady been reached
-//	@Test
-//	public void testNoVolunteerSignUpForSameDate() {
-//
-//		List<GregorianCalendar> jobDates = new ArrayList<>();
-//		jobDates.add((GregorianCalendar) legalDate.clone());
-//		Job job = new Job("Park", jobDates, 1, 1, 1, "");
-//		Job job2 = new Job("Park", jobDates, 1, 1, 1, "");
-//		// Two jobs with the same date
-//		myJobSchedule.addJob(job);
-//		myJobSchedule.addJob(job2);
-//
-//		User v1 = new User("you@gmail.com", "", "Wise");
-//		job.signUp(v1, WorkCategory.HEAVY);
-//
-//		assertEquals("Volunteer can't sign up for two jobs same day", 0,
-//				myJobSchedule.getJobsForSignUp(v1).size());
-//
-//	}
-//
-//	@Test
-//	public void testNoVolunteerSignUpWhenMaxReached() {
-//
-//		List<GregorianCalendar> jobDates = new ArrayList<>();
-//		jobDates.add((GregorianCalendar) legalDate.clone());
-//		Job job = new Job("Park", jobDates, 1, 1, 1, "");
-//		myJobSchedule.addJob(job);
-//
-//		// Add volunteers for for the job in each categories
-//		User v1 = new User("you@gmail.com", "", "Wise");
-//		job.signUp(v1, WorkCategory.HEAVY);
-//
-//		User v2 = new User("you@gmail.com", "", "Wise");
-//		job.signUp(v2, WorkCategory.MEDIUM);
-//
-//		User v3 = new User("everyone@gmail.com", "", "Gandolf");
-//		job.signUp(v3, WorkCategory.LIGHT);
-//
-//		assertEquals(
-//				"Volunteer can't sign up Since maximum for the job reached And no twice registration",
-//				0, myJobSchedule.getJobsForSignUp(v1).size());
-//
-//	}
-//
-//	public static class DateUtil {
-//		public static Date addDays(Date date, int days) {
-//			Calendar cal = Calendar.getInstance();
-//			cal.setTime(date);
-//			cal.add(Calendar.DATE, days); // minus number would decrement the
-//											// days
-//			return cal.getTime();
-//		}
-//	}
-//
-//	@Test
-//	public void testUpComingJobsByVolunteer() throws ParseException {
-//
-//		List<GregorianCalendar> jobDates = new ArrayList<>();
-//		jobDates.add((GregorianCalendar) legalDate.clone());
-//
-//		List<GregorianCalendar> jobDates2 = new ArrayList<>();
-//		jobDates2.add((GregorianCalendar) legalDate.clone());
-//
-//		Job job = new Job("Park", jobDates, 1, 1, 1, "");
-//		myJobSchedule.addJob(job);
-//
-//		Job job2 = new Job("Park", jobDates, 1, 1, 1, "");
-//		myJobSchedule.addJob(job2);
-//
-//		User v1 = new User("you@gmail.com", "", "Wise");
-//		job.signUp(v1, WorkCategory.HEAVY);
-//
-//		job2.signUp(v1, WorkCategory.HEAVY);
-//
-//		assertEquals("Volunteer didn't register for future jobs", 0,
-//				myJobSchedule.getJobsForSignUp(v1).size());
-//
-//	}
-//
-//	@Test
-//	public void testJobsByParkName() {
-//		List<GregorianCalendar> jobDates = new ArrayList<>();
-//		jobDates.add((GregorianCalendar) legalDate.clone());
-//
-//		Job job = new Job("Park", jobDates, 1, 1, 1, "");
-//		myJobSchedule.addJob(job);
-//
-//		Job job2 = new Job("Park2", jobDates, 1, 1, 1, "");
-//		myJobSchedule.addJob(job2);
-//
-//		assertEquals("Volunteer didn't register for future jobs", 1,
-//				myJobSchedule.getJobsByPark("Park").size());
-//		assertTrue("Volunteer didn't register for future jobs", myJobSchedule
-//				.getJobsByPark("Park2").get(0).getParkName().equals("Park2"));
-//
-//	}
+	@Test
+	public void testGetAllFutureJobsShouldReturnAllJobsFromFileIfAllInFuture() {
+		JobSchedule.saveJobList(jobListWith5JobsInFuture, Config.JOB_TEST_OUTPUT_FILE);
+		List<Job> retrievedJobs = JobSchedule.getAllJobs(Config.JOB_TEST_OUTPUT_FILE);
+		assertEquals("getAllJobs retrieved all jobs that were written", 5,
+				retrievedJobs.size());
+		List<Job> retrievedFutureJobs = 
+				JobSchedule.getAllFutureJobs(Config.JOB_TEST_OUTPUT_FILE);
+		assertEquals("All jobs were in the future, so all were retrieved", 5,
+				retrievedFutureJobs.size());
+	}
+	
+	@Test
+	public void testGetAllFutureJobsShouldReturnNoJobsFromFileIfNoneInFuture() {
+		List<Job> allInPast = new ArrayList<>();
+		for (int i = 0; i < 5; i++) {
+			allInPast.add(jobInPast);
+		}
+		JobSchedule.saveJobList(allInPast, Config.JOB_TEST_OUTPUT_FILE);
+		List<Job> retrievedJobs = JobSchedule.getAllJobs(Config.JOB_TEST_OUTPUT_FILE);
+		assertEquals("getAllJobs retrieved all jobs that were written", 5,
+				retrievedJobs.size());
+		List<Job> retrievedFutureJobs = 
+				JobSchedule.getAllFutureJobs(Config.JOB_TEST_OUTPUT_FILE);
+		assertEquals("No jobs were in the future, so none were retrieved", 0,
+				retrievedFutureJobs.size());
+	}
+	
+	@Test
+	public void testGetAllFutureJobsShouldReturnAllJobsMinus1FromFileIf1InPast() {
+		List<Job> jobListWithOneJobInPast = new ArrayList<>(jobListWith5JobsInFuture);
+		jobListWithOneJobInPast.add(jobInPast);
+		JobSchedule.saveJobList(jobListWithOneJobInPast, Config.JOB_TEST_OUTPUT_FILE);
+		List<Job> retrievedJobs = JobSchedule.getAllJobs(Config.JOB_TEST_OUTPUT_FILE);
+		assertEquals("getAllJobs retrieved all jobs that were written", 6,
+				retrievedJobs.size());
+		List<Job> retrievedFutureJobs = 
+				JobSchedule.getAllFutureJobs(Config.JOB_TEST_OUTPUT_FILE);
+		assertEquals("All jobs but one were in the future, so all but one were retrieved",
+				5, retrievedFutureJobs.size());
+	}
+	
+	@Test
+	public void testGetAllFutureJobsShouldReturnNoJobsFromFileIfAllStartInThePastButEndInPresent() {
+		List<Job> allInPast = new ArrayList<>();
+		for (int i = 0; i < 5; i++) {
+			allInPast.add(jobOnYesterdayAndToday);
+		}
+		JobSchedule.saveJobList(allInPast, Config.JOB_TEST_OUTPUT_FILE);
+		List<Job> retrievedJobs = JobSchedule.getAllJobs(Config.JOB_TEST_OUTPUT_FILE);
+		assertEquals("getAllJobs retrieved all jobs that were written", 5,
+				retrievedJobs.size());
+		List<Job> retrievedFutureJobs = 
+				JobSchedule.getAllFutureJobs(Config.JOB_TEST_OUTPUT_FILE);
+		assertEquals("No jobs were in the future, so none were retrieved", 0,
+				retrievedFutureJobs.size());
+	}
 
 }
 

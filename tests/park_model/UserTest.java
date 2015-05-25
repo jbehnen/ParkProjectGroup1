@@ -13,7 +13,7 @@ import config_files.Config;
  * Tests the User class.
  * 
  * @author Julia Behnen
- * @version 5/10/2015
+ * @version 5/24/2015
  */
 public class UserTest {
 	

@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author Julia Behnen
  * @version 5/3/2015
  */
-
+// Invariants: myEmail != null, myFirstName != null, myLastName != null.
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 2978455524937410469L;
@@ -28,6 +28,9 @@ public class User implements Serializable {
 		this.myEmail = myEmail;
 		this.myFirstName = myFirstName;
 		this.myLastName = myLastName;
+		assert myEmail != null;
+		assert myFirstName != null;
+		assert myLastName != null;
 	}
 	
 	/**
@@ -55,28 +58,6 @@ public class User implements Serializable {
 	 */
 	public String getLastName() {
 		return myLastName;
-	}
-	
-	/**
-	 * Returns a User derived from the string produced by a CSV line,
-	 * format "{user id char},email,firstName,lastName"
-	 * 
-	 * @param theString
-	 */
-	@Deprecated
-	public static User parseDelimitedString(String theString) {
-		String[] userInfo = theString.split(",");
-		return new User(userInfo[1], userInfo[2], userInfo[3]);
-	}
-	
-	/**
-	 * A delimited string that can be parsed by parseDelimitedString.
-	 * 
-	 * @return a delimited string that can be parsed by parseDelimitedString.
-	 */
-	@Deprecated
-	public String toDelimitedStringVolunteer() {
-		return "V," + myEmail + "," + myFirstName + "," + myLastName;
 	}
 
 	/**

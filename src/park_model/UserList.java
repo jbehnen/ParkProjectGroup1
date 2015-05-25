@@ -8,10 +8,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+//Serializable assistance from http://www.tutorialspoint.com/java/java_serialization.htm
+
+/**
+ * Provides the ability to read users from serialized files.
+ * 
+ * @author Julia Behnen
+ * @version 5/24/2015
+ */
 public class UserList {
 	
 	/**
-	 * Constructs a list of all users from a given file.
+	 * Constructs a list of all users from the given file.
+	 * 
+	 * Preconditions: theFile != null.
+	 * 
+	 * @return A list of all users from the given file.
 	 */
 	@SuppressWarnings("unchecked")
 	public static Collection<User> getAllUsers(String theFile) {
@@ -23,14 +35,8 @@ public class UserList {
 			in.close();
 			fileIn.close();
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return users;
 	}

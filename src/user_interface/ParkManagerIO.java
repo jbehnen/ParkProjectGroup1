@@ -32,7 +32,7 @@ public class ParkManagerIO implements IO {
 	
 	public ParkManagerIO(ParkManager myUser) {
 		this.myUser = myUser;
-		abilities = new PMAbilities(Config.JOB_SCHEDULE_FILE_FOR_STATIC);
+		abilities = new PMAbilities(Config.JOB_SCHEDULE_FILE);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class ParkManagerIO implements IO {
 						viewVol(console);
 						break;
 					case 4:
-						abilities.saveJobs(Config.JOB_SCHEDULE_FILE_FOR_STATIC);
+						abilities.saveJobs(Config.JOB_SCHEDULE_FILE);
 						System.exit(0);
 					default:
 						System.err.println("Error: incorrect choice taken at console input");

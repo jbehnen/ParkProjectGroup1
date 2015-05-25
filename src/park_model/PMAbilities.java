@@ -12,8 +12,9 @@ import config_files.Config;
  * their user stories and access the list of jobs.
  * 
  * @author Julia Behnen
- * @version 5/16/2015
+ * @version 5/24/2015
  */
+// Invariant: myJobs != null.
 public class PMAbilities {
 	
 	List<Job> myJobs;

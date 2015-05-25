@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,10 +13,10 @@ import park_model.User;
 
 
 /**
- * Tests the VolunteerList class.
+ * Tests the AdminAbilities class.
  * 
  * @author Julia Behnen
- * @version 5/10/2015
+ * @version 5/24/2015
  */
 public class AdminAbilitiesTest {
 	

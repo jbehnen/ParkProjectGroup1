@@ -11,6 +11,12 @@ import org.junit.Test;
 import park_model.ParkManager;
 import config_files.Config;
 
+/**
+ * Tests the ParkManager class.
+ * 
+ * @author Julia Behnen
+ * @version 5/24/2015
+ */
 public class ParkManagerTest {
 	
 	private ParkManager myPM;

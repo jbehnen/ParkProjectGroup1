@@ -11,6 +11,7 @@ import java.util.List;
  * @author Shewan, Lee Bui, and Julia
  * @version 5/24/2015
  */
+// Invariant: myJobs != null.
 public class VolunteerAbilities {
 	
 	List<Job> myJobs;

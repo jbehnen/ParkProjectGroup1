@@ -25,11 +25,11 @@ public class Config {
 	/**
 	 * File that holds all upcoming jobs.
 	 */
-	public static final String JOB_SCHEDULE_FILE_FOR_STATIC = "src/config_files/jobSchedule.txt";
+	public static final String JOB_SCHEDULE_FILE = "src/config_files/jobSchedule.txt";
 	
-	public static final String EMPTY_JOB_SCHEDULE = "src/config_files/empty.txt";
+	public static final String EMPTY_TEXT_FILE = "src/config_files/empty.txt";
 
-	public static final String JOB_TEST_OUTPUT_FILE_FOR_STATIC = "src/config_files/test.txt";
+	public static final String JOB_TEST_OUTPUT_FILE = "src/config_files/test.txt";
 	
 	/**
 	 * Number of total dates in the job.
@@ -62,20 +62,4 @@ public class Config {
 	public static final String DEFAULT_FIRST_NAME = "John";
 	public static final String DEFAULT_LAST_NAME = "Smith";
 	
-	/**
-	 * Gets today's date date to the midnight that started the day.
-	 * 
-	 * @param theDate The date to be rounded down.
-	 * @return a date set to the midnight that starts the theDate.
-	 */
-	@Deprecated
-	public static GregorianCalendar getTodaysDate() {
-		GregorianCalendar date = new GregorianCalendar();
-		date.set(Calendar.HOUR_OF_DAY, 0);
-		date.set(Calendar.MINUTE, 0);
-		date.set(Calendar.SECOND, 0);
-		date.set(Calendar.MILLISECOND, 0);
-		date.get(Calendar.MILLISECOND); //reset milliseconds
-		return date;
-	}
 }

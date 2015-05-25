@@ -31,7 +31,7 @@ public class VolunteerIO implements IO {
 	
 	public VolunteerIO(User myUser) {
 		this.myUser = myUser;
-		myAbilities = new VolunteerAbilities(Config.JOB_SCHEDULE_FILE_FOR_STATIC);
+		myAbilities = new VolunteerAbilities(Config.JOB_SCHEDULE_FILE);
 		display = new ArrayList<Job>();
 		display = (List<Job>) myAbilities.getAllFutureJobs();
 		size = display.size();
@@ -85,7 +85,7 @@ public class VolunteerIO implements IO {
 			// Inner option call to sign up?
 			break;
 		case 3:
-			myAbilities.saveJobs(Config.JOB_SCHEDULE_FILE_FOR_STATIC);
+			myAbilities.saveJobs(Config.JOB_SCHEDULE_FILE);
             System.exit(0);
 			break;
 		case 10:

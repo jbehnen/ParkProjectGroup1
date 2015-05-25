@@ -9,8 +9,9 @@ import java.util.Collections;
  * their user stories and access the list of jobs.
  * 
  * @author Julia Behnen
- * @version 5/19/2015
+ * @version 5/24/2015
  */
+// Invariant: myVolunteers != null.
 public class AdminAbilities {
 	
 	Collection<User> myVolunteers;

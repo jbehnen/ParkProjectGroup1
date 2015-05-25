@@ -7,9 +7,10 @@ import java.util.List;
  * An immutable park manager who is registered in the system.
  * 
  * @author Julia Behnen
- * @version 5/3/2015
+ * @version 5/24/2015
  */
-
+// Invariant: theEmail != null, theFirstName != null, theLastName != null, 
+// myParks != null.
 public class ParkManager extends User {
 	
 	private static final long serialVersionUID = 8909077605412708768L;
@@ -31,6 +32,9 @@ public class ParkManager extends User {
 			List<String> theParks) {
 		super(theEmail, theFirstName, theLastName);
 		this.myParks = Collections.unmodifiableList(theParks);
+		assert theEmail != null;
+		assert theFirstName != null;
+		assert theLastName != null;
 		assert myParks != null;
 	}
 	

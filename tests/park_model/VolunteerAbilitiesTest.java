@@ -19,6 +19,12 @@ import park_model.User;
 import park_model.VolunteerAbilities;
 import park_model.WorkCategory;
 
+/**
+ * Tests the VolunteerAbilities class.
+ * 
+ * @author Julia Behnen
+ * @version 5/24/2015
+ */
 public class VolunteerAbilitiesTest {
 
 	/**
@@ -51,8 +57,8 @@ public class VolunteerAbilitiesTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		abilitiesWithNoJobs = new VolunteerAbilities(Config.EMPTY_JOB_SCHEDULE);
-		abilitiesTestJobUser1 = new VolunteerAbilities(Config.EMPTY_JOB_SCHEDULE);
+		abilitiesWithNoJobs = new VolunteerAbilities(Config.EMPTY_TEXT_FILE);
+		abilitiesTestJobUser1 = new VolunteerAbilities(Config.EMPTY_TEXT_FILE);
 		testJobUser1 = new Job("Rosa Park", RulesHelp.getTodaysDate(), 2,
 				2, 3, 4, "Description");
 		user1 = new User("user1@aol.com", "user1", "test");

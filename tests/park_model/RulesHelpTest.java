@@ -8,7 +8,6 @@ import java.util.GregorianCalendar;
 import org.junit.Before;
 import org.junit.Test;
 
-import park_model.Job;
 import park_model.RulesHelp;
 import config_files.Config;
 
@@ -16,7 +15,7 @@ import config_files.Config;
  * Tests the RulesHelp class.
  * 
  * @author Julia Behnen
- * @version 5/16/2015
+ * @version 5/24/2015
  */
 public class RulesHelpTest {
 	
