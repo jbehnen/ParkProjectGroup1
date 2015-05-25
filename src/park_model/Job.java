@@ -289,7 +289,7 @@ public class Job implements Serializable {
 	 * @return String
 	 */
 	private String dateString(GregorianCalendar theDate) {
-		return theDate.get(Calendar.MONTH) + "/" + theDate.get(Calendar.DATE)
+		return (theDate.get(Calendar.MONTH) + 1) + "/" + theDate.get(Calendar.DATE)
 				+ "/" + theDate.get(Calendar.YEAR);
 	}
 
