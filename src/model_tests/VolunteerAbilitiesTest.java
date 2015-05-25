@@ -1,6 +1,9 @@
 package model_tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -9,9 +12,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import config_files.Config;
 import park_model.Job;
-import park_model.PMAbilities;
 import park_model.RulesHelp;
 import park_model.User;
 import park_model.VolunteerAbilities;
@@ -81,14 +82,16 @@ public class VolunteerAbilitiesTest {
 	}
 	
 	@Test
-	public void testGetAllFutureJobsShouldLetOriginalJobsBeModified() {
+	public void testGetAllFutureJobsShouldLetOriginalJobsBeModifiedToAddVolunteers() {
 		List<Job> jobs = abilitiesTestJobUser1.getAllFutureJobs();
 		User newVol = new User("email", "first", "last");
 		Job jobBeingAltered = jobs.get(0);
-		assertFalse("newVol not initially signed up", jobBeingAltered.isSignedUp(newVol));
-		abilitiesTestJobUser1.signUp(jobBeingAltered, newVol, WorkCategory.LIGHT);
+		assertFalse("newVol not initially signed up", 
+				jobBeingAltered.isSignedUp(newVol));
+		jobBeingAltered.signUp(newVol, WorkCategory.LIGHT);
 		jobs = abilitiesTestJobUser1.getAllFutureJobs();
-		assertTrue("newVol now signed up in original class list", jobs.get(0).isSignedUp(newVol));
+		assertTrue("newVol now signed up in original class list", 
+				jobs.get(0).isSignedUp(newVol));
 	}
 
 	@Test

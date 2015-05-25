@@ -38,11 +38,7 @@ public class VolunteerAbilities {
 	 * the class - not a deep copy.
 	 */
 	public List<Job> getAllFutureJobs() {			
-		return myJobs;
-	}
-	
-	public void signUp(Job theJob, User theVolunteer, WorkCategory theWorkCategory) {
-		theJob.signUp(theVolunteer, theWorkCategory);
+		return Collections.unmodifiableList(myJobs);
 	}
 	
 	/**

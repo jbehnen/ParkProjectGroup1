@@ -78,7 +78,7 @@ public class JobTest {
 		assertEquals(job3.getNumOpen(WorkCategory.LIGHT), 1);
 	}
 	
-	//Tests when the Work Category is HEAVY 
+	//Tests when the Work Category is MEDIUM 
 	@Test
 	public void testgetNumOpenMEDIUM() {
 		assertEquals(job3.getNumOpen(WorkCategory.MEDIUM), 1);

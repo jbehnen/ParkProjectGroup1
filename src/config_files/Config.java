@@ -14,15 +14,14 @@ public class Config {
 	/**
 	 * File that holds information about all users registered in the system.
 	 */
-	public static final String USER_FILE = "users.txt";
 	public static final String USER_FILE_FOR_STATIC = "config_files/users.txt";
+	
 	/**
 	 * File that holds all upcoming jobs.
 	 */
-	public static final String JOB_SCHEDULE_FILE = "jobSchedule.txt";
 	public static final String JOB_SCHEDULE_FILE_FOR_STATIC = "config_files/jobSchedule.txt";
 	
-	public static final String JOB_TEST_OUTPUT_FILE = "test.txt";
+
 	public static final String JOB_TEST_OUTPUT_FILE_FOR_STATIC = "config_files/test.txt";
 	
 	/**

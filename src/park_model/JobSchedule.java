@@ -36,7 +36,7 @@ public class JobSchedule {
 
 			while((line = fileReader.readLine()) != null) {
 				Job job = Job.parseDelimitedString(line);
-				if (!job.isJobInPast()) { // elimiates jobs from past
+				if (!RulesHelp.isDateInPast(job.getFirstDate())) { // elimiates jobs from past
 					jobList.add(job);
 				}
 			}
