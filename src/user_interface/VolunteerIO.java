@@ -1,15 +1,11 @@
 package user_interface;
 
 
-import java.io.IOException;
+
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Scanner;
-
 import park_model.Job;
-import park_model.JobSchedule;
 import park_model.User;
 import park_model.VolunteerAbilities;
 import park_model.WorkCategory;
@@ -33,7 +29,7 @@ public class VolunteerIO implements IO {
 
 	public VolunteerIO(User myUser) {
 		this.myUser = myUser;
-		myAbilities = new VolunteerAbilities(Config.JOB_SCHEDULE_FILE);
+		myAbilities = new VolunteerAbilities(Config.VOLUNTEER_FILE);
 		//display = new ArrayList<Job>();
 		//display = (List<Job>) myAbilities.getAllFutureJobs();
 		//size = display.size();
@@ -69,12 +65,11 @@ public class VolunteerIO implements IO {
 					showAllFutureJobs();
 					break;
 				case 3:
-					myAbilities.saveJobs(Config.JOB_SCHEDULE_FILE);
+					myAbilities.saveJobs(Config.VOLUNTEER_FILE);
 					System.exit(0);
 					break;
     			default:
-					System.err
-							.println("Error: incorrect choice taken at console input");
+					System.out.println("Invalid input -Exit");
 				}
 			} else {
 				System.err.println("Please make a valid selection");
@@ -207,7 +202,8 @@ public class VolunteerIO implements IO {
 	 */
 	private void validateDateConflict(Job jobForSignUp) {
 		for (Job signedUpJob : getMyJobs()) {
-			if (myAbilities.checkJobsOnSameDay(jobForSignUp, signedUpJob)) {
+			//if (myAbilities.checkJobsOnSameDay(jobForSignUp, signedUpJob)) {
+			if (myAbilities.isSignedUpForConflictingJob(myUser, signedUpJob)) {
 				System.out.println(myUser.getFirstName()
 						+ ",you have already signed up for a job on same day");
 			}
@@ -227,10 +223,10 @@ public class VolunteerIO implements IO {
 		int choice = 0;
 		boolean fail = false;
 		WorkCategory temp = null;
-		if (myAbilities.isFull(jobForSignUp)) {
+		/*if (myAbilities.isFull(jobForSignUp)) {
 			System.out.println("Job is full");
 			mainMenu();
-		}
+		}*/
 
 		System.out
 				.println(" Here are the avaialbe lists of work catgory for that job");
