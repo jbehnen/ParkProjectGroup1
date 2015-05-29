@@ -16,7 +16,6 @@ import java.util.List;
 
 public class Job implements Serializable {
 
-<<<<<<< Updated upstream
 	/**
 	 * 
 	 */
@@ -26,10 +25,6 @@ public class Job implements Serializable {
 	public final int MEDIUM_JOBS;
 	public final int HEAVY_JOBS;
 	
-=======
-	private static final long serialVersionUID = -4056472263186921581L; 
-
->>>>>>> Stashed changes
 	// Class Variables
 	private String myPark;
 	private GregorianCalendar startDate;
@@ -39,10 +34,6 @@ public class Job implements Serializable {
 	private int numMediumJobs;
 	private int numHeavyJobs;
 	private String myDescription;
-	
-	public final int LIGHT_JOBS;
-	public final int MEDIUM_JOBS;
-	public final int HEAVY_JOBS;
 
 	/**
 	 * Class Constructor Creates an instance of a Job.
@@ -82,12 +73,8 @@ public class Job implements Serializable {
 		myVolunteers = new ArrayList<User>();
 
 		assert myVolunteers != null;
-<<<<<<< Updated upstream
 		}
 
-=======
-	}
->>>>>>> Stashed changes
 
 	/**
 	 * Copy Constructor Creates a copy of a job passed in as a parameter.
@@ -115,16 +102,24 @@ public class Job implements Serializable {
 	}
 
 	/**
+	 * Returns true if theVolunteer was successfully added, false if they were
+	 * not added due to a violation of business rules.
+	 * 
+	 * @param theVolunteer
+	 * @return boolean value
+	 */
+
+	/**
 	 * signUp method
 	 * 
 	 * Signs up the user if the work category is still available. 
 	 * @param theVolunteer
 	 * @param theCategory
 	 */
+	
 	/*Precondition: caller must check to see if Volunteer is already signed up*/
 	/*Precondition: caller must check to see if the Work Category is still available*/
 	public void signUp(User theVolunteer, WorkCategory theCategory) {
-<<<<<<< Updated upstream
 				myVolunteers.add(theVolunteer);
 				if (theCategory == WorkCategory.LIGHT) {
 					numLightJobs++;
@@ -133,16 +128,6 @@ public class Job implements Serializable {
 				} else {
 					numHeavyJobs++;
 				}
-=======
-		myVolunteers.add(theVolunteer);
-		if (theCategory == WorkCategory.LIGHT) {
-			numLightJobs++;
-		} else if (theCategory == WorkCategory.MEDIUM) {
-			numMediumJobs++;
-		} else {
-			numHeavyJobs++;
-		}
->>>>>>> Stashed changes
 	}
 
 	/**
@@ -320,7 +305,6 @@ public class Job implements Serializable {
 				+ "Light: " + numLightJobs + ", " + "Medium: " + numMediumJobs
 				+ ", " + "Heavy: " + numHeavyJobs;
 	}
-<<<<<<< Updated upstream
 	
 	/**
 	 * Returns true if part of the job falls within the inclusive 
@@ -339,161 +323,6 @@ public class Job implements Serializable {
 			return true;
 		}
 		if (RulesHelp.isDateInRange(getLastDate(), theFirstDate, theLastDate)) {
-=======
-
-	
-	///////////////////////DEPRECATED METHODS/////////////////////
-	
-	@Deprecated
-	public int getNumLight() {
-		return numLightJobs;
-	}
-
-	@Deprecated
-	public int getNumMedium() {
-		return numMediumJobs;
-	}
-
-	@Deprecated
-	public int getNumHeavy() {
-		return numHeavyJobs;
-	}
-
-	@Deprecated
-	public int getNumOpenJobs() {
-		return (numLightJobs + numMediumJobs + numHeavyJobs);
-	}
-
-	@Deprecated
-	public String getDescription() {
-		return myDescription;
-	}
-
-	@Deprecated
-	public static Job parseDelimitedString(String theString) {
-		String[] jobInfo = theString.split("DELIM");
-		List<User> volunteers = new ArrayList<>();
-		for (int i = 9; i < jobInfo.length; i++) {
-			volunteers.add(User.parseDelimitedString(jobInfo[i]));
-		}
-		return new Job(jobInfo[0], Integer.parseInt(jobInfo[1]),
-				Integer.parseInt(jobInfo[2]), Integer.parseInt(jobInfo[3]),
-				Integer.parseInt(jobInfo[4]), Integer.parseInt(jobInfo[5]),
-				Integer.parseInt(jobInfo[6]), Integer.parseInt(jobInfo[7]),
-				jobInfo[8], volunteers);
-	}
-
-	@Deprecated
-	public String createDelimitedString() {
-		StringBuilder string = new StringBuilder();
-		string.append(myPark);
-		string.append("DELIM" + getFirstDate().get(Calendar.YEAR));
-		string.append("DELIM" + getFirstDate().get(Calendar.MONTH));
-		string.append("DELIM" + getFirstDate().get(Calendar.DATE));
-		string.append("DELIM" + myDates.size());
-		string.append("DELIM" + numLightJobs);
-		string.append("DELIM" + numMediumJobs);
-		string.append("DELIM" + numHeavyJobs);
-		string.append("DELIM" + myDescription);
-		for (User vol : myVolunteers) {
-			string.append("DELIM" + vol.toDelimitedStringVolunteer());
-		}
-		return string.toString();
-	}
-
-	@Deprecated
-	// moved to RulesHelp
-	public boolean isJobInPast() {
-		GregorianCalendar today = Config.getTodaysDate();
-		if (getFirstDate().compareTo(today) < 0) {
-			return true;
-		}
-		return false;
-	}
-
-	@Deprecated
-	// moved to RulesHelp
-	public boolean isJobTooFarInFuture() {
-		GregorianCalendar futureBound = Config.getTodaysDate();
-		futureBound.add(Calendar.DATE, Config.MAX_DAYS_IN_FUTURE);
-		if (getLastDate().compareTo(futureBound) > 0) {
-			return true;
-		}
-		return false;
-	}
-
-	@Deprecated
-	public Job(String thePark, List<GregorianCalendar> theDates,
-			int theLightNum, int theMediumNum, int theHeavyNum,
-			String theDescription) {
-		myPark = thePark;
-		numLightJobs = 0;
-		LIGHT_JOBS = theLightNum;
-		numMediumJobs = 0;
-		MEDIUM_JOBS = theMediumNum;
-		numHeavyJobs = 0;
-		HEAVY_JOBS = theHeavyNum;
-		myVolunteers = new ArrayList<User>();
-		myDescription = theDescription;
-		myDates = new ArrayList<GregorianCalendar>();
-
-		for (int i = 0; i < theDates.size(); i++) {
-			myDates.add(theDates.get(i));
-		}
-		assert myVolunteers != null;
-	}
-
-	@Deprecated
-	public Job(String thePark, int theYear, int theMonth, int theDate,
-			int theNumDays, int theLightNum, int theMediumNum, int theHeavyNum,
-			String theDescription, List<User> theVolunteers) {
-		myPark = thePark;
-		numLightJobs = 0;
-		LIGHT_JOBS = theLightNum;
-		numMediumJobs = 0;
-		MEDIUM_JOBS = theMediumNum;
-		numHeavyJobs = 0;
-		HEAVY_JOBS = theHeavyNum;
-		myVolunteers = theVolunteers; // okay because volunteer is immutable,
-										// and we
-										// actually want to modify this list
-		myDescription = theDescription;
-		GregorianCalendar startDate = new GregorianCalendar(theYear, theMonth,
-				theDate);
-		startDate.get(Calendar.MILLISECOND); // reset fields after assignment
-		myDates = new ArrayList<>();
-		for (int i = 0; i < theNumDays; i++) {
-			myDates.add((GregorianCalendar) startDate.clone());
-			startDate.add(Calendar.DATE, 1);
-		}
-		assert myVolunteers != null;
-	}
-
-	@Deprecated
-	public List<WorkCategory> getAvailableWorkCategories() {
-		List<WorkCategory> wcList = new ArrayList<WorkCategory>();
-
-		// Checks each Work Category for availability.
-		if (numLightJobs > 0) {
-			wcList.add(WorkCategory.LIGHT);
-		}
-		if (numMediumJobs > 0) {
-			wcList.listIterator().add(WorkCategory.MEDIUM);
-		}
-		if (numHeavyJobs > 0) {
-			wcList.add(WorkCategory.HEAVY);
-		}
-
-		return Collections.unmodifiableList(wcList);
-	}
-
-	@Deprecated
-	// this can now happen in the ParkManagerIO
-	public boolean isJobTooLong() {
-		List<GregorianCalendar> dates = getDates();
-		int numDates = dates.size();
-		if (numDates > Config.MAX_JOB_DAYS) {
->>>>>>> Stashed changes
 			return true;
 		}
 		return false;
