@@ -65,6 +65,7 @@ public class PMAbilities {
 	 * 
 	 * @return the volunteers signed up for a given job.
 	 */
+	@Deprecated // can just call directly on job
 	public List<User> getVolunteersForJob(Job theJob) {
 		return theJob.getVolunteers();
 	}

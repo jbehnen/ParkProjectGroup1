@@ -65,7 +65,7 @@ public class RulesHelp {
 	 * 
 	 * @param theDate The date being checked against the time range.
 	 * @param theFirstDate The first day of the time range.
-	 * @param theEndDate The last day of the time range.
+	 * @param theLastDate The last day of the time range.
 	 * 
 	 * Preconditions: theDate != null, theFirstDate != null, theLastDate != null.
 	 * 
@@ -73,9 +73,9 @@ public class RulesHelp {
 	 * time range from theFirstDate to theEndDate, false otherwise.
 	 */
 	public static boolean isDateInRange(GregorianCalendar theDate, 
-			GregorianCalendar theFirstDate, GregorianCalendar theEndDate) {
+			GregorianCalendar theFirstDate, GregorianCalendar theLastDate) {
 		return (theDate.compareTo(theFirstDate) >= 0 
-				&& theDate.compareTo(theEndDate) <= 0);
+				&& theDate.compareTo(theLastDate) <= 0);
 	}
 	
 }
