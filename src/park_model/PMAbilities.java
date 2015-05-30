@@ -59,18 +59,6 @@ public class PMAbilities {
 	}
 	
 	/**
-	 * Returns the volunteers signed up for a given job.
-	 * 
-	 * Preconditions: theJob != null.
-	 * 
-	 * @return the volunteers signed up for a given job.
-	 */
-	@Deprecated // can just call directly on job
-	public List<User> getVolunteersForJob(Job theJob) {
-		return theJob.getVolunteers();
-	}
-	
-	/**
 	 * Gets all jobs scheduled at a given park; the interface 
 	 * is responsible for making sure that PMs 
 	 * can only get jobs for parks that they manage.
