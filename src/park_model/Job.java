@@ -302,8 +302,8 @@ public class Job implements Serializable {
 	public String toString() {
 		return myPark + " " + dateString(getFirstDate()) + "-"
 				+ dateString(getLastDate()) + ", " + myDescription + " "
-				+ "Light: " + numLightJobs + ", " + "Medium: " + numMediumJobs
-				+ ", " + "Heavy: " + numHeavyJobs;
+				+ "Light: " + numLightJobs + "/" + LIGHT_JOBS + ", " + "Medium: " + numMediumJobs + 
+				"/" + MEDIUM_JOBS + ", " + "Heavy: " + numHeavyJobs + "/" + HEAVY_JOBS;
 	}
 	
 	/**
