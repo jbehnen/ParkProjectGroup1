@@ -6,7 +6,8 @@
  * viewable list for volunteers signed up for a specific job
  * 
  * Author: L. Hamaker lahama9@uw.edu
- * Date of last edit: 10 May 2015
+ * Created: 9 May 2015
+ * Date of last edit: 31 May 2015
  * 
  */
 package user_interface;
@@ -27,31 +28,43 @@ import park_model.User;
 
 public class ParkManagerIO implements IO {
 
+	//Class variables
 	private ParkManager myUser;
 	private PMAbilities abilities;
-	
+
+	/**
+	 * Class constructor
+	 * @param myUser 
+	 * 		a Park Manager
+	 */
 	public ParkManagerIO(ParkManager myUser) {
 		this.myUser = myUser;
 		abilities = new PMAbilities(Config.JOB_SCHEDULE_FILE);
 	}
 
+	/**
+	 * Main Menu()
+	 *
+	 */
 	@Override
 	public void mainMenu() {
 		int i = 0;
 		boolean validChoice = false;
-		
+
 		BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-		
+
+		System.out.println("\nWelcom to the Park Manager page.");
 		System.out.println("\nPlease type the number of the action you want to perform.");
-		System.out.println("1:Create a new job. \n2:View upcoming jobs. \n3:View the volunteers for a job. \n4:Quit program. ");
-		
-		//IO try/catch was adapted from code found at http://stackoverflow.com/questions/4644415/java-how-to-get-input-from-system-console
-		while(!validChoice){
-			try{
+		System.out.println("\n1:Create a new job. \n2:View upcoming jobs. \n3:View the volunteers for a job. \n4:Quit program");
+
+		// IO try/catch was adapted from code found at
+		// http://stackoverflow.com/questions/4644415/java-how-to-get-input-from-system-console
+		while (!validChoice) {
+			try {
 				i = Integer.parseInt(console.readLine());
-				if(i>0 && i<5){
-					validChoice = true; 
-					switch(i){
+				if (i > 0 && i < 5) {
+					validChoice = true;
+					switch (i) {
 					case 1:
 						addJob(console);
 						break;
@@ -62,154 +75,328 @@ public class ParkManagerIO implements IO {
 						viewVol(console);
 						break;
 					case 4:
+						System.out.println("Have a great day!");
 						abilities.saveJobs(Config.JOB_SCHEDULE_FILE);
 						System.exit(0);
 					default:
 						System.err.println("Error: incorrect choice taken at console input");
 					}
-				}else{
+				} else {
 					System.err.println("Please make a valid selection");
 				}
-			} catch(NumberFormatException | IOException nfe){
+			} catch (NumberFormatException | IOException nfe) {
 				System.err.println("Please make a valid selection");
 			}
 		}
 	}
-	
-	//Method that views volunteers for a specific job
-	private void viewVol(BufferedReader con){
-		
+
+
+	// Private method that views volunteers for a specific job
+	private void viewVol(BufferedReader con) {
+
 		boolean validJob = false;
+		boolean tooFull = false;
 		int index;
-		List<Job> jobs= getJobs(con);
 		
-		//Display the jobs
-		if(jobs.size() >0){
-			System.out.println("Which job do you want to see?");
-			for(int i = 0; i < jobs.size(); i++) {
+		List<Job> jobs = getJobs(con);
+
+		// Display the jobs
+		if (jobs.size() > 0) {
+			System.out.println("Which job do you want displayed?\n");
+			for (int i = 0; i < jobs.size(); i++) {
 				System.out.println(i + ": " + jobs.get(i).toString());
 			}
-			
-			//Validate the selection
-			while(!validJob){
-				try{
+
+			// Validate the selection
+			while (!validJob && !tooFull) {
+				try {
 					index = Integer.parseInt(con.readLine());
-					if(index >= 0 && index < jobs.size()){
+					if (index >= 0 && index < jobs.size()) {
 						validJob = true;
-						//Get the list of Volunteers for the selected job and display. 
+						// Get the list of Volunteers for the selected job and
+						// display.
 						List<User> vols = jobs.get(index).getVolunteers();
-						if(vols.size() >0){
-							for(User v : vols){
+						if (vols.size() > 0) {
+							for (User v : vols) {
 								System.out.println(v.toString());
 							}
-						}else{
-							System.out.println("There are no volunteers schedules for this job.");
+						} else {
+							System.err.println("There are no volunteers scheduled for this job.\n");
 						}
-						
-					}else{
-						System.err.println("please make a valid selection.");;
+					} else {
+						System.err.println("please make a valid selection.");
 					}
-				}catch(NumberFormatException | IOException nfe){
+				} catch (NumberFormatException | IOException nfe) {
 					System.err.println("Please make a valid selection");
 				}
 			}
-		}else{
-			System.out.println("There are no jobs scheduled for this park.");
+		} else {
+			System.err.println("There are no jobs scheduled for this park.");
 		}
+		System.out.println("\n\n\n");
 		mainMenu();
 	}
-	
-	//Method that views jobs for a specific park
-	private void viewJobs(BufferedReader con){
-		List<Job> jobs= getJobs(con);
-		for(int i = 0; i < jobs.size(); i++) {
+
+
+	//Private method that displays jobs for a specific park.
+	private void viewJobs(BufferedReader con) {
+		List<Job> jobs = getJobs(con);
+		for (int i = 0; i < jobs.size(); i++) {
 			System.out.println(jobs.get(i).toString());
 		}
 		mainMenu();
 	}
-	
 
-	private List<Job> getJobs(BufferedReader c){
+	//Private helper method that returns a list of jobs.
+	private List<Job> getJobs(BufferedReader c) {
 		String thePark;
 		int ind;
 		boolean validPark = false;
 		List<Job> jobList = new ArrayList<Job>();
-		
+
 		System.out.println("Please choose a park.");
-		for(int i = 0; i<myUser.getParks().size(); i++) {
+		for (int i = 0; i < myUser.getParks().size(); i++) {
 			System.out.println((i) + ": " + myUser.getParks().get(i));
 		}
-		while(!validPark){
-			try{
+		while (!validPark) {
+			try {
 				ind = Integer.parseInt(c.readLine());
-				if(ind >= 0 && ind < myUser.getParks().size()){
+				if (ind >= 0 && ind < myUser.getParks().size()) {
 					validPark = true;
 					thePark = myUser.getParks().get(ind);
-					jobList = (List<Job>)(abilities.getJobsAtPark(thePark));
-				}else{
-					System.err.println("please make a valid selection.");;
+					jobList = (List<Job>) (abilities.getJobsAtPark(thePark));
+				} else {
+					System.err.println("please make a valid selection.");
+					;
 				}
-			}catch(NumberFormatException | IOException nfe){
+			} catch (NumberFormatException | IOException nfe) {
 				System.err.println("Please make a valid selection");
 			}
 		}
 		return jobList;
 	}
-	
+
+	//Private method that adds a valid Job to a park.
 	private void addJob(BufferedReader console2) {
 		String thePark = "";
-		int temp = 0;
-		int month = 0;
-		int day = 0;
-		int year = 0;
 		int numDays = 0;
 		int numLightJobs = 0;
 		int numMediumJobs = 0;
 		int numHeavyJobs = 0;
-		boolean validPick = false;
+		GregorianCalendar startDate = null;
+		boolean validInput = false;
 		boolean validDate = false;
+		boolean valueValid = false;
 		int index = -1;
 		
 		StringBuilder theDescription = new StringBuilder();
 		
-		//Ask for a park and get park
-		System.out.println("Please choose a park.");
-		for(int i = 0; i<myUser.getParks().size(); i++) {
-			System.out.println((i) + ": " + myUser.getParks().get(i));
-		}
-		while(!validPick){
-			try{
-				index = Integer.parseInt(console2.readLine());
-				if(index >= 0 && index < myUser.getParks().size()){
-					validPick = true;
-					thePark = myUser.getParks().get(index);
-					index = -1;
-				}else{
-					System.err.println("please make a valid selection.");;
-				}
-			}catch(NumberFormatException | IOException nfe){
-				System.err.println("Please make a valid seletion");
+		//********************Business Rule********************//
+		//Answers the question: Are there too many jobs in the schedule//
+		if(abilities.tooManyTotalJobs()){
+			System.err.println("The number of jobs for this system is at capacity. You will not be able to add a job at this time and "
+					+ "will be redirected to the main menu.");
+			mainMenu();
+		}else{
+			System.out.println("Please choose a park.");
+			for(int i = 0; i<myUser.getParks().size(); i++) {
+				System.out.println((i) + ": " + myUser.getParks().get(i));
 			}
-		}
-		validPick = false;
-		
-		//////////Ask for the job name and read in a job name
-		System.out.println("What is the job name?");
-		try {
-			theDescription.append(console2.readLine() + " ");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println(theDescription.toString());
-
-		///////////////////////////DATE///////////////////////////////////////
-		//////////Get the month
-		System.out.println("Enter the month (number):");
-		while(!validDate){
-			try{
-				temp = Integer.parseInt(console2.readLine());
-				if(temp > 0 && temp < 13){
+			while(!validInput){
+				try{
+					index = Integer.parseInt(console2.readLine());
+					if(index >= 0 && index < myUser.getParks().size()){
+						validInput = true;
+						thePark = myUser.getParks().get(index);
+						index = -1;
+					}else{
+						System.err.println("please make a valid selection.");;
+					}
+				}catch(NumberFormatException | IOException nfe){
+					System.err.println("Please make a valid seletion");
+				}
+			}
+			validInput = false; //reset input boolean
+			
+			//Ask for the job name and read in a job name
+			System.out.println("What is the job name?/n");
+			try {
+				theDescription.append(console2.readLine() + " ");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	
+			//Ask the User for the month, day and year 
+			startDate = enterDate(console2);
+			numDays = enterNumDays(console2);
+				
+			while(!validDate){	
+				//***********************Business Rule Check***********************//
+				//Send the date and length of job to helper methods for validation//
+				if(passesDateRules(startDate, numDays)){
 					validDate = true;
+				}else{
+					while(!valueValid){	//Check for valid input
+						System.err.println("What would you like to do next?\n");
+						System.out.println("1) Enter date again\n2) Return to the main menu\n3) Quit\n");
+							try{
+								int h = Integer.parseInt(console2.readLine());
+								if(h >0 && h <4){
+									valueValid = true; 
+									switch(h){
+									case 1:
+										validDate = false;
+										startDate = enterDate(console2);
+										numDays = enterNumDays(console2);
+										break;
+									case 2:
+										mainMenu();
+										break;
+									case 3:
+										abilities.saveJobs(Config.JOB_SCHEDULE_FILE);
+										System.exit(0);
+									default:
+										System.err.println("Error: incorrect choice taken in console input");
+									}
+								}else{
+									System.err.println("Please make a valid selection");
+								}
+							} catch(NumberFormatException | IOException nfe){
+								System.err.println("Please make a valid selection");
+							}
+						}
+					valueValid = false;//resetting boolean for input validation
+					}
+				}
+			}
+			
+
+			//Asks and captures the times for a job
+			System.out.println("What are the hours for this job?");
+			try {
+				theDescription.append(console2.readLine() + " ");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			//Ask for the description
+			System.out.println("Please enter any notes for this job.");
+			try {
+				theDescription.append(console2.readLine());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			//Ask for the number of light jobs
+			System.out.println("How many volunteers do you need for light work?");
+			
+			while(!validInput){
+				try{
+					index = Integer.parseInt(console2.readLine());
+					if(index >= 0){
+						validInput = true;
+						numLightJobs = index;
+					}else{
+						System.err.println("please make a valid selection.");
+					}
+				}catch(NumberFormatException | IOException nfe){
+					System.err.println("Please make a valid seletion");
+				}
+			}
+			validInput = false;
+			
+			//ask for the number of med jobs
+			System.out.println("How many volunteers do you need for medium work?");
+			while(!validInput){
+				try{
+					index = Integer.parseInt(console2.readLine());
+					if(index >= 0){
+						validInput = true;
+						numMediumJobs = index;
+					}else{
+						System.err.println("please make a valid selection.");
+					}
+				}catch(NumberFormatException | IOException nfe){
+					System.err.println("Please make a valid seletion");
+				}
+			}
+			validInput = false;
+			
+			//Ask for the number of heavy jobs
+			System.out.println("How many volunteers do you need for heavy work?");
+			while(!validInput){
+				try{
+					index = Integer.parseInt(console2.readLine());
+					if(index >= 0){
+						validInput = true;
+						numHeavyJobs = index;
+					}else{
+						System.err.println("please make a valid selection.");
+					}
+				}catch(NumberFormatException | IOException nfe){
+					System.err.println("Please make a valid seletion");
+				}
+			}
+			
+			//Creates user list
+			List<User> newList = new ArrayList<User>(); 
+			
+			//Creates a job with validated information that has passed the business rules. 
+			Job thisJob = new Job(thePark, startDate, numDays,numLightJobs, numMediumJobs, numHeavyJobs, theDescription.toString());
+	
+			//Adds the job to the schedule
+			abilities.addJob(thisJob);
+			System.out.println("\n\nYour job is now on the schedule\n\n");
+			mainMenu();
+	}
+
+	//***********************Business Rule Check***********************//
+	//Private method to check dates and length of job
+	//Returns true if the business rules are followed
+	//Returns false if the business rules are violated
+	private boolean passesDateRules(GregorianCalendar gc, int days){
+		int violations = 0;
+		
+		if(RulesHelp.isDateInPast(gc)){
+			violations++;
+			System.err.println("The date is in the past.");
+		}
+		
+		if(RulesHelp.isDateTooFarInFuture(gc)){
+			violations++;
+			System.err.println("The date is too far in the future.");
+		}
+		
+		if(days > Config.MAX_JOB_DAYS){
+			violations++;
+			System.err.println("The job's duration is too long.");
+		}
+		
+		if(abilities.tooManyJobsNearJobTime(gc, days)){
+			violations++;
+			System.err.println("There are too many jobs in the system.");
+		}
+
+		return (violations == 0);
+	}
+	
+		
+	//Private method that asks for and capture date information for a job.
+	private GregorianCalendar enterDate(BufferedReader console4){
+		GregorianCalendar theDate;
+		int month = 0;
+		int day = 0;
+		int year = 0;
+		int temp = 0;
+		boolean validIn = false;
+
+		//MONTH
+		System.out.println("Enter the month (number):");
+		while(!validIn){
+			try{
+				temp = Integer.parseInt(console4.readLine());
+				if(temp > 0 && temp < 13){
+					validIn = true;
 					month = temp - 1; 
 				}else{
 					System.err.println("Please make a valid selection (1-12).");
@@ -218,16 +405,15 @@ public class ParkManagerIO implements IO {
 				System.err.println("Please make a valid seletion");
 			}
 		}
+		validIn = false; //reset input boolean
 		
-		validDate = false;
-		
-		///////Get the Day
+		//DAY
 		System.out.println("Enter the starting day:");
-		while(!validDate){
+		while(!validIn){
 			try{
-				temp = Integer.parseInt(console2.readLine());
+				temp = Integer.parseInt(console4.readLine());
 				if(temp > 0 && temp < 32){
-					validDate = true;
+					validIn = true;
 					day = temp;
 				}else{
 					System.err.println("Please make a valid selection (1-31).");
@@ -236,159 +422,44 @@ public class ParkManagerIO implements IO {
 				System.err.println("Must be a number.");
 			}
 		}
-		validDate = false;
-		
-		////////Get the year
-		System.out.println("Enter the year (yyyy):");
-		while(!validDate){
-			try{
-				temp = Integer.parseInt(console2.readLine());
-				if(temp > 0){
-					validDate = true;
-					year = temp;
-				}else{
-					System.err.println("Please make a valid selection (1-31).");
+			validIn = false;//reset input boolean
+			
+			//YEAR
+			System.out.println("Enter the year (yyyy):");
+			while(!validIn){
+				try{
+					temp = Integer.parseInt(console4.readLine());
+					if(temp > 0){
+						validIn = true;
+						year = temp;
+					}else{
+						System.err.println("Please make a valid selection (1-31).");
+					}
+				}catch(NumberFormatException | IOException nfe){
+					System.err.println("Must be a number.");
 				}
-			}catch(NumberFormatException | IOException nfe){
-				System.err.println("Must be a number.");
 			}
-		}
-		validDate = false;
-
-		///////////Ask if it is a two day job
-		System.out.println("How long does this job last? (in number of days)");
-		while(!validDate){
-			try{
-				numDays = Integer.parseInt(console2.readLine());
-				validDate = true;
-			}catch(NumberFormatException | IOException nfe){
-				System.err.println("Must be a number.");
-			}
-		}
-
-		///////////////////////////TIME///////////////////////////////////////
-		System.out.println("What are the hours for this job?");
-		try {
-			theDescription.append(console2.readLine() + " ");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		///////////////////////////Description////////////////////////////////
-		//Ask for the description
-		System.out.println("Please enter any notes for this job.");
-		try {
-			theDescription.append(console2.readLine());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		///////////////////////Work Category/////////////////////////////////
-		//Ask for the num of light jobs
-		System.out.println("How many volunteers do you need for light work?");
-		
-		while(!validPick){
-			try{
-				index = Integer.parseInt(console2.readLine());
-				if(index >= 0){
-					validPick = true;
-					numLightJobs = index;
-				}else{
-					System.err.println("please make a valid selection.");
-				}
-			}catch(NumberFormatException | IOException nfe){
-				System.err.println("Please make a valid seletion");
-			}
-		}
-		validPick = false;
-		
-		//ask for the num of med jobs
-		System.out.println("How many volunteers do you need for medium work?");
-		while(!validPick){
-			try{
-				index = Integer.parseInt(console2.readLine());
-				if(index >= 0){
-					validPick = true;
-					numMediumJobs = index;
-				}else{
-					System.err.println("please make a valid selection.");
-				}
-			}catch(NumberFormatException | IOException nfe){
-				System.err.println("Please make a valid seletion");
-			}
-		}
-		validPick = false;
-		
-		//Ask for the num of heavy jobs
-		System.out.println("How many volunteers do you need for heavy work?");
-		while(!validPick){
-			try{
-				index = Integer.parseInt(console2.readLine());
-				if(index >= 0){
-					validPick = true;
-					numHeavyJobs = index;
-				}else{
-					System.err.println("please make a valid selection.");
-				}
-			}catch(NumberFormatException | IOException nfe){
-				System.err.println("Please make a valid seletion");
-			}
-		}
-		
-		////////////////CREATE USER LIST///////////////////////////
-		List<User> newList = new ArrayList<User>();
-		
-		////////////////////CREATE JOB////////////////////////////
-		GregorianCalendar startDate = new GregorianCalendar(year, month, day);
-		Job thisJob = new Job(thePark, startDate, numDays,numLightJobs, numMediumJobs, numHeavyJobs, theDescription.toString());
-
-		//If it passed, then add to jobSchedule
-		if(testsPassed(thisJob)){
-			abilities.addJob(thisJob);
-			System.out.println("Your job is now on the schedule");
-		}else{
-			System.out.println("Your job was not added");
-		}
-		mainMenu();
+			
+			//Formats the input and sends back the date.
+			theDate = new GregorianCalendar(year, month, day);
+			return theDate;
 	}
 
-	//////////////////////////////////////////////////////////
-	///////////////VALIDATION CHECK OF JOBS///////////////////
-	//If the job passes the 5 tests, then TRUE is returned. 
-	private boolean testsPassed(Job j){
-		int count = 0;
-		
-		//If it returns true, the date is in the past and the job cannot be added to the schedule
-		if(RulesHelp.isDateInPast(j.getFirstDate())){
-			System.out.println("The starting date is in the past.");
-			count++;
-		}
-		
-		//If the starting date is too far in the future, the job cannot be added to the schedule. 
-		if(RulesHelp.isDateTooFarInFuture(j.getFirstDate())){
-			System.out.println("The date is too far in the future.");
-			count++;
-		}
-		
-		///If it returns false, the job is the right amount of time and can be added to the schedule.
-		///If it returns true, it is not and cannot be added to the schedule
-		if(j.getNumDays() > Config.MAX_JOB_DAYS){
-			System.out.println("The job's duration is too long.");
-			count++;
-		}
-		
-		///If it returns false, the week is not too full and the job can be scheduled.
-		///If it returns true, the week is too full and the job cannot be scheduled. 
-		if(abilities.tooManyTotalJobs()){
-			System.out.println("The week's schedule is too full.");
-			count++;
-		}
-		
-		///If it returns false, the maximum number of jobs have not been reached and the job can be added. 
-		///If it returns true, the maximum number of jobs have been reached and the job cannot be added to the system. 
-		if(abilities.tooManyJobsNearJobTime(j)){
-			System.out.println("There are too many jobs in the system.");
-			count++;
-		}
-	
-		return (count == 0);
+	//Private method that asks for and captures the length of a job in days. 
+	private int enterNumDays(BufferedReader console5){
+		boolean validNum = false;
+		int numDays = 0;
+
+			System.out.println("How long does this job last? (in number of days)");
+			while(!validNum){
+				try{
+					numDays = Integer.parseInt(console5.readLine());
+					validNum = true;
+				}catch(NumberFormatException | IOException nfe){
+					System.err.println("Must be a number.");
+				}
+			}
+			return numDays;	
 	}
 }
+//End Class
