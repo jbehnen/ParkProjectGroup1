@@ -17,11 +17,12 @@ import config_files.Config;
  */
 public class UserTest {
 	
-	private User myUser;
+	private User myUser, otherUser;
 
 	@Before
 	public void setUp() throws Exception {
 		myUser = new User(Config.DEFAULT_EMAIL, Config.DEFAULT_FIRST_NAME, Config.DEFAULT_LAST_NAME);
+		otherUser = new User(Config.DEFAULT_EMAIL, "Eddie", "Izzard");
 	}
 
 	@Test
@@ -32,15 +33,27 @@ public class UserTest {
 	}
 	
 	@Test
-	public void testUserEqualsShouldBeTrueIfSameEmail() {
-		User otherUser = new User(Config.DEFAULT_EMAIL, "Eddie", "Izzard");
+	public void testHashCodeShouldBeEqualIfSameEmail() {
+		assertEquals("Email the same so hash code the same", 
+				myUser.hashCode(), otherUser.hashCode());
+	}
+	
+	@Test
+	public void testEqualsShouldBeTrueIfSameEmail() {
 		assertEquals("Email is only parameter needed for equality", myUser, otherUser);
 	}
 	
 	@Test
-	public void testUserEqualsShouldNotBeTrueIfNotSameEmail() {
+	public void testEqualsShouldNotBeTrueIfNotSameEmail() {
 		User otherUser = new User("jones@aol.com", Config.DEFAULT_LAST_NAME, Config.DEFAULT_LAST_NAME);
 		assertNotEquals("Same name does not guarantee equality", myUser, otherUser);
+	}
+	
+	@Test
+	public void testToStringShouldReturnExpectedString() {
+		assertEquals("Should return correct string", 
+				Config.DEFAULT_FIRST_NAME + " " + Config.DEFAULT_LAST_NAME 
+				+ " " + Config.DEFAULT_EMAIL, myUser.toString());
 	}
 
 }
