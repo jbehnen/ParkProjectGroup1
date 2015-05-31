@@ -1,8 +1,5 @@
 package config_files;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 /**
  * Holds all of the important constants used by the program.
  * 

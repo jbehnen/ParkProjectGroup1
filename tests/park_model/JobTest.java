@@ -21,7 +21,7 @@ public class JobTest {
 	//assertFalse(methodCall)
 	
 	private User volun1, volun2;
-	private Job job1, job2, job3, job4;
+	private Job job1, job2, job3, job4, jobNoCapacity, jobOneLightSlot;
 	private GregorianCalendar firstDate, lastDate;
 	
 	//Set up the data needed
@@ -33,6 +33,8 @@ public class JobTest {
 		job2 = new Job("Rosa", RulesHelp.getTodaysDate(), 2, 2, 2, 2, "Building a trail and clearing brush.");
 		job3 = new Job("King", RulesHelp.getTodaysDate(), 1, 1, 1, 1, "Planting trees");
 		job4 = new Job("Rosa", RulesHelp.getTodaysDate(), 2, 0, 1, 4, "Clearing Debris"); 
+		jobNoCapacity = new Job("King", RulesHelp.getTodaysDate(), 1, 0, 0, 0, "The most exclusive job");
+		jobOneLightSlot = new Job("King", RulesHelp.getTodaysDate(), 1, 1, 0, 0, "The most exclusive job");
 		
 		firstDate = new GregorianCalendar(2015, 2, 8);
 		lastDate = new GregorianCalendar(2015, 2, 17);
@@ -98,12 +100,26 @@ public class JobTest {
 	}
 	
 	//isOpen Tests
-
-	public void testIsOpenWhenNoLightJobsAvailable(){
+	@Test
+	public void testIsOpenShouldReturnFalseWhenNoLightJobsInitiallyAvailable(){
 		assertFalse("Job is at its volunteer limit.",job4.isOpen(WorkCategory.LIGHT));
 	}
+	
+	@Test
+	public void testIsOpenShouldReturnFalseWhenAllLightJobsTaken() {
+		assertTrue("Job starts with available light jobs", job3.isOpen(WorkCategory.LIGHT));
+		job3.signUp(new User("email", "first", "last"), WorkCategory.LIGHT);
+		assertFalse("Category is now full", job3.isOpen(WorkCategory.LIGHT));
+	}
+	
+	@Test
+	public void testIsOpenShouldReturnFalseWhenSomeLightJobsTaken() {
+		job3.signUp(new User("email", "first", "last"), WorkCategory.LIGHT);
+		assertTrue("Category is still open when partially full", job1.isOpen(WorkCategory.LIGHT));
+	}
 
-	public void testIsOpenWhenMediumJobsAreAvailable(){
+	@Test
+	public void testIsOpenShouldReturnTrueWhenMediumJobsAreAvailable(){
 		assertTrue("Job has medium work positions available.", job4.isOpen(WorkCategory.MEDIUM));
 	}
 	
@@ -151,5 +167,41 @@ public class JobTest {
 				dayAfterRange, 2, 1, 1, 1, "Description");
 		assertFalse("Job not in range", 
 				jobAfterRange.isJobInRange(firstDate, lastDate));
+	}
+	
+	// isFull tests
+	@Test
+	public void testIsFullShouldReturnTrueIfMaxCapacityZeroForAllCategories() {
+		assertTrue("Job with no capacity is full", jobNoCapacity.isFull());
+	}
+	
+	@Test
+	public void testIsFullShouldReturnFalseIfOneCategoryHasNonZeroCapacityWithNoSignUps() {
+		assertFalse("Job with one open category is not full", jobOneLightSlot.isFull());
+	}
+	
+	@Test
+	public void testIsFullShouldReturnFalseIfOneCategoryHasNonZeroCapacityAndIsFull() {
+		jobOneLightSlot.signUp(new User("email", "first", "last"), WorkCategory.LIGHT);
+		assertTrue("Job with one full category is full", jobOneLightSlot.isFull());
+	}
+	
+	@Test
+	public void testIsFullShouldReturnFalseIfAllCategoriesHaveNonZeroCapacityWithNoSignUps() {
+		assertFalse("Job with non-zero capacity and no sign-ups not full", job3.isFull());
+	}
+	
+	@Test
+	public void testIsFullShouldReturnFalseIfAllCategoriesHaveNonZeroCapacityWithOneCategoryFull() {
+		job3.signUp(new User("email", "first", "last"), WorkCategory.LIGHT);
+		assertFalse("Partially filled categories -> job not full", job3.isFull());
+	}
+	
+	@Test
+	public void testIsFullShouldReturnTrueIfAllCategoriesHaveNonZeroCapacityWithAllCategoriesFull() {
+		job3.signUp(new User("email", "first", "last"), WorkCategory.LIGHT);
+		job3.signUp(new User("email2", "first", "last"), WorkCategory.MEDIUM);
+		job3.signUp(new User("email3", "first", "last"), WorkCategory.HEAVY);
+		assertTrue("Job with no capacity is full", job3.isFull());
 	}
 }

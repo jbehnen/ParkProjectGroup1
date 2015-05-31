@@ -14,11 +14,19 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import config_files.Config;
+
+/**
+ * Represents a Job.
+ * 
+ * @author Lisa
+ * @version 5/31/2015
+ */
+//Invariant: myPark != null, startDate != null, 0 < numDays <= Config.MAX_JOB_DAYS,
+// myVolunteers != null, numLightJobs >= 0, numMediumJobs >= 0, numHeavyJobs >= 0, 
+// myDescription != null.
 public class Job implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 256786873250255803L;
 	
 	public final int LIGHT_JOBS;
@@ -29,7 +37,7 @@ public class Job implements Serializable {
 	private String myPark;
 	private GregorianCalendar startDate;
 	private int numDays;
-	private List<User> myVolunteers; // Use a Set
+	private List<User> myVolunteers;
 	private int numLightJobs;
 	private int numMediumJobs;
 	private int numHeavyJobs;
@@ -71,9 +79,16 @@ public class Job implements Serializable {
 		numHeavyJobs = 0;
 		myDescription = theDescription;
 		myVolunteers = new ArrayList<User>();
-
+		
+		assert myPark != null;
+		assert numDays > 0;
+		assert numDays <= Config.MAX_JOB_DAYS;
+		assert numLightJobs >= 0;
+		assert numMediumJobs >= 0;
+		assert numHeavyJobs >= 0;
+		assert myDescription != null;
 		assert myVolunteers != null;
-		}
+	}
 
 
 	/**
@@ -89,6 +104,13 @@ public class Job implements Serializable {
 				theJob.HEAVY_JOBS, theJob.myDescription);
 		myVolunteers = new ArrayList<>(theJob.myVolunteers);
 
+		assert myPark != null;
+		assert numDays > 0;
+		assert numDays <= Config.MAX_JOB_DAYS;
+		assert numLightJobs >= 0;
+		assert numMediumJobs >= 0;
+		assert numHeavyJobs >= 0;
+		assert myDescription != null;
 		assert myVolunteers != null;
 	}
 
@@ -102,36 +124,35 @@ public class Job implements Serializable {
 	}
 
 	/**
-	 * Returns true if theVolunteer was successfully added, false if they were
-	 * not added due to a violation of business rules.
+	 * Signs up the user for the job in the given work category. 
 	 * 
-	 * @param theVolunteer
-	 * @return boolean value
+	 * Preconditions: theVolunteer != null, !isSignedUp(theVolunteer),
+	 * isOpen(theCategory).
 	 */
-
-	/**
-	 * signUp method
-	 * 
-	 * Signs up the user if the work category is still available. 
-	 * @param theVolunteer
-	 * @param theCategory
-	 */
-	
-	/*Precondition: caller must check to see if Volunteer is already signed up*/
-	/*Precondition: caller must check to see if the Work Category is still available*/
 	public void signUp(User theVolunteer, WorkCategory theCategory) {
-				myVolunteers.add(theVolunteer);
-				if (theCategory == WorkCategory.LIGHT) {
-					numLightJobs++;
-				} else if (theCategory == WorkCategory.MEDIUM) {
-					numMediumJobs++;
-				} else {
-					numHeavyJobs++;
-				}
+		myVolunteers.add(theVolunteer);
+		if (theCategory == WorkCategory.LIGHT) {
+			numLightJobs++;
+		} else if (theCategory == WorkCategory.MEDIUM) {
+			numMediumJobs++;
+		} else {
+			numHeavyJobs++;
+		}
+		
+		assert myPark != null;
+		assert numDays > 0;
+		assert numDays <= Config.MAX_JOB_DAYS;
+		assert numLightJobs >= 0;
+		assert numMediumJobs >= 0;
+		assert numHeavyJobs >= 0;
+		assert myDescription != null;
+		assert myVolunteers != null;
 	}
 
 	/**
 	 * Returns true if theVolunteer is signed up for the job, false otherwise.
+	 * 
+	 * Preconditions: theVolunteer != null.
 	 * 
 	 * @param theVolunteer
 	 * @return boolean
@@ -141,19 +162,21 @@ public class Job implements Serializable {
 	}
 
 	/**
-	 * getParkName Returns the name of the Park
+	 * Returns the name of the park the job is at.
+	 * 
+	 * @return the name of the park the job is at.
 	 */
 	public String getParkName() {
 		return myPark;
 	}
 
 	/**
-	 * getNumOpen method
+	 * Returns the number of open jobs in the work category.
 	 * 
-	 * @param theCategory
-	 * @return int the number of open jobs for a given category
+	 * @param theCategory The category which is being checked 
+	 * for number of open jobs.
+	 * @return the number of open jobs for the work category.
 	 */
-
 	public int getNumOpen(WorkCategory theCategory) {
 		int wc = 0;
 
@@ -164,15 +187,24 @@ public class Job implements Serializable {
 		} else {
 			wc = HEAVY_JOBS - numHeavyJobs;
 		}
+		
+		assert myPark != null;
+		assert numDays > 0;
+		assert numDays <= Config.MAX_JOB_DAYS;
+		assert numLightJobs >= 0;
+		assert numMediumJobs >= 0;
+		assert numHeavyJobs >= 0;
+		assert myDescription != null;
+		assert myVolunteers != null;
+		
 		return wc;
 	}
 
 
 	/**
-	 * isOpen method Returns true if the job category is open.
+	 * Returns true if theCategory is open, false otherwise.
 	 * 
-	 * @param theCategory
-	 * @return
+	 * @return true if theCategory is open, false otherwise.
 	 */
 	public boolean isOpen(WorkCategory theCategory) {
 		if (theCategory == WorkCategory.LIGHT) {
@@ -185,9 +217,9 @@ public class Job implements Serializable {
 	}
 
 	/**
-	 * getFirstDate method Returns the first date of the job.
+	 * Returns the first date of the job.
 	 * 
-	 * @return Gregorian Calendar the first date of the job
+	 * @return the first date of the job
 	 */
 	public GregorianCalendar getFirstDate() {
 		return (GregorianCalendar) startDate.clone();
@@ -196,16 +228,28 @@ public class Job implements Serializable {
 	/**
 	 * Returns the last date of the job.
 	 * 
-	 * @return The last date of the job.
+	 * @return the last date of the job.
 	 */
 	public GregorianCalendar getLastDate() {
 		GregorianCalendar temp = (GregorianCalendar) startDate.clone();
 		temp.add(Calendar.DAY_OF_MONTH, numDays-1);
+		
+		assert myPark != null;
+		assert numDays > 0;
+		assert numDays <= Config.MAX_JOB_DAYS;
+		assert numLightJobs >= 0;
+		assert numMediumJobs >= 0;
+		assert numHeavyJobs >= 0;
+		assert myDescription != null;
+		assert myVolunteers != null;
+		
 		return temp;
 	}
 
 	/**
-	 * getNumDays method Returns the length of a job
+	 * Returns the length of the job in days.
+	 * 
+	 * @return the length of the job in days.
 	 */
 	public int getNumDays() {
 		return numDays;
@@ -232,6 +276,16 @@ public class Job implements Serializable {
 		result = prime * result + numMediumJobs;
 		result = prime * result
 				+ ((startDate == null) ? 0 : startDate.hashCode());
+		
+		assert myPark != null;
+		assert numDays > 0;
+		assert numDays <= Config.MAX_JOB_DAYS;
+		assert numLightJobs >= 0;
+		assert numMediumJobs >= 0;
+		assert numHeavyJobs >= 0;
+		assert myDescription != null;
+		assert myVolunteers != null;
+		
 		return result;
 	}
 
@@ -282,11 +336,11 @@ public class Job implements Serializable {
 	}
 
 	/**
-	 * dateString method converts the GregorianCalendar date to a string: month,
-	 * day, year
+	 * Returns a string that shows a GregorianCalendar as month/date/year.
 	 * 
-	 * @param theDate
-	 * @return String
+	 * Precondition: theDate != null.
+	 * 
+	 * @return a string that shows a GregorianCalendar as month/date/year.
 	 */
 	private String dateString(GregorianCalendar theDate) {
 		return (theDate.get(Calendar.MONTH) + 1) + "/" + theDate.get(Calendar.DATE)
@@ -294,9 +348,9 @@ public class Job implements Serializable {
 	}
 
 	/**
-	 * toString method
+	 * Returns a String representation of the Job object.
 	 * 
-	 * @return a String representation of the Job object
+	 * @return a String representation of the Job object.
 	 */
 	@Override
 	public String toString() {
@@ -326,6 +380,18 @@ public class Job implements Serializable {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Returns true if no work categories are open, false otherwise. 
+	 * 
+	 * @return true if no work categories are open, false otherwise. 
+	 */
+	public boolean isFull() {
+		if (isOpen(WorkCategory.LIGHT) || isOpen(WorkCategory.MEDIUM) || isOpen(WorkCategory.HEAVY)) {
+			return false;
+		}
+		return true;
 	}
 
 }

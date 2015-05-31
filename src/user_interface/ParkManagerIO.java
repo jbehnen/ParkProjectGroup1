@@ -372,9 +372,14 @@ public class ParkManagerIO implements IO {
 			System.out.println("The job's duration is too long.");
 		}
 		
+		if(days <= 0) {
+			violations++;
+			System.out.println("The job must be at least one day long.");
+		}
+		
 		if(abilities.tooManyJobsNearJobTime(gc, days)){
 			violations++;
-			System.out.println("There are too many jobs in the system.");
+			System.out.println("There are too many jobs scheduled for that week.");
 		}
 
 		return (violations == 0);
