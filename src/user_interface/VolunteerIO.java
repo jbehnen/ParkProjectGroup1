@@ -1,20 +1,21 @@
 package user_interface;
 
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
 import park_model.Job;
 import park_model.User;
 import park_model.VolunteerAbilities;
 import park_model.WorkCategory;
 import config_files.Config;
+
 /**
- * Running the menu for Volunteer
- * This class is checking valid or invalid or conflict date
- * Viewing list of Job, Showing list of Job in the future
- * Managing option the volunteer take for Job
+ * Running the menu for Volunteer This class is checking valid or invalid or
+ * conflict date Viewing list of Job, Showing list of Job in the future Managing
+ * option the volunteer take for Job
+ * 
  * @author Le Bui and Shewan
  * @version 05/22/2014
  *
@@ -23,16 +24,11 @@ public class VolunteerIO implements IO {
 
 	private User myUser;
 	private VolunteerAbilities myAbilities;
-	private int size;
-	private List<Job> display;
-
 
 	public VolunteerIO(User myUser) {
 		this.myUser = myUser;
-		myAbilities = new VolunteerAbilities(Config.VOLUNTEER_FILE);
-		//display = new ArrayList<Job>();
-		//display = (List<Job>) myAbilities.getAllFutureJobs();
-		//size = display.size();
+		myAbilities = new VolunteerAbilities(Config.JOB_SCHEDULE_FILE);
+
 	}
 
 	@SuppressWarnings("resource")
@@ -43,8 +39,8 @@ public class VolunteerIO implements IO {
 		boolean isValid = false;
 		int choice = 0;
 
-		System.out.println(String.format("%40s",
-				"Hi Volunteer " + myUser.getFirstName()));
+		System.out.println(String.format("%40s", "Logged in as volunteer "
+				+ myUser.getFirstName()));
 		System.out.println(" What do you want to do today?");
 		// Want to see upcoming jobs i can sign for
 		System.out.println("  1. View my jobs");
@@ -65,10 +61,10 @@ public class VolunteerIO implements IO {
 					showAllFutureJobs();
 					break;
 				case 3:
-					myAbilities.saveJobs(Config.VOLUNTEER_FILE);
+					myAbilities.saveJobs(Config.JOB_SCHEDULE_FILE);
 					System.exit(0);
 					break;
-    			default:
+				default:
 					System.out.println("Invalid input -Exit");
 				}
 			} else {
@@ -77,54 +73,47 @@ public class VolunteerIO implements IO {
 		}
 	}
 
-
 	/**
 	 * Displays the jobs that the volunteer has already signed up for.
 	 */
-    private void viewMyJobs() {
+	private void viewMyJobs() {
+
 		if (getMyJobs().size() == 0) {
-			System.out.println("Sorry, you didn't signup for any job yet.");
-		} else {
-			System.out.println("Here is the list you signed up for.");
-			for (int i = 1; i <= getMyJobs().size(); i++) {
-				System.out.println(i + ". " + getMyJobs().get(i).toString());
-			}
+			System.out.println("Didn't sign up for a job yet.");
+		}
+
+		for (int i = 0; i < getMyJobs().size(); i++) {
+			System.out.println(i + 1 + ".  " + getMyJobs().get(i).toString());
 
 		}
+		System.out.println("\n");
+		mainMenu();
+
 	}
 
-	/**
-	 * Gets the jobs that i am singed up for.
-	 *
-	 * @return - List of jobs that user signed up for
-	 */
 	private List<Job> getMyJobs() {
-		// Temp list to hold and display user's job info
-		List<Job> myJobsList = new ArrayList<Job>();
-		for (Job theJob : display) {
-			if (theJob.isSignedUp(myUser)) {
-				myJobsList.add(theJob);
+		List<Job> myJobs = new ArrayList<Job>();
+		for (int i = 0; i < myAbilities.getAllFutureJobs().size(); i++) {
+			if (myAbilities.getAllFutureJobs().get(i).isSignedUp(myUser)) {
+				myJobs.add(myAbilities.getAllFutureJobs().get(i));
+
 			}
 
 		}
 
-		return myJobsList;
+		return myJobs;
 
 	}
 
 	/**
-     * This method is the helper method to display the jobs list.
-     *
-     */
+	 * This method is the helper method to display the jobs list.
+	 *
+	 */
 	private void showAllFutureJobs() {
-		if (myAbilities.getAllFutureJobs().size() == 0) {
-			System.out.println("Am sorry, no future jobs to display.");
-			mainMenu();
-		} else {
-			System.out.println("Jobs in the future.");
-			for (int i = 1; i <= myAbilities.getAllFutureJobs().size(); i++) {
-				System.out.println(i + ". " + ((List<Job>) myAbilities.getAllFutureJobs()).get(i).toString());
-			}
+
+		for (int i = 0; i < myAbilities.getAllFutureJobs().size(); i++) {
+			System.out.println(i + 1 + ".  "
+					+ myAbilities.getAllFutureJobs().get(i).toString());
 
 		}
 
@@ -134,38 +123,45 @@ public class VolunteerIO implements IO {
 
 	@SuppressWarnings("resource")
 	private void askForSignUp() {
-		//Ask if user want to sign up.
+		// Ask if user want to sign up.
 		Scanner inner = new Scanner(System.in);
-		String response;
-		System.out.println(myUser.getFirstName() +", do you want to sign up? (y/n) ");
+
+		String response = "";
+		System.out.println(myUser.getFirstName()
+				+ ", do you want to sign up? (y/n) ");
 		response = inner.next();
 
-		if (!response.toLowerCase().contains("y")
-				|| !response.toLowerCase().contains("n")) {
-			System.out.println("Invalid Option");
-			showAllFutureJobs();
+		switch (response) {
 
-		} else if (response.toLowerCase().contains("n")) {
-			mainMenu();
-
-		}else{
+		case "y":
 			startSignUp();
+			break;
+		case "n":
+			mainMenu();
+			break;
+		default:
+			System.err.println("Invalid Option  y/n");
+			showAllFutureJobs();
+			break;
+
 		}
 
 	}
 
 	/**
-	 *Validate user job choice for selection.
+	 * Validate user job choice for selection.
 	 */
 
 	@SuppressWarnings("resource")
 	private void startSignUp() {
 		Scanner inner = new Scanner(System.in);
-		int jobChoice;
+		inner.reset();
+
+		int jobChoice = 0;
 		System.out.println("For which job do you want sign up for?");
 		jobChoice = inner.nextInt();
-
-		if (jobChoice > 0 && jobChoice < size) {
+		--jobChoice;
+		if (jobChoice >= 0 && jobChoice < myAbilities.getAllFutureJobs().size()) {
 			validateAlreadySignedUp(jobChoice);
 
 		} else {
@@ -175,22 +171,28 @@ public class VolunteerIO implements IO {
 		}
 
 	}
-    /**
-     * Checks if the job can be signed up by the user
-     * Exit if user has already signed up for the job
-     * @param response - job index user want to sign up for.
-     */
-	private void validateAlreadySignedUp(int jobChoice) {
-		//if(display.get(response).isSignedUp(myUser)){
-		if(((List<Job>) myAbilities.getAllFutureJobs()).get(jobChoice).isSignedUp(myUser)){
-			System.out.println(myUser.getFirstName() + ", you have already signed up for this job");
-			showAllFutureJobs();
-			}
-		else{
-			validateDateConflict(((List<Job>) myAbilities.getAllFutureJobs()).get(jobChoice));
-			//validateConflict(display.get(response));
-		}
 
+	/**
+	 * Checks if the job can be signed up by the user Exit if user has already
+	 * signed up for the job
+	 * 
+	 * @param response
+	 *            - job index user want to sign up for.
+	 */
+	private void validateAlreadySignedUp(int jobChoice) {
+
+		if (((List<Job>) myAbilities.getAllFutureJobs()).get(jobChoice)
+				.isSignedUp(myUser)) {
+			System.err.println("Remark: " + myUser.getFirstName()
+					+ ", you can't signup for same job multiple times.");
+			showAllFutureJobs();
+
+		} else {
+
+			validateDateConflict(((List<Job>) myAbilities.getAllFutureJobs())
+					.get(jobChoice));
+
+		}
 
 	}
 
@@ -201,52 +203,53 @@ public class VolunteerIO implements IO {
 	 *            - job user wants to sign up for
 	 */
 	private void validateDateConflict(Job jobForSignUp) {
-		for (Job signedUpJob : getMyJobs()) {
-			//if (myAbilities.checkJobsOnSameDay(jobForSignUp, signedUpJob)) {
-			if (myAbilities.isSignedUpForConflictingJob(myUser, signedUpJob)) {
-				System.out.println(myUser.getFirstName()
-						+ ",you have already signed up for a job on same day");
-			}
+		if (myAbilities.isSignedUpForConflictingJob(myUser, jobForSignUp)) {
+			System.err
+					.println(myUser.getFirstName()
+							+ ",you have already signed up for another job on that same day");
+			showAllFutureJobs();
 
 		}
+
 		// No other job on the same day.
 		validateWorkCategory(jobForSignUp);
 	}
 
-    /**
-     * Validates if the user chooses open work category.
-     * @param signedUpJob - job whose work category to be check for
-     */
+	/**
+	 * Validates if the user chooses open work category.
+	 * 
+	 * @param signedUpJob
+	 *            - job whose work category to be check for
+	 */
 	@SuppressWarnings("resource")
 	private void validateWorkCategory(Job jobForSignUp) {
 		Scanner on = new Scanner(System.in);
+		on.reset();
 		int choice = 0;
 		boolean fail = false;
 		WorkCategory temp = null;
-		/*if (myAbilities.isFull(jobForSignUp)) {
-			System.out.println("Job is full");
-			mainMenu();
-		}*/
 
-		System.out
-				.println(" Here are the avaialbe lists of work catgory for that job");
-		// int light = jobForSignUp.getNumOpen(WorkCategory.LIGHT);
-		System.out.println(" 1. Light  "
-				+ jobForSignUp.getNumOpen(WorkCategory.LIGHT));
-		// int medium = jobForSignUp.getNumOpen(WorkCategory.MEDIUM);
-		System.out.println(" 2. Medium "
-				+ jobForSignUp.getNumOpen(WorkCategory.MEDIUM));
-		// int heavy = jobForSignUp.getNumOpen(WorkCategory.HEAVY);
-		System.out.println(" 3. Heavy  "
-				+ jobForSignUp.getNumOpen(WorkCategory.HEAVY));
+		/*
+		 * if (jobForSignUp.isFull()) { System.out.println("Job is full");
+		 * mainMenu(); }
+		 */
 
-		System.out.println(" Which one you like to sign up for? 4 to go back");
-		choice = on.nextInt();
+		System.out.println(" Which work catgory? ");
+
+		System.out.println(" 1. Light ");
+
+		System.out.println(" 2. Medium ");
+
+		System.out.println(" 3. Heavy ");
+
+		System.out.println(" 4. Go Back to list of jobs ");
+
+		System.out.println(" 5. Main Menu ");
 
 		while (!fail) {
 
 			choice = on.nextInt();
-			if (choice > 0 && choice < 5) {
+			if (choice > 0 && choice < 6) {
 				fail = true;
 				switch (choice) {
 				case 1:
@@ -261,25 +264,32 @@ public class VolunteerIO implements IO {
 				case 4:
 					showAllFutureJobs();
 					break;
+				case 5:
+					mainMenu();
+					break;
 				default:
 					System.err
 							.println("Error: incorrect choice taken at console input");
-				}
-			} else {
-				System.err.println("Please make a valid selection");
+				}// End switch
+
 			}
+
+			else {
+				System.err.println("Please make a valid selection");
+			} 
 
 		}
 
 		if (!jobForSignUp.isOpen(temp)) {
-			System.out.print("That catagory is full");
+			System.err.println("Sorry, it seems that catagory is full.");
 			showAllFutureJobs();
 
 		}
 		jobForSignUp.signUp(myUser, temp);
-		System.out.print("Signed up for the job");
+		System.out.println("Signed up for the job.");
+		System.out.println("\n");
+		mainMenu();
 
 	}
 
 }
-
