@@ -107,11 +107,41 @@ public class PMAbilities {
 	 * 
 	 * "Week" is += Config.IMMEDIATE_TIME_FRAME_DAYS days.
 	 * 
+	 * Precondition: theStartDate != null, theNumDays > 0.
+	 * 
+	 * @return true if the immediate time frame surrounding the proposed job has
+	 * already reached maximum jobs, false otherwise. 
+	 */
+	public boolean tooManyJobsNearJobTime(GregorianCalendar theStartDate, int theNumDays) {
+		GregorianCalendar weekStart = (GregorianCalendar) theStartDate.clone();
+		weekStart.add(Calendar.DATE, -Config.IMMEDIATE_TIME_FRAME_DAYS);
+		GregorianCalendar weekEnd = (GregorianCalendar) theStartDate.clone();
+		weekEnd.add(Calendar.DATE, theNumDays - 1); // gets the last date of the job
+		weekEnd.add(Calendar.DATE, Config.IMMEDIATE_TIME_FRAME_DAYS); 
+		int sameWeekJobs = 0;
+		for (Job job: myJobs) {
+			if (job.isJobInRange(weekStart, weekEnd)) {
+				sameWeekJobs += 1;
+			}
+		}
+		assert myJobs != null;
+		return sameWeekJobs >= Config.MAX_DENSE_JOBS;
+	}
+	
+	/**
+	 * ****************** REPLACES tooManyJobsInWeek() ************************
+	 * 
+	 * Returns true if the immediate time frame surrounding the proposed job has
+	 * already reached maximum jobs (Config.MAX_DENSE_JOBS), false otherwise. 
+	 * 
+	 * "Week" is += Config.IMMEDIATE_TIME_FRAME_DAYS days.
+	 * 
 	 * Precondition: theJob != null.
 	 * 
 	 * @return true if the immediate time frame surrounding the proposed job has
 	 * already reached maximum jobs, false otherwise. 
 	 */
+	@Deprecated
 	public boolean tooManyJobsNearJobTime(Job theJob) {
 		GregorianCalendar weekStart = theJob.getFirstDate();
 		weekStart.add(Calendar.DATE, -Config.IMMEDIATE_TIME_FRAME_DAYS);

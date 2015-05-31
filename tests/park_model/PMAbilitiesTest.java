@@ -22,12 +22,14 @@ public class PMAbilitiesTest {
 	
 	PMAbilities abilities;
 	Job testJob;
+	GregorianCalendar today;
 	
 	@Before
 	public void setUp() throws Exception {
 		abilities = new PMAbilities(Config.EMPTY_TEXT_FILE);
 		testJob = new Job("Rosa Park", RulesHelp.getTodaysDate(), 1,
 				2, 3, 4, "Description");
+		today = RulesHelp.getTodaysDate();
 	}
 	
 	@Test
@@ -88,92 +90,88 @@ public class PMAbilitiesTest {
 	
 	@Test
 	public void testIsWeekFullShouldTrackJobsInMiddleOfRange() {
-		Job newJob = new Job("Park", RulesHelp.getTodaysDate(), 2, 1, 1, 1, "");
-		Job comparisionJob = new Job(newJob);
+		GregorianCalendar today = RulesHelp.getTodaysDate();
+		Job comparisionJob = new Job("Park", today, 2, 1, 1, 1, "");
 		assertFalse("Week is not full with 0 jobs",
-				abilities.tooManyJobsNearJobTime(newJob));
+				abilities.tooManyJobsNearJobTime(today, 2));
 		for (int i = 1; i < Config.MAX_DENSE_JOBS; i++) {
 			abilities.addJob(comparisionJob);
 		}
 		assertFalse("Week is one less than full", 
-				abilities.tooManyJobsNearJobTime(newJob));
+				abilities.tooManyJobsNearJobTime(today, 2));
 		abilities.addJob(comparisionJob);
 		assertTrue("Week is full", 
-				abilities.tooManyJobsNearJobTime(newJob));
+				abilities.tooManyJobsNearJobTime(today, 2));
 	}
 	
 	@Test
 	public void testIsWeekFullShouldTrackJobsThatOverlapStartOfRange() {
 		// Jobs are two days long so that they overlap the boundary of the range
-		Job newJob = new Job("Park", RulesHelp.getTodaysDate(), 2, 1, 1, 1, "");
 		GregorianCalendar comparisonDate = RulesHelp.getTodaysDate();
 		comparisonDate.add(Calendar.DATE, -(Config.IMMEDIATE_TIME_FRAME_DAYS + 1));
 		Job comparisionJob = new Job("Park", comparisonDate, 2, 1, 1, 1, "");
 		assertFalse("Week is not full with 0 jobs",
-				abilities.tooManyJobsNearJobTime(newJob));
+				abilities.tooManyJobsNearJobTime(today, 2));
 		for (int i = 1; i < Config.MAX_DENSE_JOBS; i++) {
 			abilities.addJob(comparisionJob);
 		}
 		assertFalse("Week is one less than full",
-				abilities.tooManyJobsNearJobTime(newJob));
+				abilities.tooManyJobsNearJobTime(today, 2));
 		abilities.addJob(comparisionJob);
 		assertTrue("Week is full",
-				abilities.tooManyJobsNearJobTime(newJob));
+				abilities.tooManyJobsNearJobTime(today, 2));
 	}
 	
 	@Test
 	// Jobs are two days long so that they overlap the boundary of the range
 	public void testIsWeekFullShouldTrackJobsThatOverlapEndOfRange() {
-		Job newJob = new Job("Park", RulesHelp.getTodaysDate(), 2, 1, 1, 1, "");
 		GregorianCalendar comparisonDate = RulesHelp.getTodaysDate();
 		comparisonDate.add(Calendar.DATE, Config.IMMEDIATE_TIME_FRAME_DAYS + 1);
 		Job comparisionJob = new Job("Park", comparisonDate, 2, 1, 1, 1, "");
 		assertFalse("Week is not full with 0 jobs",
-				abilities.tooManyJobsNearJobTime(newJob));
+				abilities.tooManyJobsNearJobTime(today, 2));
 		for (int i = 1; i < Config.MAX_DENSE_JOBS; i++) {
 			abilities.addJob(comparisionJob);
 		}
 		assertFalse("Week is one less than full",
-				abilities.tooManyJobsNearJobTime(newJob));
+				abilities.tooManyJobsNearJobTime(today, 2));
 		abilities.addJob(comparisionJob);
 		assertTrue("Week is full",
-				abilities.tooManyJobsNearJobTime(newJob));
+				abilities.tooManyJobsNearJobTime(today , 2));
 	}
 	
 	@Test
 	public void testIsWeekFullShouldNotTrackJobsBeforeRange() {
-		Job newJob = new Job("Park", RulesHelp.getTodaysDate(), 2, 1, 1, 1, "");
 		GregorianCalendar comparisonDate = RulesHelp.getTodaysDate();
 		comparisonDate.add(Calendar.DATE, -(Config.IMMEDIATE_TIME_FRAME_DAYS + 2));
 		Job comparisionJob = new Job("Park", comparisonDate, 2, 1, 1, 1, "");
 		assertFalse("Week is not full with 0 jobs",
-				abilities.tooManyJobsNearJobTime(newJob));
+				abilities.tooManyJobsNearJobTime(today, 2));
 		for (int i = 1; i < Config.MAX_DENSE_JOBS; i++) {
 			abilities.addJob(comparisionJob);
 		}
 		assertFalse("Week is still not full",
-				abilities.tooManyJobsNearJobTime(newJob));
+				abilities.tooManyJobsNearJobTime(today, 2));
 		abilities.addJob(comparisionJob);
 		assertFalse("Week is still not full",
-				abilities.tooManyJobsNearJobTime(newJob));
+				abilities.tooManyJobsNearJobTime(today, 2));
 	}
 	
 	@Test
 	public void testIsWeekFullShouldNotTrackJobsAfterRange() {
-		Job newJob = new Job("Park", RulesHelp.getTodaysDate(), 2, 1, 1, 1, "");
 		GregorianCalendar comparisonDate = RulesHelp.getTodaysDate();
 		comparisonDate.add(Calendar.DATE, Config.IMMEDIATE_TIME_FRAME_DAYS + 2);
 		Job comparisionJob = new Job("Park", comparisonDate, 2, 1, 1, 1, "");
 		assertFalse("Week is not full with 0 jobs",
-				abilities.tooManyJobsNearJobTime(newJob));
+				abilities.tooManyJobsNearJobTime(today, 2));
 		for (int i = 1; i < Config.MAX_DENSE_JOBS; i++) {
 			abilities.addJob(comparisionJob);
 		}
 		assertFalse("Week is still not full",
-				abilities.tooManyJobsNearJobTime(newJob));
+				abilities.tooManyJobsNearJobTime(today, 2));
 		abilities.addJob(comparisionJob);
 		assertFalse("Week is still not full",
-				abilities.tooManyJobsNearJobTime(newJob));
+				abilities.tooManyJobsNearJobTime(today, 2));
 	}
 
 }
