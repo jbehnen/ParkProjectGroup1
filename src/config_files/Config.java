@@ -32,6 +32,8 @@ public class Config {
 	
 	public static final String MAX_JOBS_PER_WEEK_FILE = "src/config_files/WeekFull7-15-2015.txt";
 	
+	public static final String JOB_IN_PAST_FILE = "src/config_files/5Jobs1InPast.txt";
+	
 	/**
 	 * Number of total dates in the job.
 	 */
