@@ -229,10 +229,10 @@ public class VolunteerIO implements IO {
 		boolean fail = false;
 		WorkCategory temp = null;
 
-		/*
-		 * if (jobForSignUp.isFull()) { System.out.println("Job is full");
-		 * mainMenu(); }
-		 */
+		if (jobForSignUp.isFull()) { 
+			System.out.println("Job is full");
+			mainMenu(); 
+		}
 
 		System.out.println(" Which work catgory? ");
 
