@@ -53,9 +53,9 @@ public class ParkManagerIO implements IO {
 
 		BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
 
-		System.out.println("\nWelcom to the Park Manager page.");
+		System.out.println("\n********Welcome to the Park Manager page********");
 		System.out.println("\nPlease type the number of the action you want to perform.");
-		System.out.println("\n1:Create a new job. \n2:View upcoming jobs. \n3:View the volunteers for a job. \n4:Quit program");
+		System.out.println("\n1: Create a new job. \n2: View upcoming jobs. \n3: View the volunteers for a job. \n4: Quit program");
 
 		// IO try/catch was adapted from code found at
 		// http://stackoverflow.com/questions/4644415/java-how-to-get-input-from-system-console
@@ -79,13 +79,13 @@ public class ParkManagerIO implements IO {
 						abilities.saveJobs(Config.JOB_SCHEDULE_FILE);
 						System.exit(0);
 					default:
-						System.err.println("Error: incorrect choice taken at console input");
+						System.out.println("outor: incorrect choice taken at console input");
 					}
 				} else {
-					System.err.println("Please make a valid selection");
+					System.out.println("Please make a valid selection");
 				}
 			} catch (NumberFormatException | IOException nfe) {
-				System.err.println("Please make a valid selection");
+				System.out.println("Please make a valid selection");
 			}
 		}
 	}
@@ -97,9 +97,8 @@ public class ParkManagerIO implements IO {
 		boolean validJob = false;
 		boolean tooFull = false;
 		int index;
-		
+		System.out.println("********View the Volunteers********");
 		List<Job> jobs = getJobs(con);
-
 		// Display the jobs
 		if (jobs.size() > 0) {
 			System.out.println("Which job do you want displayed?\n");
@@ -121,25 +120,25 @@ public class ParkManagerIO implements IO {
 								System.out.println(v.toString());
 							}
 						} else {
-							System.err.println("There are no volunteers scheduled for this job.\n");
+							System.out.println("No volunteers are scheduled for this job.\n");
 						}
 					} else {
-						System.err.println("please make a valid selection.");
+						System.out.println("please make a valid selection.");
 					}
 				} catch (NumberFormatException | IOException nfe) {
-					System.err.println("Please make a valid selection");
+					System.out.println("Please make a valid selection");
 				}
 			}
 		} else {
-			System.err.println("There are no jobs scheduled for this park.");
+			System.out.println("No Jobs are scheduled for this park.");
 		}
-		System.out.println("\n\n\n");
 		mainMenu();
 	}
 
 
 	//Private method that displays jobs for a specific park.
 	private void viewJobs(BufferedReader con) {
+		System.out.println("********View Jobs********");
 		List<Job> jobs = getJobs(con);
 		for (int i = 0; i < jobs.size(); i++) {
 			System.out.println(jobs.get(i).toString());
@@ -166,11 +165,11 @@ public class ParkManagerIO implements IO {
 					thePark = myUser.getParks().get(ind);
 					jobList = (List<Job>) (abilities.getJobsAtPark(thePark));
 				} else {
-					System.err.println("please make a valid selection.");
+					System.out.println("please make a valid selection.");
 					;
 				}
 			} catch (NumberFormatException | IOException nfe) {
-				System.err.println("Please make a valid selection");
+				System.out.println("Please make a valid selection");
 			}
 		}
 		return jobList;
@@ -190,11 +189,12 @@ public class ParkManagerIO implements IO {
 		int index = -1;
 		
 		StringBuilder theDescription = new StringBuilder();
+		System.out.println("********Add a Job********");
 		
 		//********************Business Rule********************//
 		//Answers the question: Are there too many jobs in the schedule//
 		if(abilities.tooManyTotalJobs()){
-			System.err.println("The number of jobs for this system is at capacity. You will not be able to add a job at this time and "
+			System.out.println("The number of jobs for this system is at capacity. You will not be able to add a job at this time and "
 					+ "will be redirected to the main menu.");
 			mainMenu();
 		}else{
@@ -210,16 +210,16 @@ public class ParkManagerIO implements IO {
 						thePark = myUser.getParks().get(index);
 						index = -1;
 					}else{
-						System.err.println("please make a valid selection.");;
+						System.out.println("please make a valid selection.");;
 					}
 				}catch(NumberFormatException | IOException nfe){
-					System.err.println("Please make a valid seletion");
+					System.out.println("Please make a valid seletion");
 				}
 			}
 			validInput = false; //reset input boolean
 			
 			//Ask for the job name and read in a job name
-			System.out.println("What is the job name?/n");
+			System.out.println("What is the job name?");
 			try {
 				theDescription.append(console2.readLine() + " ");
 			} catch (IOException e) {
@@ -237,8 +237,8 @@ public class ParkManagerIO implements IO {
 					validDate = true;
 				}else{
 					while(!valueValid){	//Check for valid input
-						System.err.println("What would you like to do next?\n");
-						System.out.println("1) Enter date again\n2) Return to the main menu\n3) Quit\n");
+						System.out.println("What would you like to do next?\n");
+						System.out.println("1) Enter information again\n2) Return to the main menu\n3) Quit\n");
 							try{
 								int h = Integer.parseInt(console2.readLine());
 								if(h >0 && h <4){
@@ -256,13 +256,13 @@ public class ParkManagerIO implements IO {
 										abilities.saveJobs(Config.JOB_SCHEDULE_FILE);
 										System.exit(0);
 									default:
-										System.err.println("Error: incorrect choice taken in console input");
+										System.out.println("outor: incorrect choice taken in console input");
 									}
 								}else{
-									System.err.println("Please make a valid selection");
+									System.out.println("Please make a valid selection");
 								}
 							} catch(NumberFormatException | IOException nfe){
-								System.err.println("Please make a valid selection");
+								System.out.println("Please make a valid selection");
 							}
 						}
 					valueValid = false;//resetting boolean for input validation
@@ -297,10 +297,10 @@ public class ParkManagerIO implements IO {
 						validInput = true;
 						numLightJobs = index;
 					}else{
-						System.err.println("please make a valid selection.");
+						System.out.println("please make a valid selection.");
 					}
 				}catch(NumberFormatException | IOException nfe){
-					System.err.println("Please make a valid seletion");
+					System.out.println("Please make a valid seletion");
 				}
 			}
 			validInput = false;
@@ -314,10 +314,10 @@ public class ParkManagerIO implements IO {
 						validInput = true;
 						numMediumJobs = index;
 					}else{
-						System.err.println("please make a valid selection.");
+						System.out.println("please make a valid selection.");
 					}
 				}catch(NumberFormatException | IOException nfe){
-					System.err.println("Please make a valid seletion");
+					System.out.println("Please make a valid seletion");
 				}
 			}
 			validInput = false;
@@ -331,15 +331,15 @@ public class ParkManagerIO implements IO {
 						validInput = true;
 						numHeavyJobs = index;
 					}else{
-						System.err.println("please make a valid selection.");
+						System.out.println("please make a valid selection.");
 					}
 				}catch(NumberFormatException | IOException nfe){
-					System.err.println("Please make a valid seletion");
+					System.out.println("Please make a valid seletion");
 				}
 			}
 			
 			//Creates user list
-			List<User> newList = new ArrayList<User>(); 
+			List<User> newList = new ArrayList<User>(); //Stays empty when a job is created. 
 			
 			//Creates a job with validated information that has passed the business rules. 
 			Job thisJob = new Job(thePark, startDate, numDays,numLightJobs, numMediumJobs, numHeavyJobs, theDescription.toString());
@@ -359,22 +359,22 @@ public class ParkManagerIO implements IO {
 		
 		if(RulesHelp.isDateInPast(gc)){
 			violations++;
-			System.err.println("The date is in the past.");
+			System.out.println("The date is in the past.");
 		}
 		
 		if(RulesHelp.isDateTooFarInFuture(gc)){
 			violations++;
-			System.err.println("The date is too far in the future.");
+			System.out.println("The date is too far in the future.");
 		}
 		
 		if(days > Config.MAX_JOB_DAYS){
 			violations++;
-			System.err.println("The job's duration is too long.");
+			System.out.println("The job's duration is too long.");
 		}
 		
 		if(abilities.tooManyJobsNearJobTime(gc, days)){
 			violations++;
-			System.err.println("There are too many jobs in the system.");
+			System.out.println("There are too many jobs in the system.");
 		}
 
 		return (violations == 0);
@@ -399,10 +399,10 @@ public class ParkManagerIO implements IO {
 					validIn = true;
 					month = temp - 1; 
 				}else{
-					System.err.println("Please make a valid selection (1-12).");
+					System.out.println("Please make a valid selection (1-12).");
 				}
 			}catch(NumberFormatException | IOException nfe){
-				System.err.println("Please make a valid seletion");
+				System.out.println("Please make a valid seletion");
 			}
 		}
 		validIn = false; //reset input boolean
@@ -416,10 +416,10 @@ public class ParkManagerIO implements IO {
 					validIn = true;
 					day = temp;
 				}else{
-					System.err.println("Please make a valid selection (1-31).");
+					System.out.println("Please make a valid selection (1-31).");
 				}
 			}catch(NumberFormatException | IOException nfe){
-				System.err.println("Must be a number.");
+				System.out.println("Must be a number.");
 			}
 		}
 			validIn = false;//reset input boolean
@@ -433,10 +433,10 @@ public class ParkManagerIO implements IO {
 						validIn = true;
 						year = temp;
 					}else{
-						System.err.println("Please make a valid selection (1-31).");
+						System.out.println("Please make a valid selection (1-31).");
 					}
 				}catch(NumberFormatException | IOException nfe){
-					System.err.println("Must be a number.");
+					System.out.println("Must be a number.");
 				}
 			}
 			
@@ -456,7 +456,7 @@ public class ParkManagerIO implements IO {
 					numDays = Integer.parseInt(console5.readLine());
 					validNum = true;
 				}catch(NumberFormatException | IOException nfe){
-					System.err.println("Must be a number.");
+					System.out.println("Must be a number.");
 				}
 			}
 			return numDays;	
