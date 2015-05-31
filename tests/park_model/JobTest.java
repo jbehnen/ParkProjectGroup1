@@ -70,7 +70,7 @@ public class JobTest {
 	@Test
 	public void testIsSignedUpWhenNotSignedUpListNotEmpty(){
 		job2.signUp(volun1, WorkCategory.MEDIUM);
-		job2.isSignedUp(volun2);
+		assertFalse("The volunteer is not in the list.", job2.isSignedUp(volun2));
 	}
 	
 	//Test the getNumOpen Tests
