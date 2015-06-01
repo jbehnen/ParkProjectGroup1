@@ -13,9 +13,7 @@ import park_model.WorkCategory;
 import config_files.Config;
 
 /**
- * Running the menu for Volunteer This class is checking valid or invalid or
- * conflict date Viewing list of Job, Showing list of Job in the future Managing
- * option the volunteer take for Job
+ * Runs the menu for volunteers.
  * 
  * @author Le Bui and Shewan
  * @version 05/22/2014
@@ -85,11 +83,12 @@ public class VolunteerIO implements IO {
 		List<Job> myJobs = myAbilities.getMyJobs(myUser);
 		if (myJobs.isEmpty()) {
 			System.out.println("You are not signed up for any jobs.");
-		}
-		System.out.println("\nYou are signed up for: \n");
-		for (int i = 0; i < myJobs.size(); i++) {
-			System.out.println(i + 1 + ".  " + myJobs.get(i).toString());
-
+		} else {
+			System.out.println("\nYou are signed up for: \n");
+			for (int i = 0; i < myJobs.size(); i++) {
+				System.out.println(i + 1 + ".  " + myJobs.get(i).toString());
+	
+			}
 		}
 		System.out.println();
 		mainMenu();

@@ -26,6 +26,12 @@ import park_model.ParkManager;
 import park_model.RulesHelp;
 import park_model.User;
 
+/**
+ * Runs the menu for park managers.
+ * 
+ * @author Lisa
+ * @version 5/31/2015
+ */
 public class ParkManagerIO implements IO {
 
 	//Class variables
@@ -197,7 +203,6 @@ public class ParkManagerIO implements IO {
 		if(myAbilities.tooManyTotalJobs()){
 			System.out.println("The number of jobs for this system is at capacity. You will not be able to add a job at this time and "
 					+ "will be redirected to the main menu.");
-			mainMenu();
 		}else{
 			System.out.println("Please choose a park.");
 			for(int i = 0; i<myUser.getParks().size(); i++) {
@@ -240,38 +245,39 @@ public class ParkManagerIO implements IO {
 					while(!valueValid){	//Check for valid input
 						System.out.println("What would you like to do next?\n");
 						System.out.println("1) Enter information again\n2) Return to the main menu\n3) Quit\n");
-							try{
-								int h = Integer.parseInt(myConsole.readLine());
-								if(h >0 && h <4){
-									valueValid = true; 
-									switch(h){
-									case 1:
-										validDate = false;
-										startDate = enterDate();
-										numDays = enterNumDays();
-										break;
-									case 2:
-										mainMenu();
-										break;
-									case 3:
-										myAbilities.saveJobs(Config.JOB_SCHEDULE_FILE);
-										System.exit(0);
-									default:
-										System.out.println("outor: incorrect choice taken in console input");
-									}
-								}else{
-									System.out.println("Please make a valid selection");
+						try{
+							int h = Integer.parseInt(myConsole.readLine());
+							if(h >0 && h <4){
+								valueValid = true; 
+								switch(h){
+								case 1:
+									validDate = false;
+									startDate = enterDate();
+									numDays = enterNumDays();
+									break;
+								case 2:
+									mainMenu();
+									break;
+								case 3:
+									System.out.println("Have a great day!");
+									myAbilities.saveJobs(Config.JOB_SCHEDULE_FILE);
+									myConsole.close();
+									System.exit(0);
+									break;
+								default:
+									System.out.println("Error: incorrect choice taken in console input");
 								}
-							} catch(NumberFormatException | IOException nfe){
+							}else{
 								System.out.println("Please make a valid selection");
 							}
+						} catch(NumberFormatException | IOException nfe){
+							System.out.println("Please make a valid selection");
 						}
-					valueValid = false;//resetting boolean for input validation
 					}
+					valueValid = false;//resetting boolean for input validation
 				}
 			}
-			
-
+		
 			//Asks and captures the times for a job
 			System.out.println("What are the hours for this job?");
 			try {
@@ -345,7 +351,10 @@ public class ParkManagerIO implements IO {
 			//Adds the job to the schedule
 			myAbilities.addJob(thisJob);
 			System.out.println("\n\nYour job is now on the schedule\n\n");
-			mainMenu();
+		
+		}
+		
+		mainMenu();
 	}
 
 	//***********************Business Rule Check***********************//
