@@ -1,14 +1,9 @@
 package user_interface;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Scanner;
 
-import park_model.Job;
-import park_model.JobSchedule;
 import park_model.ParkManager;
 import park_model.User;
 import park_model.UserList;

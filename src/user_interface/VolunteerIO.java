@@ -4,9 +4,7 @@ package user_interface;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import park_model.Job;
 import park_model.User;
@@ -49,10 +47,10 @@ public class VolunteerIO implements IO {
 		// i want to see job i am signed up for
 		System.out.println("  2. Future Jobs ");
 		System.out.println("  3. Exit");
-
 		while (!isValid) {
 			try {
 				choice = Integer.parseInt(myConsole.readLine());
+				System.out.println();
 				if (choice > 0 && choice < 4) {
 					isValid = true;
 					switch (choice) {
@@ -60,7 +58,6 @@ public class VolunteerIO implements IO {
 						viewMyJobs();
 						break;
 					case 2:
-						// see Open jobs
 						showAllFutureJobs();
 						break;
 					case 3:
@@ -85,31 +82,17 @@ public class VolunteerIO implements IO {
 	 * Displays the jobs that the volunteer has already signed up for.
 	 */
 	private void viewMyJobs() {
-
-		if (getMyJobs().size() == 0) {
-			System.out.println("Didn't sign up for a job yet.");
+		List<Job> myJobs = myAbilities.getMyJobs(myUser);
+		if (myJobs.isEmpty()) {
+			System.out.println("You are not signed up for any jobs.");
 		}
-
-		for (int i = 0; i < getMyJobs().size(); i++) {
-			System.out.println(i + 1 + ".  " + getMyJobs().get(i).toString());
+		System.out.println("\nYou are signed up for: \n");
+		for (int i = 0; i < myJobs.size(); i++) {
+			System.out.println(i + 1 + ".  " + myJobs.get(i).toString());
 
 		}
-		System.out.println("\n");
+		System.out.println();
 		mainMenu();
-
-	}
-
-	private List<Job> getMyJobs() {
-		List<Job> myJobs = new ArrayList<Job>();
-		for (int i = 0; i < myAbilities.getAllFutureJobs().size(); i++) {
-			if (myAbilities.getAllFutureJobs().get(i).isSignedUp(myUser)) {
-				myJobs.add(myAbilities.getAllFutureJobs().get(i));
-
-			}
-
-		}
-
-		return myJobs;
 
 	}
 
@@ -118,13 +101,13 @@ public class VolunteerIO implements IO {
 	 *
 	 */
 	private void showAllFutureJobs() {
-
+		System.out.println("All jobs scheduled in the future: \n");
 		for (int i = 0; i < myAbilities.getAllFutureJobs().size(); i++) {
 			System.out.println(i + 1 + ".  "
 					+ myAbilities.getAllFutureJobs().get(i).toString());
 
 		}
-
+		System.out.println();
 		askForSignUp();// If the user wants to sign up.
 
 	}
@@ -139,7 +122,7 @@ public class VolunteerIO implements IO {
 			response = myConsole.readLine();
 		} catch (IOException e) {
 		}
-
+		System.out.println();
 		switch (response) {
 
 		case "y":
@@ -161,7 +144,6 @@ public class VolunteerIO implements IO {
 	 * Validate user job choice for selection.
 	 */
 	private void startSignUp() {
-
 		int jobChoice = 0;
 		System.out.println("Which job do you want sign up for?");
 		try {
@@ -170,11 +152,11 @@ public class VolunteerIO implements IO {
 			if (jobChoice >= 0 && jobChoice < myAbilities.getAllFutureJobs().size()) {
 				validateAlreadySignedUp(jobChoice);
 			} else {
-				System.out.println("Please enter a valid job number.");
+				System.out.println("Please enter a valid job number.\n");
 				showAllFutureJobs();
 			}
 		} catch (NumberFormatException | IOException e) {
-			System.out.println("Please enter a valid job number.");
+			System.out.println("Please enter a valid job number.\n");
 			showAllFutureJobs();
 		}
 		

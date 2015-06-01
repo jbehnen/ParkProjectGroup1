@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -99,6 +100,28 @@ public class VolunteerAbilitiesTest {
 		jobs = abilitiesTestJobUser1.getAllFutureJobs();
 		assertTrue("newVol now signed up in original class list", 
 				jobs.get(0).isSignedUp(newVol));
+	}
+	
+	@Test
+	public void testGetMyJobsShouldReturnNoJobsIfNoJobsInSystem() {
+		assertEquals("No jobs to be signed up for", new ArrayList<Job>(), 
+				abilitiesWithNoJobs.getMyJobs(user1));
+	}
+	
+	@Test
+	public void testGetMyJobsShouldReturnNoJobsIfUserNotSignedUp() {
+		assertEquals("Not signed up for the job in list", new ArrayList<Job>(), 
+				abilitiesTestJobUser1.getMyJobs(user2));
+	}
+	
+	@Test
+	public void testGetMyJobsShouldReturnSignedUpJobsIfUserSignedUp() {
+		List<Job> testList = new ArrayList<Job>();
+		testList.add(testJobUser1);
+		assertEquals("Signed up for one job", 1, 
+				abilitiesTestJobUser1.getMyJobs(user1).size());
+		assertEquals("The job is the one that user1 signed up for", testList.get(0), 
+				abilitiesTestJobUser1.getMyJobs(user1).get(0));
 	}
 
 	@Test

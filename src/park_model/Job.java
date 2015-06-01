@@ -102,6 +102,9 @@ public class Job implements Serializable {
 		this(theJob.getParkName(), ((GregorianCalendar) theJob.startDate),
 				theJob.numDays, theJob.LIGHT_JOBS, theJob.MEDIUM_JOBS,
 				theJob.HEAVY_JOBS, theJob.myDescription);
+		numLightJobs = theJob.numLightJobs;
+		numMediumJobs = theJob.numMediumJobs;
+		numHeavyJobs = theJob.numHeavyJobs;
 		myVolunteers = new ArrayList<>(theJob.myVolunteers);
 
 		assert myPark != null;

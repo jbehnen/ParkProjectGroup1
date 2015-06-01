@@ -1,5 +1,6 @@
 package park_model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -40,6 +41,24 @@ public class VolunteerAbilities {
 	 */
 	public List<Job> getAllFutureJobs() {			
 		return Collections.unmodifiableList(myJobs);
+	}
+	
+	/**
+	 * Returns all jobs that the user is signed up for.
+	 * 
+	 * Precondition: theUser != null.
+	 * 
+	 * @return all jobs that the user is signed up for.
+	 */
+	public List<Job> getMyJobs(User theUser) {
+		List<Job> signedUpJobs = new ArrayList<Job>();
+		for (Job job: myJobs) {
+			if (job.isSignedUp(theUser)) {
+				signedUpJobs.add(new Job(job));
+			}
+		}
+		assert myJobs != null;
+		return signedUpJobs;
 	}
 	
 	/**
@@ -91,43 +110,6 @@ public class VolunteerAbilities {
 		assert myJobs != null;
 	}
 	
-	/**
-	 * A volunteer can't sign up for two jobs in the same day.
-	 * 
-	 * @param A
-	 *            -= First Job
-	 * @param B
-	 *            -= Second job
-	 * @return if these two jobs do have same day.
-	 */
-	@Deprecated
-	public boolean checkJobsOnSameDay(Job A, Job B) {
-		boolean sameDay = false;
 
-		if (A.getFirstDate().compareTo(B.getFirstDate()) == 0) {
-			// the two jobs do have same start day.
-			System.out.print("Those two jobs do have same start date");
-			sameDay = true;
-		} else if (A.getLastDate().compareTo(B.getLastDate()) == 0) {
-			// the two jobs do have same start day.
-			System.out.print("Those two jobs do have same end date");
-			sameDay = true;
-		} else {
-			//Can omit this line and the above two lines.
-			sameDay = false;
-		}
-
-		return sameDay;
-	}
-	
-	@Deprecated
-	public boolean isFull(Job jobForSignUp){
-		
-		return !jobForSignUp.isOpen(WorkCategory.LIGHT)&&
-				!jobForSignUp.isOpen(WorkCategory.MEDIUM) &&
-						!jobForSignUp.isOpen(WorkCategory.HEAVY);
-			
-			
-		}
 	
 }

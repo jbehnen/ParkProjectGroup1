@@ -61,6 +61,9 @@ public class JobTest {
 	
 	@Test
 	public void testCopyConstructorShouldConstructCopyOfJob() {
+		job1.signUp(new User("email", "first", "last"), WorkCategory.LIGHT);
+		job1.signUp(new User("email2", "first", "last"), WorkCategory.MEDIUM);
+		job1.signUp(new User("email3", "first", "last"), WorkCategory.HEAVY);
 		Job copy = new Job(job1);
 		assertEquals("Jobs have same values", copy, job1);
 		assertNotSame("New job is a copy", copy, job1);
