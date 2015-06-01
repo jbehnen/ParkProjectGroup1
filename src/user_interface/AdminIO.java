@@ -24,10 +24,12 @@ import config_files.Config;
 public class AdminIO implements IO{
 	private User myUser;
 	private AdminAbilities myAdminAbilities;
+	BufferedReader console;
 	
 	public AdminIO(User myUser) {
 		this.myUser = myUser;
 		myAdminAbilities = new AdminAbilities(Config.VOLUNTEER_FILE);
+		console = new BufferedReader(new InputStreamReader(System.in));
 	}
 	/**
 	 * This my control menu
@@ -40,20 +42,23 @@ public class AdminIO implements IO{
 		int i = 0;
 		boolean validChoice = false;
 		
- 		BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
  		System.out.println("Please select an option, Administrator " + myUser.getLastName() + ".");
 		
-		while(!validChoice){
-			System.out.println("1: Search For Volunteer. \n2: Quit");
+		System.out.println("1: Search For Volunteer");
+		System.out.println("2: Quit");
+		while (!validChoice) {
 			try{
 				i = Integer.parseInt(console.readLine());
-				
+				if (i > 0 && i < 3)
+					validChoice = true;
 				switch(i){
 				case 1:
 					searchVol(console);
+					break;
 				case 2:	
 					System.out.println("\nHave a good day.");
-					System.exit(0);
+					console.close();
+					break;
 				default:
 					System.out.println("\nPlease enter a number from the menu.\n");
 				}
@@ -61,7 +66,6 @@ public class AdminIO implements IO{
 				System.out.println("\nPlease enter a number from the menu.\n");
 			}
 		}
-		
 	}
 	
 	//This method shows off the name of volunteer have been searched

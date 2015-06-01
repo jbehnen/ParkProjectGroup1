@@ -1,6 +1,9 @@
 package user_interface;
 
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -24,18 +27,17 @@ public class VolunteerIO implements IO {
 
 	private User myUser;
 	private VolunteerAbilities myAbilities;
+	private BufferedReader myConsole;
 
 	public VolunteerIO(User myUser) {
 		this.myUser = myUser;
 		myAbilities = new VolunteerAbilities(Config.JOB_SCHEDULE_FILE);
-
+		myConsole = new BufferedReader(new InputStreamReader(System.in));
 	}
 
-	@SuppressWarnings("resource")
 	@Override
 	public void mainMenu() {
 
-		Scanner myScan = new Scanner(System.in);
 		boolean isValid = false;
 		int choice = 0;
 
@@ -49,26 +51,32 @@ public class VolunteerIO implements IO {
 		System.out.println("  3. Exit");
 
 		while (!isValid) {
-			choice = myScan.nextInt();
-			if (choice > 0 && choice < 4) {
-				isValid = true;
-				switch (choice) {
-				case 1:
-					viewMyJobs();
-					break;
-				case 2:
-					// see Open jobs
-					showAllFutureJobs();
-					break;
-				case 3:
-					myAbilities.saveJobs(Config.JOB_SCHEDULE_FILE);
-					System.exit(0);
-					break;
-				default:
-					System.out.println("Invalid input -Exit");
+			try {
+				choice = Integer.parseInt(myConsole.readLine());
+				if (choice > 0 && choice < 4) {
+					isValid = true;
+					switch (choice) {
+					case 1:
+						viewMyJobs();
+						break;
+					case 2:
+						// see Open jobs
+						showAllFutureJobs();
+						break;
+					case 3:
+						System.out.println("Have a great day!");
+						myAbilities.saveJobs(Config.JOB_SCHEDULE_FILE);
+						myConsole.close();
+						break;
+					default:
+						System.out.println("Invalid input -Exit");
+					}
+				} else {
+					System.out.println("Please make a valid selection");
 				}
-			} else {
-				System.err.println("Please make a valid selection");
+			} catch (NumberFormatException | IOException e) {
+				// TODO Auto-generated catch block
+				System.out.println("Please make a valid selection");
 			}
 		}
 	}
@@ -121,15 +129,16 @@ public class VolunteerIO implements IO {
 
 	}
 
-	@SuppressWarnings("resource")
 	private void askForSignUp() {
 		// Ask if user want to sign up.
-		Scanner inner = new Scanner(System.in);
 
 		String response = "";
 		System.out.println(myUser.getFirstName()
 				+ ", do you want to sign up? (y/n) ");
-		response = inner.next();
+		try {
+			response = myConsole.readLine();
+		} catch (IOException e) {
+		}
 
 		switch (response) {
 
@@ -140,7 +149,7 @@ public class VolunteerIO implements IO {
 			mainMenu();
 			break;
 		default:
-			System.err.println("Invalid Option  y/n");
+			System.out.println("Invalid Option  y/n");
 			showAllFutureJobs();
 			break;
 
@@ -151,24 +160,24 @@ public class VolunteerIO implements IO {
 	/**
 	 * Validate user job choice for selection.
 	 */
-
-	@SuppressWarnings("resource")
 	private void startSignUp() {
-		Scanner inner = new Scanner(System.in);
-		inner.reset();
 
 		int jobChoice = 0;
-		System.out.println("For which job do you want sign up for?");
-		jobChoice = inner.nextInt();
-		--jobChoice;
-		if (jobChoice >= 0 && jobChoice < myAbilities.getAllFutureJobs().size()) {
-			validateAlreadySignedUp(jobChoice);
-
-		} else {
-			System.out.println("Invalid Option");
+		System.out.println("Which job do you want sign up for?");
+		try {
+			jobChoice = Integer.parseInt(myConsole.readLine());
+			--jobChoice;
+			if (jobChoice >= 0 && jobChoice < myAbilities.getAllFutureJobs().size()) {
+				validateAlreadySignedUp(jobChoice);
+			} else {
+				System.out.println("Please enter a valid job number.");
+				showAllFutureJobs();
+			}
+		} catch (NumberFormatException | IOException e) {
+			System.out.println("Please enter a valid job number.");
 			showAllFutureJobs();
-
 		}
+		
 
 	}
 
@@ -183,8 +192,8 @@ public class VolunteerIO implements IO {
 
 		if (((List<Job>) myAbilities.getAllFutureJobs()).get(jobChoice)
 				.isSignedUp(myUser)) {
-			System.err.println("Remark: " + myUser.getFirstName()
-					+ ", you can't signup for same job multiple times.");
+			System.out.println(myUser.getFirstName()
+					+ ", you can't sign up for same job multiple times.\n");
 			showAllFutureJobs();
 
 		} else {
@@ -204,9 +213,8 @@ public class VolunteerIO implements IO {
 	 */
 	private void validateDateConflict(Job jobForSignUp) {
 		if (myAbilities.isSignedUpForConflictingJob(myUser, jobForSignUp)) {
-			System.err
-					.println(myUser.getFirstName()
-							+ ",you have already signed up for another job on that same day");
+			System.out.println(myUser.getFirstName() 
+					+ ", you have already signed up for another job on that same day\n");
 			showAllFutureJobs();
 
 		}
@@ -221,12 +229,9 @@ public class VolunteerIO implements IO {
 	 * @param signedUpJob
 	 *            - job whose work category to be check for
 	 */
-	@SuppressWarnings("resource")
 	private void validateWorkCategory(Job jobForSignUp) {
-		Scanner on = new Scanner(System.in);
-		on.reset();
 		int choice = 0;
-		boolean fail = false;
+		boolean fail = true;
 		WorkCategory temp = null;
 
 		if (jobForSignUp.isFull()) { 
@@ -246,42 +251,44 @@ public class VolunteerIO implements IO {
 
 		System.out.println(" 5. Main Menu ");
 
-		while (!fail) {
+		while (fail) {
 
-			choice = on.nextInt();
-			if (choice > 0 && choice < 6) {
-				fail = true;
-				switch (choice) {
-				case 1:
-					temp = WorkCategory.LIGHT;
-					break;
-				case 2:
-					temp = WorkCategory.MEDIUM;
-					break;
-				case 3:
-					temp = WorkCategory.HEAVY;
-					break;
-				case 4:
-					showAllFutureJobs();
-					break;
-				case 5:
-					mainMenu();
-					break;
-				default:
-					System.err
-							.println("Error: incorrect choice taken at console input");
-				}// End switch
-
+			try {
+				choice = Integer.parseInt(myConsole.readLine());
+			
+				if (choice > 0 && choice < 6) {
+					fail = false;
+					switch (choice) {
+					case 1:
+						temp = WorkCategory.LIGHT;
+						break;
+					case 2:
+						temp = WorkCategory.MEDIUM;
+						break;
+					case 3:
+						temp = WorkCategory.HEAVY;
+						break;
+					case 4:
+						showAllFutureJobs();
+						break;
+					case 5:
+						mainMenu();
+						break;
+					default:
+						System.out.println("Error: incorrect choice taken at console input");
+					}// End switch
+				}
+				else {
+					System.out.println("Please make a valid selection.");
+				} 
+			} catch (NumberFormatException | IOException e) {
+				System.out.println("Please make a valid selection.");
 			}
-
-			else {
-				System.err.println("Please make a valid selection");
-			} 
 
 		}
 
 		if (!jobForSignUp.isOpen(temp)) {
-			System.err.println("Sorry, it seems that catagory is full.");
+			System.out.println("Sorry, it seems that catagory is full.");
 			showAllFutureJobs();
 
 		}

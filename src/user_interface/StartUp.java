@@ -71,7 +71,6 @@ public class StartUp {
 		switch(theUserType) {
 			case('A'): 
 				menu = new AdminIO(theUser);
-				menu.mainMenu();
 				break;
 			case('V'): 
 				menu = new VolunteerIO(theUser);

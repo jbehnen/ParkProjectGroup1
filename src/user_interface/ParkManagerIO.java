@@ -30,7 +30,8 @@ public class ParkManagerIO implements IO {
 
 	//Class variables
 	private ParkManager myUser;
-	private PMAbilities abilities;
+	private PMAbilities myAbilities;
+	private BufferedReader myConsole;
 
 	/**
 	 * Class constructor
@@ -39,7 +40,8 @@ public class ParkManagerIO implements IO {
 	 */
 	public ParkManagerIO(ParkManager myUser) {
 		this.myUser = myUser;
-		abilities = new PMAbilities(Config.JOB_SCHEDULE_FILE);
+		myAbilities = new PMAbilities(Config.JOB_SCHEDULE_FILE);
+		myConsole = new BufferedReader(new InputStreamReader(System.in));
 	}
 
 	/**
@@ -51,8 +53,6 @@ public class ParkManagerIO implements IO {
 		int i = 0;
 		boolean validChoice = false;
 
-		BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-
 		System.out.println("\n********Welcome to the Park Manager page********");
 		System.out.println("\nPlease type the number of the action you want to perform.");
 		System.out.println("\n1: Create a new job. \n2: View upcoming jobs. \n3: View the volunteers for a job. \n4: Quit program");
@@ -61,23 +61,24 @@ public class ParkManagerIO implements IO {
 		// http://stackoverflow.com/questions/4644415/java-how-to-get-input-from-system-console
 		while (!validChoice) {
 			try {
-				i = Integer.parseInt(console.readLine());
+				i = Integer.parseInt(myConsole.readLine());
 				if (i > 0 && i < 5) {
 					validChoice = true;
 					switch (i) {
 					case 1:
-						addJob(console);
+						addJob();
 						break;
 					case 2:
-						viewJobs(console);
+						viewJobs();
 						break;
 					case 3:
-						viewVol(console);
+						viewVol();
 						break;
 					case 4:
 						System.out.println("Have a great day!");
-						abilities.saveJobs(Config.JOB_SCHEDULE_FILE);
-						System.exit(0);
+						myAbilities.saveJobs(Config.JOB_SCHEDULE_FILE);
+						myConsole.close();
+						break;
 					default:
 						System.out.println("outor: incorrect choice taken at console input");
 					}
@@ -92,13 +93,13 @@ public class ParkManagerIO implements IO {
 
 
 	// Private method that views volunteers for a specific job
-	private void viewVol(BufferedReader con) {
+	private void viewVol() {
 
 		boolean validJob = false;
 		boolean tooFull = false;
 		int index;
 		System.out.println("********View the Volunteers********");
-		List<Job> jobs = getJobs(con);
+		List<Job> jobs = getJobs();
 		// Display the jobs
 		if (jobs.size() > 0) {
 			System.out.println("Which job do you want displayed?\n");
@@ -109,7 +110,7 @@ public class ParkManagerIO implements IO {
 			// Validate the selection
 			while (!validJob && !tooFull) {
 				try {
-					index = Integer.parseInt(con.readLine());
+					index = Integer.parseInt(myConsole.readLine());
 					if (index >= 0 && index < jobs.size()) {
 						validJob = true;
 						// Get the list of Volunteers for the selected job and
@@ -137,9 +138,9 @@ public class ParkManagerIO implements IO {
 
 
 	//Private method that displays jobs for a specific park.
-	private void viewJobs(BufferedReader con) {
+	private void viewJobs() {
 		System.out.println("********View Jobs********");
-		List<Job> jobs = getJobs(con);
+		List<Job> jobs = getJobs();
 		for (int i = 0; i < jobs.size(); i++) {
 			System.out.println(jobs.get(i).toString());
 		}
@@ -147,7 +148,7 @@ public class ParkManagerIO implements IO {
 	}
 
 	//Private helper method that returns a list of jobs.
-	private List<Job> getJobs(BufferedReader c) {
+	private List<Job> getJobs() {
 		String thePark;
 		int ind;
 		boolean validPark = false;
@@ -159,11 +160,11 @@ public class ParkManagerIO implements IO {
 		}
 		while (!validPark) {
 			try {
-				ind = Integer.parseInt(c.readLine());
+				ind = Integer.parseInt(myConsole.readLine());
 				if (ind >= 0 && ind < myUser.getParks().size()) {
 					validPark = true;
 					thePark = myUser.getParks().get(ind);
-					jobList = (List<Job>) (abilities.getJobsAtPark(thePark));
+					jobList = (List<Job>) (myAbilities.getJobsAtPark(thePark));
 				} else {
 					System.out.println("please make a valid selection.");
 					;
@@ -176,7 +177,7 @@ public class ParkManagerIO implements IO {
 	}
 
 	//Private method that adds a valid Job to a park.
-	private void addJob(BufferedReader console2) {
+	private void addJob() {
 		String thePark = "";
 		int numDays = 0;
 		int numLightJobs = 0;
@@ -193,7 +194,7 @@ public class ParkManagerIO implements IO {
 		
 		//********************Business Rule********************//
 		//Answers the question: Are there too many jobs in the schedule//
-		if(abilities.tooManyTotalJobs()){
+		if(myAbilities.tooManyTotalJobs()){
 			System.out.println("The number of jobs for this system is at capacity. You will not be able to add a job at this time and "
 					+ "will be redirected to the main menu.");
 			mainMenu();
@@ -204,7 +205,7 @@ public class ParkManagerIO implements IO {
 			}
 			while(!validInput){
 				try{
-					index = Integer.parseInt(console2.readLine());
+					index = Integer.parseInt(myConsole.readLine());
 					if(index >= 0 && index < myUser.getParks().size()){
 						validInput = true;
 						thePark = myUser.getParks().get(index);
@@ -221,14 +222,14 @@ public class ParkManagerIO implements IO {
 			//Ask for the job name and read in a job name
 			System.out.println("What is the job name?");
 			try {
-				theDescription.append(console2.readLine() + " ");
+				theDescription.append(myConsole.readLine() + " ");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 	
 			//Ask the User for the month, day and year 
-			startDate = enterDate(console2);
-			numDays = enterNumDays(console2);
+			startDate = enterDate();
+			numDays = enterNumDays();
 				
 			while(!validDate){	
 				//***********************Business Rule Check***********************//
@@ -240,20 +241,20 @@ public class ParkManagerIO implements IO {
 						System.out.println("What would you like to do next?\n");
 						System.out.println("1) Enter information again\n2) Return to the main menu\n3) Quit\n");
 							try{
-								int h = Integer.parseInt(console2.readLine());
+								int h = Integer.parseInt(myConsole.readLine());
 								if(h >0 && h <4){
 									valueValid = true; 
 									switch(h){
 									case 1:
 										validDate = false;
-										startDate = enterDate(console2);
-										numDays = enterNumDays(console2);
+										startDate = enterDate();
+										numDays = enterNumDays();
 										break;
 									case 2:
 										mainMenu();
 										break;
 									case 3:
-										abilities.saveJobs(Config.JOB_SCHEDULE_FILE);
+										myAbilities.saveJobs(Config.JOB_SCHEDULE_FILE);
 										System.exit(0);
 									default:
 										System.out.println("outor: incorrect choice taken in console input");
@@ -274,7 +275,7 @@ public class ParkManagerIO implements IO {
 			//Asks and captures the times for a job
 			System.out.println("What are the hours for this job?");
 			try {
-				theDescription.append(console2.readLine() + " ");
+				theDescription.append(myConsole.readLine() + " ");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -282,7 +283,7 @@ public class ParkManagerIO implements IO {
 			//Ask for the description
 			System.out.println("Please enter any notes for this job.");
 			try {
-				theDescription.append(console2.readLine());
+				theDescription.append(myConsole.readLine());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -292,7 +293,7 @@ public class ParkManagerIO implements IO {
 			
 			while(!validInput){
 				try{
-					index = Integer.parseInt(console2.readLine());
+					index = Integer.parseInt(myConsole.readLine());
 					if(index >= 0){
 						validInput = true;
 						numLightJobs = index;
@@ -309,7 +310,7 @@ public class ParkManagerIO implements IO {
 			System.out.println("How many volunteers do you need for medium work?");
 			while(!validInput){
 				try{
-					index = Integer.parseInt(console2.readLine());
+					index = Integer.parseInt(myConsole.readLine());
 					if(index >= 0){
 						validInput = true;
 						numMediumJobs = index;
@@ -326,7 +327,7 @@ public class ParkManagerIO implements IO {
 			System.out.println("How many volunteers do you need for heavy work?");
 			while(!validInput){
 				try{
-					index = Integer.parseInt(console2.readLine());
+					index = Integer.parseInt(myConsole.readLine());
 					if(index >= 0){
 						validInput = true;
 						numHeavyJobs = index;
@@ -338,14 +339,11 @@ public class ParkManagerIO implements IO {
 				}
 			}
 			
-			//Creates user list
-			List<User> newList = new ArrayList<User>(); //Stays empty when a job is created. 
-			
 			//Creates a job with validated information that has passed the business rules. 
 			Job thisJob = new Job(thePark, startDate, numDays,numLightJobs, numMediumJobs, numHeavyJobs, theDescription.toString());
 	
 			//Adds the job to the schedule
-			abilities.addJob(thisJob);
+			myAbilities.addJob(thisJob);
 			System.out.println("\n\nYour job is now on the schedule\n\n");
 			mainMenu();
 	}
@@ -377,7 +375,7 @@ public class ParkManagerIO implements IO {
 			System.out.println("The job must be at least one day long.");
 		}
 		
-		if(abilities.tooManyJobsNearJobTime(gc, days)){
+		if(myAbilities.tooManyJobsNearJobTime(gc, days)){
 			violations++;
 			System.out.println("There are too many jobs scheduled for that week.");
 		}
@@ -387,7 +385,7 @@ public class ParkManagerIO implements IO {
 	
 		
 	//Private method that asks for and capture date information for a job.
-	private GregorianCalendar enterDate(BufferedReader console4){
+	private GregorianCalendar enterDate(){
 		GregorianCalendar theDate;
 		int month = 0;
 		int day = 0;
@@ -399,7 +397,7 @@ public class ParkManagerIO implements IO {
 		System.out.println("Enter the month (number):");
 		while(!validIn){
 			try{
-				temp = Integer.parseInt(console4.readLine());
+				temp = Integer.parseInt(myConsole.readLine());
 				if(temp > 0 && temp < 13){
 					validIn = true;
 					month = temp - 1; 
@@ -416,7 +414,7 @@ public class ParkManagerIO implements IO {
 		System.out.println("Enter the starting day:");
 		while(!validIn){
 			try{
-				temp = Integer.parseInt(console4.readLine());
+				temp = Integer.parseInt(myConsole.readLine());
 				if(temp > 0 && temp < 32){
 					validIn = true;
 					day = temp;
@@ -433,7 +431,7 @@ public class ParkManagerIO implements IO {
 			System.out.println("Enter the year (yyyy):");
 			while(!validIn){
 				try{
-					temp = Integer.parseInt(console4.readLine());
+					temp = Integer.parseInt(myConsole.readLine());
 					if(temp > 0){
 						validIn = true;
 						year = temp;
@@ -451,14 +449,14 @@ public class ParkManagerIO implements IO {
 	}
 
 	//Private method that asks for and captures the length of a job in days. 
-	private int enterNumDays(BufferedReader console5){
+	private int enterNumDays(){
 		boolean validNum = false;
 		int numDays = 0;
 
 			System.out.println("How long does this job last? (in number of days)");
 			while(!validNum){
 				try{
-					numDays = Integer.parseInt(console5.readLine());
+					numDays = Integer.parseInt(myConsole.readLine());
 					validNum = true;
 				}catch(NumberFormatException | IOException nfe){
 					System.out.println("Must be a number.");
