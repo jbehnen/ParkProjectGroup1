@@ -29,12 +29,12 @@ public class StartUp {
 		System.out.println("Please enter your email: ");
 		Scanner in = new Scanner(System.in); 
 		email = in.next();
-//		in.close();
 		
-		tryToSignIn(email, Config.VOLUNTEER_FILE, 'V');
-		tryToSignIn(email, Config.ADMIN_FILE, 'A');
-		tryToSignIn(email, Config.PARK_MANAGER_FILE, 'P');
+		tryToSignIn(email, Config.VOLUNTEER_FILE, 'V', in);
+		tryToSignIn(email, Config.ADMIN_FILE, 'A', in);
+		tryToSignIn(email, Config.PARK_MANAGER_FILE, 'P', in);
 		
+		in.close();
 		System.out.println("Invalid login.");
 	}
 	
@@ -45,7 +45,8 @@ public class StartUp {
 	 * 
 	 * @param theUserType The char that identifies the type of the user that was read in.
 	 */
-	private static void tryToSignIn(String theEmail, String theFileName, char theUserType) {
+	private static void tryToSignIn(String theEmail, String theFileName,
+			char theUserType, Scanner theScanner) {
 		User foundUser = null;
 		Collection<User> users = UserList.getAllUsers(theFileName);
 		for (User user: users) {
@@ -55,6 +56,7 @@ public class StartUp {
 		}
 		if (foundUser != null) {
 			goToMenu(foundUser, theUserType);
+			theScanner.close();
 			System.exit(0);
 		}
 	}
